@@ -16,7 +16,7 @@ function App() {
         {/* 웹 서비스 소개 페이지 */}
         <Route path="/" element={<LandingPage />} />
         {/* <YogaCoach /> */}
-        <Route path="/signin" element={<YogaCoach />} />
+        <Route path="/YogaCoach" element={<YogaCoach />} />
       </Routes>
     </BrowserRouter> 
   );

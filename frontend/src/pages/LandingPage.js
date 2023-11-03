@@ -1,6 +1,8 @@
 import React from 'react';
 import yogaIcon from '../assets/yoga_icon.png';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
+import YogaCoach from './YogaCoach';
 
 const LandingPage = () => {  
     const bodyStyle = {
@@ -16,11 +18,16 @@ const LandingPage = () => {
         justifyContent: "space-around",
         height: "100%"
       }
+      const navigate = useNavigate();
+      const goToYogaCoach = () => {
+        navigate("/YogaCoach");
+      }
+
     return (
         <div className="App" style={bodyStyle}>
       <div style={{}}>
         <h1 style={{fontSize: "4.5rem"}}>WELCOME,<br></br> to YOGA FORM</h1>
-        <Button variany="secondary" style={{width: "40%", height: "40%", minWidth: '2rem'}}>
+        <Button variany="secondary" style={{width: "40%", height: "40%", minWidth: '2rem'}} onClick={goToYogaCoach}>
           Start!
         </Button>
       </div>
