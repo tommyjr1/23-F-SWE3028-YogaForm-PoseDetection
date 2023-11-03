@@ -1,9 +1,6 @@
 import React from 'react';
 import yogaIcon from '../assets/yoga_icon.png';
-import yogaImage from '../assets/yoga_image.gif';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-
-import Webcam from "react-webcam";
 
 const YogaCoach = () => {  
     const buttonStyle = {
@@ -16,6 +13,15 @@ const YogaCoach = () => {
     }
     return (
         <div className="App">
+        {/* <div>
+          <h1 style={{fontSize: "4.5rem"}}>WELCOME,<br></br> to YOGA FORM</h1>
+          <Button variany="secondary" style={buttonStyle}>
+            Start!
+          </Button>
+        </div>
+        <div>
+          <img src={yogaIcon}></img>
+        </div> */}
         <h1>
           Let's do the yoga together!
         </h1>
