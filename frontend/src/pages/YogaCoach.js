@@ -70,6 +70,7 @@ const YogaCoach = () => {
           // console.log(angle.toFixed(2), "currentAngle");
       }
       userPoseAngle = angle.toFixed(2);
+      console.log(userPoseAngle);
       // calculateReps(userPoseAngle);
     }
 
@@ -110,10 +111,25 @@ const YogaCoach = () => {
         </h1>
         <div style={{display: "flex", justifyContent: "space-around"}}>
           <div>
-          <Webcam ref={webcamRef} style={{flex: 1}}/>
-          <canvas ref={canvasRef} style={{flex: 1}}></canvas>
+          <Webcam ref={webcamRef} style={{position: "absolute",
+                marginLeft: "auto",
+                marginRight: "auto",
+                left: 0,
+                right: 500,
+                zindex: 9}}/>
+          <canvas ref={canvasRef} style={{position: "absolute",
+                marginLeft: "auto",
+                marginRight: "auto",
+                left: 0,
+                right: 500,
+                zindex: 9}}></canvas>
           </div>
-          <div style={{alignContent: "center"}}>
+          <div style={{position: "absolute",
+                marginLeft: "auto",
+                marginRight: "auto",
+                left: 600,
+                right: 0,
+                zindex: 9}}>
             <img src={yogaImage} style={{height: "20rem"}}></img>
             <p>무희자세</p>
             <p>...infromation of the posture...</p>
