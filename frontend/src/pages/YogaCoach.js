@@ -70,9 +70,15 @@ const YogaCoach = () => {
           // console.log(angle.toFixed(2), "currentAngle");
       }
       userPoseAngle = angle.toFixed(2);
+
+      
       // console.log(userPoseAngle);
-      submitAngleData();
+      if(userPoseAngle!=null){
+        submitAngleData();
+
+      }
       // calculateReps(userPoseAngle);
+      getCheckError();
     }
 
     // getApi = () => {
@@ -85,13 +91,27 @@ const YogaCoach = () => {
     //       })
     //       .catch(res => console.log(res))
     // }
+  
+    const getCheckError = async () => {
 
+      await axios
+      .get("http://3.35.60.125:8080/api/check")
+      .then((response)=>{
+        console.log(response.data)
+      })
+      .catch((error)=>{
+        console.log(error);
+      })
+
+    }
     const submitAngleData = async () => {
       console.log(typeof userPoseAngle);
 
       await axios
       .post("http://3.35.60.125:8080/api/angle",{
-          angle: userPoseAngle
+          value: userPoseAngle,
+    // private String part;
+    // private String check;
       })
       .then((response)=>{
         console.log(response.data)
