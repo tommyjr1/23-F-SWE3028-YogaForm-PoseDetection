@@ -56,43 +56,59 @@ const YogaCoach = () => {
     });
     canvasCtx.restore();
 
+    const calculatePoseAngle = (a, b, c) => {
+      let radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x) // * fetching the radians using the atan2 function 
+      let angle = radians * (180 / Math.PI) // * calculating the angle from the radian
+      // need to provide dynamic values for angles as per requirement later along with the number of reps.
+      if (angle > 180) { // * if the angle is greater than 180, then it is negative so changing it back to positive or an actual angle possible for a human being, lol..
+          angle = 360 - angle
+      }
+      if (angle > 0 && angle < 180) { // * if the angle is positive, then it is a positive angle
+          // console.log(angle.toFixed(2), "currentAngle");
+      }
+      userPoseAngle = angle.toFixed(2);
 
-  const calculatePoseAngle = (a, b, c) => {
-    let radians =
-      Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x); // * fetching the radians using the atan2 function
-    let angle = radians * (180 / Math.PI); // * calculating the angle from the radian
-    // need to provide dynamic values for angles as per requirement later along with the number of reps.
-    if (angle > 180) {
-      // * if the angle is greater than 180, then it is negative so changing it back to positive or an actual angle possible for a human being, lol..
-      angle = 360 - angle;
+      
+      // console.log(userPoseAngle);
+      if(userPoseAngle!=null){
+        submitAngleData();
+
+      }
+      // calculateReps(userPoseAngle);
+      getCheckError();
     }
-    if (angle > 0 && angle < 180) {
-      // * if the angle is positive, then it is a positive angle
-      // console.log(angle.toFixed(2), "currentAngle");
+
+    // getApi = () => {
+    //   axios.get("http://3.35.60.125:8080")
+    //       .then(res => {
+    //           console.log(res);
+    //           this.setState({
+    //               message: res.data.message
+    //           })
+    //       })
+    //       .catch(res => console.log(res))
+    // }
+  
+    const getCheckError = async () => {
+
+      await axios
+      .get("http://3.35.60.125:8080/api/check")
+      .then((response)=>{
+        console.log(response.data)
+      })
+      .catch((error)=>{
+        console.log(error);
+      })
+
     }
-    userPoseAngle = angle.toFixed(2);
-    // console.log(userPoseAngle);
-    submitAngleData();
-    // calculateReps(userPoseAngle);
-  };
-
-  // getApi = () => {
-  //   axios.get("http://3.35.60.125:8080")
-  //       .then(res => {
-  //           console.log(res);
-  //           this.setState({
-  //               message: res.data.message
-  //           })
-  //       })
-  //       .catch(res => console.log(res))
-  // }
-
     const submitAngleData = async () => {
       console.log(typeof userPoseAngle);
 
       await axios
       .post("http://3.35.60.125:8080/api/angle",{
-          angle: userPoseAngle
+          value: userPoseAngle,
+    // private String part;
+    // private String check;
       })
       .then((response)=>{
         console.log(response.data)
