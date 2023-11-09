@@ -4,17 +4,25 @@ import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from 'react';
+import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import Webcam from "react-webcam";
 import yogaImage from '../assets/yoga_image.gif';
 
 const YogaCoach = () => {  
+    const bodyStyle = {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "#F2CCFF",
+      color: "#3B2C77"
+    }
     const buttonStyle = {
-      width: "40%", 
-      height: "40%", 
-      minWidth: '2rem', 
-      borderWidth: '0.25rem', 
-      fontSize : '1rem',
-      fontWeight: 'bold'
+      backgroundColor:"#F2CCFF", 
+      border: "1px solid #F2CCFF",
+      color: "#3B2C77",
+      fontSize: "1.6rem"
     }
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
@@ -126,8 +134,10 @@ const YogaCoach = () => {
               onFrame: async () => {
                   await userPose.send({ image: webcamRef.current.video });
               },
-              width: 1280,
-              height: 720,
+              // width: 1280,
+              // height: 720,
+              width: 600,
+              height: 400
           });
           camera.start();
       }
@@ -140,34 +150,32 @@ const YogaCoach = () => {
   //   Tts.stop();
   // });
     return (
-        <div className="App">
-        <h1>
-          Let's do the yoga together!
-        </h1>
-        <div style={{display: "flex", justifyContent: "space-around"}}>
-          <div>
-          <Webcam ref={webcamRef} style={{position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                left: 0,
-                right: 500,
-                zindex: 9}}/>
-          <canvas ref={canvasRef} style={{position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                left: 0,
-                right: 500,
-                zindex: 9}}></canvas>
-          </div>
-          <div style={{position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                left: 600,
-                right: 0,
-                zindex: 9}}>
+        <div className="App" style={bodyStyle}>
+        <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
+          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "120px", color: "#3B2C77",fontSize: "1.6rem"}}>My page</Button></header>
+        <hr style={{borderColor: "#3B2C77"}}/>
+        <div style={{display: "flex", flexDirection: "row",justifyContent: "center", alignItems: "center"}}>
+          <div style={{position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9}}>
             <img src={yogaImage} style={{height: "20rem"}}></img>
-            <p>무희자세</p>
-            <p>...infromation of the posture...</p>
+          </div>
+          <div>
+            <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
+            <Webcam ref={webcamRef} style={{position: "absolute",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  left: 500,
+                  right: 0,
+                  zindex: 9,               
+                  width: 600,
+                  height: 400}}/>
+            <canvas ref={canvasRef} style={{position: "absolute",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  left: 500,
+                  right: 0,
+                  zindex: 9,
+                  width: 600,
+                  height: 400}}></canvas>
           </div>
         </div>
       </div>
