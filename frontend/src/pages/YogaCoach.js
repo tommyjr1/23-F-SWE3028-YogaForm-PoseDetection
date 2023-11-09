@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import yogaIcon from '../assets/yoga_icon.png';
-import yogaImage from '../assets/yoga_image.gif';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { useRef, useEffect } from 'react';
-import Webcam from "react-webcam";
-import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils'
+import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
+import React, { useEffect, useRef, useState } from 'react';
+import Webcam from "react-webcam";
+import yogaImage from '../assets/yoga_image.gif';
 
 const YogaCoach = () => {  
     const buttonStyle = {
@@ -92,7 +89,6 @@ const YogaCoach = () => {
 
       await axios
       .get("http://3.35.60.125:8080/api/angle",{
-        headers: 
         angle: userPoseAngle
       })
       // .then((response)=>{
