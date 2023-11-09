@@ -4,6 +4,7 @@ import yogaImages from '../assets/yoga_images.png';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import YogaCoach from './YogaCoach';
+import Instruction from './Instruction';
 
 const LandingPage = () => {  
     const bodyStyle = {
@@ -22,8 +23,8 @@ const LandingPage = () => {
         fontSize: "1.6rem"
       }
       const navigate = useNavigate();
-      const goToYogaCoach = () => {
-        navigate("/YogaCoach");
+      const goToInstrction = () => {
+        navigate("/Instruction");
       }
 
     return (
@@ -35,7 +36,7 @@ const LandingPage = () => {
           <div>
             <p style={{fontSize: "2.6rem", marginTop:"7rem", marginBottom:"0rem"}}>Welcome to <strong>YOGA FORM!</strong></p>
             <p style={{fontSize: "1.8rem", marginTop:"0rem"}}>AI-based yoga pose correction</p><br/><br/><br/><br/>
-            <Button variany="secondary" style={{position: "relative", bottom: "70px", width: "130px", height: "50px", backgroundColor:"#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', fontSize: "1.7rem", color: "#3B2C77"}} onClick={goToYogaCoach}>
+            <Button variany="secondary" style={{position: "relative", bottom: "70px", width: "130px", height: "50px", backgroundColor:"#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', fontSize: "1.7rem", color: "#3B2C77"}} onClick={goToInstrction}>
               START
             </Button>
           </div>
