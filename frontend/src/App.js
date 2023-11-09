@@ -6,7 +6,9 @@ import Webcam from "react-webcam";
 
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
+import Instruction from './pages/Instruction';
 import YogaCoach from './pages/YogaCoach';
+import Instruction from './pages/Instruction';
 
 function App() {
 
@@ -15,6 +17,8 @@ function App() {
       <Routes>
         {/* 웹 서비스 소개 페이지 */}
         <Route path="/" element={<LandingPage />} />
+        {/* <Instruction /> */}
+        <Route path="/Instruction" element={<Instruction />} />
         {/* <YogaCoach /> */}
         <Route path="/YogaCoach" element={<YogaCoach />} />
       </Routes>
