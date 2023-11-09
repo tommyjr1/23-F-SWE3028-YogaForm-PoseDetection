@@ -1,10 +1,10 @@
-package com.example.yf_be;
+package com.example.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class YfBeApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
