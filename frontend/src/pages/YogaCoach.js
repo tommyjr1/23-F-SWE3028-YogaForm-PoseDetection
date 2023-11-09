@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import yogaIcon from '../assets/yoga_icon.png';
 import yogaImage from '../assets/yoga_image.gif';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
@@ -8,6 +8,7 @@ import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils'
 import { Pose } from "@mediapipe/pose";
+import axios from "axios";
 
 const YogaCoach = () => {  
     const buttonStyle = {
@@ -22,6 +23,7 @@ const YogaCoach = () => {
     const canvasRef = useRef(null);
     let camera = null;
     let userPoseAngle = null;
+    const [message, setMessage] = useState("");
 
     function onResults(results) {
       let landmarks = results.poseLandmarks // * all the landmarks in the pose
@@ -34,7 +36,7 @@ const YogaCoach = () => {
           let leftWrist = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
           calculatePoseAngle(leftShoulder, leftElbow, leftWrist);
       } catch (error) {
-          // console.error(error);
+          console.error(error);
       }
       // Define the canvas element dimensions using the earlier created refs
       canvasRef.current.width = webcamRef.current.video.videoWidth
@@ -70,8 +72,36 @@ const YogaCoach = () => {
           // console.log(angle.toFixed(2), "currentAngle");
       }
       userPoseAngle = angle.toFixed(2);
-      console.log(userPoseAngle);
+      // console.log(userPoseAngle);
+      submitAngleData();
       // calculateReps(userPoseAngle);
+    }
+
+    // getApi = () => {
+    //   axios.get("http://3.35.60.125:8080")
+    //       .then(res => {
+    //           console.log(res);
+    //           this.setState({
+    //               message: res.data.message
+    //           })
+    //       })
+    //       .catch(res => console.log(res))
+    // }
+
+    const submitAngleData = async () => {
+
+      await axios
+      .get("http://3.35.60.125:8080/api/angle",{
+        headers: 
+        angle: userPoseAngle
+      })
+      // .then((response)=>{
+      //   console.log(response.data)
+      // })
+      .catch((error)=>{
+        console.log(error);
+      })
+
     }
 
     useEffect(() => {
@@ -104,6 +134,13 @@ const YogaCoach = () => {
           camera.start();
       }
   }, []);
+  // Tts.getInitStatus().then(() => {
+  //   Tts.speak('Hello, world!', {
+  //     iosVoiceId: 'com.apple.ttsbundle.Moira-compact',
+  //     rate: 0.5,
+  //   });
+  //   Tts.stop();
+  // });
     return (
         <div className="App">
         <h1>
