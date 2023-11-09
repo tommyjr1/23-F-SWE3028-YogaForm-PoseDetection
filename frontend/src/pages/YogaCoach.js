@@ -4,7 +4,7 @@ import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from 'react';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 
