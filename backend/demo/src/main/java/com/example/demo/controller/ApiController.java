@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
     @GetMapping("/api/angle")
-    public void getData(@RequestParam Integer angle){
+    public void getData(@RequestParam String angle){
         System.out.println(angle);
     }
     @PostMapping("/api/angle")
-    public void postData(@RequestParam Integer angle){
+    public void postData(@RequestParam String angle){
         System.out.println(angle);
     }
     // public HashMap hello() {
