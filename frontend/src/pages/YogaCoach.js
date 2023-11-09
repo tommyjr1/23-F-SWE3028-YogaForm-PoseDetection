@@ -19,6 +19,7 @@ const YogaCoach = () => {
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
     let camera = null;
+    // const [userPoseAngle, setUserPoseAngle] = use
     let userPoseAngle = null;
     const [message, setMessage] = useState("");
 
@@ -86,16 +87,15 @@ const YogaCoach = () => {
     // }
 
     const submitAngleData = async () => {
+      console.log(typeof userPoseAngle);
 
       await axios
-      .get("http://3.35.60.125:8080/api/angle",{
-        params:{
+      .post("http://3.35.60.125:8080/api/angle",{
           angle: userPoseAngle
-        }
       })
-      // .then((response)=>{
-      //   console.log(response.data)
-      // })
+      .then((response)=>{
+        console.log(response.data)
+      })
       .catch((error)=>{
         console.log(error);
       })
