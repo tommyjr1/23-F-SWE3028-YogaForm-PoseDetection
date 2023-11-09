@@ -1,21 +1,20 @@
-import React, {useState} from "react";
-import "./App.css";
+import React, { useState } from "react";
 import Webcam from "react-webcam";
 import { useRef, useEffect } from "react";
 import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
-import { Button } from 'react-bootstrap';
-//import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
-//import silhouette from "./assets/pngwing.png";
+import { useNavigate } from "react-router-dom";
 
-function App() {
+function Instruction() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   let camera = null;
   let userPoseAngle = null;
-  const[x, setX] = useState(false);
-  const[msg, setMsg] = useState("Stand so that your entire body is visible on the camera."); 
+  const [x, setX] = useState(false);
+  const [msg, setMsg] = useState(
+    "Stand so that your entire body is visible on the camera."
+  );
 
   function onResults(results) {
     let landmarks = results.poseLandmarks; // * all the landmarks in the pose
@@ -48,18 +47,6 @@ function App() {
       canvasElement.width,
       canvasElement.height
     );
-    // drawConnectors(
-    //   canvasCtx,
-    //   results.poseLandmarks,
-    //   mediapipePose.POSE_CONNECTIONS,
-    //   { color: "white", lineWidth: 1 }
-    // );
-    // // * The dots are the landmarks
-    // drawLandmarks(canvasCtx, results.poseLandmarks, {
-    //   color: "red",
-    //   lineWidth: 1,
-    //   radius: 2,
-    // });
     canvasCtx.restore();
   }
   useEffect(() => {
@@ -78,10 +65,8 @@ function App() {
       minTrackingConfidence: 0.5,
     });
     userPose.onResults(onResults);
-    if (
-      typeof webcamRef.current !== "undefined" &&
-      webcamRef.current !== null
-    ) {
+    if (typeof webcamRef.current !== "undefined" && webcamRef.current && webcamRef.current.video) {
+        console.log(webcamRef.current.video);
       camera = new cam.Camera(webcamRef.current.video, {
         // no issues with the exaustive-deps. We do not need to store the camera object for current purposes
         onFrame: async () => {
@@ -107,8 +92,13 @@ function App() {
     }
   };
 
+  const navigate = useNavigate();
+  const goToYogaCoach = () => {
+    navigate("/YogaCoach");
+  };
+
   return (
-    <div className="App">
+    <div className="Instruction">
       <h1>Instruction</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <Webcam
@@ -131,9 +121,11 @@ function App() {
         ></canvas>
       </div>
       <p style={{ marginTop: 500 }}> {`${msg}`}</p>
-      <button style={{ opacity:x ? 100:0 }}>Next</button>
+      <button style={{ opacity: x ? 100 : 0 }} onClick={goToYogaCoach}>
+        Next
+      </button>
     </div>
   );
 }
 
-export default App;
+export default Instruction;
