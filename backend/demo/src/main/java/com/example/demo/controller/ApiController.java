@@ -48,24 +48,4 @@ public class ApiController {
         // checkVal = angleService.checkAngle(preangle);
         // preangle.setCheck(checkVal);
     }
-
-    // public HashMap hello() {
-    //     HashMap result = new HashMap();
-    //     result.put("message", "안녕하세요");
-
-    //     return result;
-    // }
-
-    //     @GetMapping("/board/insert")
-    // public void boardinsert(@RequestParam Integer id, @RequestParam String title){
-    //     System.out.println(id);
-    //     System.out.println(title);
-    // }
-    // }
-
-    // @RequestMapping(value="/testValue", method = RequestMethod.GET)
-    // public String getTestValue(){
-    //     String TestValue = "레스트컨트롤러 테스트";
-    //     return TestValue;
-    // }
 }
