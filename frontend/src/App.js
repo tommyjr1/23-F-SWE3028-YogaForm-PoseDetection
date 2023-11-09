@@ -1,5 +1,5 @@
-import yogaIcon from './yoga_icon.png';
-import yogaImage from './yoga_image.gif';
+import yogaIcon from './assets/yoga_icon.png';
+import yogaImage from './assets/yoga_image.gif';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import './App.css';
 import Webcam from "react-webcam";

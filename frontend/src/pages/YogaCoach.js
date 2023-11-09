@@ -92,7 +92,6 @@ const YogaCoach = () => {
 
       await axios
       .get("http://3.35.60.125:8080/api/angle",{
-        headers: 
         angle: userPoseAngle
       })
       // .then((response)=>{
