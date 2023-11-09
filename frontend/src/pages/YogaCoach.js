@@ -29,6 +29,7 @@ const YogaCoach = () => {
     let camera = null;
     // const [userPoseAngle, setUserPoseAngle] = use
     let userPoseAngle = null;
+  
     const [message, setMessage] = useState("");
 
     function onResults(results) {
@@ -83,27 +84,34 @@ const YogaCoach = () => {
     }
     userPoseAngle = angle.toFixed(2);
     // console.log(userPoseAngle);
-    submitAngleData();
+    if(userPoseAngle!=null){
+      submitAngleData();
+      checkAngle();
+
+    }
     // calculateReps(userPoseAngle);
   };
 
-  // getApi = () => {
-  //   axios.get("http://3.35.60.125:8080")
-  //       .then(res => {
-  //           console.log(res);
-  //           this.setState({
-  //               message: res.data.message
-  //           })
-  //       })
-  //       .catch(res => console.log(res))
-  // }
+    const checkAngle = async () => {
+      await axios
+      .get("http://3.35.60.125:8080/api/check")
+      .then((response)=>{
+        if(response.data !== "none"){
+          setMessage(response.data);
+          console.log(response.data)
 
+        }
+      })
+      .catch((error)=>{
+        console.log(error);
+      });
+  };
     const submitAngleData = async () => {
       console.log(typeof userPoseAngle);
 
       await axios
       .post("http://3.35.60.125:8080/api/angle",{
-          angle: userPoseAngle
+          value: userPoseAngle
       })
       .then((response)=>{
         console.log(response.data)
@@ -162,6 +170,8 @@ const YogaCoach = () => {
           </div>
           <div>
             <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
+            <p>{message}</p>
+
             <Webcam ref={webcamRef} style={{position: "absolute",
                   marginLeft: "auto",
                   marginRight: "auto",

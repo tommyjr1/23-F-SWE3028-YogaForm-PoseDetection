@@ -14,7 +14,7 @@ public class ApiController {
     //     this.angleService = angleService;
     // }
 
-    private String checkVal = "init";
+    private String checkVal = "none";
     private Angle preangle = new Angle();
 
 
@@ -33,19 +33,24 @@ public class ApiController {
         preangle.setValue(angle.getValue());
         System.out.println(preangle);
         //이걸 동시에 전부 확인해야하는 캬..
+        checkVal = "none";
 
-        Double val = Double.valueOf(angle.getValue());
-        System.out.println(val);
-        //angle 위치에 따라 자세에 따라 correct 포즈 다를것임;;
-        Double correctValue = 90.0;
-        Double minval = correctValue*0.95;
-        Double maxval = correctValue*1.05;
-        String returnVal="correct pose";
-        returnVal = (maxval < val) ? "Too straight" : "Correct Pose";
-        returnVal = (minval > val) ? "Too curved" : "Correct Pose";
+        if(angle.getValue()!=null){
+            Double val = Double.valueOf(angle.getValue());
+            System.out.println(val);
+            //angle 위치에 따라 자세에 따라 correct 포즈 다를것임;;
+            Double correctValue = 180.0;
+            Double minval = correctValue*0.95;
+            Double maxval = correctValue*1.05;
+            String returnVal="correct pose";
+            returnVal = (maxval < val) ? "Too straight" : "Correct Pose";
+            returnVal = (minval > val) ? "Too curved" : "Correct Pose";
 
-        checkVal = returnVal;
-        // checkVal = angleService.checkAngle(preangle);
-        // preangle.setCheck(checkVal);
+            checkVal = returnVal;
+            // checkVal = angleService.checkAngle(preangle);
+            // preangle.setCheck(checkVal);
+        }
+
+        
     }
 }
