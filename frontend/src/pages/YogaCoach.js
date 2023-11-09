@@ -3,16 +3,11 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
-<<<<<<< HEAD
 import React, { useEffect, useRef, useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-=======
-import React, { useEffect, useRef, useState } from "react";
->>>>>>> 593268817b7ba9ff140be0d7ac4d2f238f89148e
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 
-<<<<<<< HEAD
 const YogaCoach = () => {  
     const bodyStyle = {
       position: "absolute",
@@ -35,41 +30,6 @@ const YogaCoach = () => {
     // const [userPoseAngle, setUserPoseAngle] = use
     let userPoseAngle = null;
     const [message, setMessage] = useState("");
-=======
-const YogaCoach = () => {
-  const buttonStyle = {
-    width: "40%",
-    height: "40%",
-    minWidth: "2rem",
-    borderWidth: "0.25rem",
-    fontSize: "1rem",
-    fontWeight: "bold",
-  };
-  const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
-  let camera = null;
-  // const [userPoseAngle, setUserPoseAngle] = use
-  let userPoseAngle = null;
-  const [message, setMessage] = useState("");
-
-  function onResults(results) {
-    let landmarks = results.poseLandmarks; // * all the landmarks in the pose
-
-    //  * getting the values for the three landmarks that we want to use
-    try {
-      // * we get errors every time the landmarks are not available
-      // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-      let leftShoulder = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
-      let leftElbow = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
-      let leftWrist = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
-      calculatePoseAngle(leftShoulder, leftElbow, leftWrist);
-    } catch (error) {
-      console.error(error);
-    }
-    // Define the canvas element dimensions using the earlier created refs
-    canvasRef.current.width = webcamRef.current.video.videoWidth;
-    canvasRef.current.height = webcamRef.current.video.videoHeight;
->>>>>>> 593268817b7ba9ff140be0d7ac4d2f238f89148e
 
     const canvasElement = canvasRef.current;
     const canvasCtx = canvasElement.getContext("2d");
@@ -95,7 +55,7 @@ const YogaCoach = () => {
       radius: 2,
     });
     canvasCtx.restore();
-  }
+
 
   const calculatePoseAngle = (a, b, c) => {
     let radians =
@@ -127,7 +87,6 @@ const YogaCoach = () => {
   //       .catch(res => console.log(res))
   // }
 
-<<<<<<< HEAD
     const submitAngleData = async () => {
       console.log(typeof userPoseAngle);
 
@@ -139,48 +98,8 @@ const YogaCoach = () => {
         console.log(response.data)
       })
       .catch((error)=>{
-=======
-  const submitAngleData = async () => {
-    //console.log(typeof userPoseAngle);
-
-    await axios
-      .post("http://3.35.60.125:8080/api/angle", {
-        angle: userPoseAngle,
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
->>>>>>> 593268817b7ba9ff140be0d7ac4d2f238f89148e
         console.log(error);
       });
-<<<<<<< HEAD
-      userPose.setOptions({
-        selfieMode: true,
-        modelComplexity: 0,
-        smoothLandmarks: true,
-        enableSegmentation: false,
-        smoothSegmentation: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-        });
-      userPose.onResults(onResults);
-      if (
-          typeof webcamRef.current !== "undefined" &&
-          webcamRef.current !== null
-      ) {
-          camera = new cam.Camera(webcamRef.current.video, { // no issues with the exaustive-deps. We do not need to store the camera object for current purposes
-              onFrame: async () => {
-                  await userPose.send({ image: webcamRef.current.video });
-              },
-              // width: 1280,
-              // height: 720,
-              width: 600,
-              height: 400
-          });
-          camera.start();
-      }
-=======
   };
 
   useEffect(() => {
@@ -189,7 +108,6 @@ const YogaCoach = () => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
       },
     });
-    console.log(webcamRef.current);
     userPose.setOptions({
       selfieMode: true,
       modelComplexity: 0,
@@ -200,18 +118,20 @@ const YogaCoach = () => {
       minTrackingConfidence: 0.5,
     });
     userPose.onResults(onResults);
-    if (typeof webcamRef.current !== "undefined" && webcamRef.current&&webcamRef.current.video) {
+    if (typeof webcamRef.current !== "undefined" && webcamRef.current && webcamRef.current.video) {
+        console.log(webcamRef.current.video);
       camera = new cam.Camera(webcamRef.current.video, {
         // no issues with the exaustive-deps. We do not need to store the camera object for current purposes
         onFrame: async () => {
           await userPose.send({ image: webcamRef.current.video });
         },
-        width: 1280,
-        height: 720,
+        // width: 1280,
+        // height: 720,
+        width: 600,
+        height: 400
       });
       camera.start();
     }
->>>>>>> 593268817b7ba9ff140be0d7ac4d2f238f89148e
   }, []);
   // Tts.getInitStatus().then(() => {
   //   Tts.speak('Hello, world!', {
@@ -220,7 +140,6 @@ const YogaCoach = () => {
   //   });
   //   Tts.stop();
   // });
-<<<<<<< HEAD
     return (
         <div className="App" style={bodyStyle}>
         <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
@@ -249,52 +168,8 @@ const YogaCoach = () => {
                   width: 600,
                   height: 400}}></canvas>
           </div>
-=======
-  return (
-    <div className="App">
-      <h1>Let's do the yoga together!</h1>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <div>
-          <Webcam
-            ref={webcamRef}
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 0,
-              right: 500,
-              zindex: 9,
-            }}
-          />
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 0,
-              right: 500,
-              zindex: 9,
-            }}
-          ></canvas>
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 600,
-            right: 0,
-            zindex: 9,
-          }}
-        >
-          <img src={yogaImage} style={{ height: "20rem" }}></img>
-          <p>무희자세</p>
-          <p>...infromation of the posture...</p>
->>>>>>> 593268817b7ba9ff140be0d7ac4d2f238f89148e
         </div>
       </div>
-    </div>
   );
 };
 
