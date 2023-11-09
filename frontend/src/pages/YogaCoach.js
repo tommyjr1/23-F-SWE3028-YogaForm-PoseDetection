@@ -31,30 +31,41 @@ const YogaCoach = () => {
     let userPoseAngle = null;
     const [message, setMessage] = useState("");
 
-    const canvasElement = canvasRef.current;
-    const canvasCtx = canvasElement.getContext("2d");
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage(
-      results.image,
-      0,
-      0,
-      canvasElement.width,
-      canvasElement.height
-    );
-    drawConnectors(
-      canvasCtx,
-      results.poseLandmarks,
-      mediapipePose.POSE_CONNECTIONS,
-      { color: "white", lineWidth: 1 }
-    );
-    // * The dots are the landmarks
-    drawLandmarks(canvasCtx, results.poseLandmarks, {
-      color: "red",
-      lineWidth: 1,
-      radius: 2,
-    });
-    canvasCtx.restore();
+    function onResults(results) {
+      let landmarks = results.poseLandmarks // * all the landmarks in the pose
+  
+      //  * getting the values for the three landmarks that we want to use
+      try { // * we get errors every time the landmarks are not available
+          // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
+          let leftShoulder = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
+          let leftElbow = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
+          let leftWrist = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
+          calculatePoseAngle(leftShoulder, leftElbow, leftWrist);
+      } catch (error) {
+          // console.error(error);
+      }
+      // Define the canvas element dimensions using the earlier created refs
+      canvasRef.current.width = webcamRef.current.video.videoWidth
+      canvasRef.current.height = webcamRef.current.video.videoHeight
+  
+      const canvasElement = canvasRef.current;
+      const canvasCtx = canvasElement.getContext("2d")
+      canvasCtx.save();
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image,
+          0,
+          0,
+          canvasElement.width,
+          canvasElement.height
+      )
+      drawConnectors(canvasCtx,
+          results.poseLandmarks, mediapipePose.POSE_CONNECTIONS,
+          { color: 'white', lineWidth: 1 });
+      // * The dots are the landmarks 
+      drawLandmarks(canvasCtx, results.poseLandmarks,
+          { color: 'red', lineWidth: 1, radius: 2 });
+      canvasCtx.restore();
+  }
 
 
   const calculatePoseAngle = (a, b, c) => {
