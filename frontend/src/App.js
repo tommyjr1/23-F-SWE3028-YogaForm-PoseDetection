@@ -8,7 +8,6 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Instruction from './pages/Instruction';
 import YogaCoach from './pages/YogaCoach';
-import Instruction from './pages/Instruction';
 
 function App() {
 
