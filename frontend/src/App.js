@@ -22,7 +22,7 @@ function App() {
         {/* <YogaCoach /> */}
         <Route path="/YogaCoach" element={<YogaCoach />} />
         {/* <LogInPage /> */}
-        <Route path="/LogIn" element={<LogInPage />} />
+        <Route path="/LogInPage" element={<LogInPage />} />
       </Routes>
     </BrowserRouter> 
   );

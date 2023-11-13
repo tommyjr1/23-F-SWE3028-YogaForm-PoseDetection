@@ -27,11 +27,14 @@ const LandingPage = () => {
       const goToInstrction = () => {
         navigate("/Instruction");
       }
+      const goToLogInPage = () => {
+        navigate("/LogInPage");
+      }
 
     return (
       <div className="App" style={bodyStyle}>
         <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
-          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}}>Log-in</Button></header>
+          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}} onClick={goToLogInPage}>Log-in</Button></header>
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around"}}>
           <div>
