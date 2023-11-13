@@ -32,16 +32,18 @@ const YogaCoach = () => {
   
     const [message, setMessage] = useState("");
 
-    function onResults(results) {
+    async function onResults(results) {
       let landmarks = results.poseLandmarks // * all the landmarks in the pose
+      submitLandmarkData(landmarks);
   
       //  * getting the values for the three landmarks that we want to use
       try { // * we get errors every time the landmarks are not available
           // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-          let leftShoulder = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
-          let leftElbow = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
-          let leftWrist = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
-          calculatePoseAngle(leftShoulder, leftElbow, leftWrist);
+          let leftShoulder = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
+          let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
+          let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
+          // console.log(leftWrist);
+          // calculatePoseAngle(leftWrist, leftElbow, leftShoulder);
       } catch (error) {
           // console.error(error);
       }
@@ -69,27 +71,35 @@ const YogaCoach = () => {
   }
 
 
-  const calculatePoseAngle = (a, b, c) => {
-    let radians =
-      Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x); // * fetching the radians using the atan2 function
-    let angle = radians * (180 / Math.PI); // * calculating the angle from the radian
-    // need to provide dynamic values for angles as per requirement later along with the number of reps.
-    if (angle > 180) {
-      // * if the angle is greater than 180, then it is negative so changing it back to positive or an actual angle possible for a human being, lol..
-      angle = 360 - angle;
-    }
-    if (angle > 0 && angle < 180) {
-      // * if the angle is positive, then it is a positive angle
-      // console.log(angle.toFixed(2), "currentAngle");
-    }
+  const calculatePoseAngle = async(a, b, c) => {
+
+    // Calculate the dot product and the magnitudes of the vectors
+    let dot_product = await ((b.x - a.x)*(b.x - c.x) + (b.y - a.y)*(b.y - c.y) + (b.z - a.z)*(b.z - c.z));
+    let point_1_2_mag = await (Math.sqrt(Math.pow((b.x - a.x),2) + Math.pow((b.y - a.y),2) + Math.pow((b.z - a.z),2)));
+    let point_2_3_mag = await (Math.sqrt(Math.pow((b.x - c.x),2) + Math.pow((b.y - c.y),2) + Math.pow((b.z - c.z),2)));
+
+    // Calculate the angle between the left hand, elbow, and shoulder landmarks in degrees
+    let angle = await (Math.acos(dot_product / (point_1_2_mag * point_2_3_mag))* (180 / Math.PI));
+
+    // let radians =
+    //   Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x); // * fetching the radians using the atan2 function
+    // let angle = radians * (180 / Math.PI); // * calculating the angle from the radian
+    // // need to provide dynamic values for angles as per requirement later along with the number of reps.
+    // if (angle > 180) {
+    //   // * if the angle is greater than 180, then it is negative so changing it back to positive or an actual angle possible for a human being, lol..
+    //   angle = 360 - angle;
+    // }
+    // if (angle > 0 && angle < 180) {
+    //   // * if the angle is positive, then it is a positive angle
+    //   // console.log(angle.toFixed(2), "currentAngle");
+    // }
     userPoseAngle = angle.toFixed(2);
-    // console.log(userPoseAngle);
+    console.log(userPoseAngle);
     if(userPoseAngle!=null){
       submitAngleData();
       checkAngle();
 
     }
-    // calculateReps(userPoseAngle);
   };
 
     const checkAngle = async () => {
@@ -107,7 +117,7 @@ const YogaCoach = () => {
       });
   };
     const submitAngleData = async () => {
-      console.log(typeof userPoseAngle);
+      // console.log(typeof userPoseAngle);
 
       await axios
       .post("http://3.35.60.125:8080/api/angle",{
@@ -120,6 +130,22 @@ const YogaCoach = () => {
         console.log(error);
       });
   };
+
+  const submitLandmarkData = async (landmarks) => {
+    // console.log(typeof userPoseAngle);
+
+    await axios
+    .post("http://3.35.60.125:8080/api/angle",{
+        value: JSON.stringify(landmarks)
+    })
+    .then((response)=>{
+      console.log(response.data)
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
+};
+
 
   useEffect(() => {
     const userPose = new Pose({
@@ -138,7 +164,7 @@ const YogaCoach = () => {
     });
     userPose.onResults(onResults);
     if (typeof webcamRef.current !== "undefined" && webcamRef.current && webcamRef.current.video) {
-        console.log(webcamRef.current.video);
+        // console.log(webcamRef.current.video);
       camera = new cam.Camera(webcamRef.current.video, {
         // no issues with the exaustive-deps. We do not need to store the camera object for current purposes
         onFrame: async () => {

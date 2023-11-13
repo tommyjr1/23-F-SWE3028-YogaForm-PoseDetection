@@ -5,9 +5,8 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import YogaCoach from './YogaCoach';
 import Instruction from './Instruction';
-import LogInPage from './LogInPage';
 
-const LandingPage = () => {  
+const LogInPage = () => {  
     const bodyStyle = {
         position: "absolute",
         top: 0,
@@ -49,4 +48,4 @@ const LandingPage = () => {
     );
 };
 
-export default LandingPage;
+export default LogInPage;
