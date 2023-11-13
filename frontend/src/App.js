@@ -8,6 +8,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Instruction from './pages/Instruction';
 import YogaCoach from './pages/YogaCoach';
+import LogInPage from './pages/LogInPage';
 
 function App() {
 
@@ -20,6 +21,8 @@ function App() {
         <Route path="/Instruction" element={<Instruction />} />
         {/* <YogaCoach /> */}
         <Route path="/YogaCoach" element={<YogaCoach />} />
+        {/* <LogInPage /> */}
+        <Route path="/LogIn" element={<LogInPage />} />
       </Routes>
     </BrowserRouter> 
   );
