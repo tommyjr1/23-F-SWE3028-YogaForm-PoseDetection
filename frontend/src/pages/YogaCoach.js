@@ -96,8 +96,8 @@ const YogaCoach = () => {
     userPoseAngle = angle.toFixed(2);
     console.log(userPoseAngle);
     if(userPoseAngle!=null){
-      submitAngleData();
-      checkAngle();
+      // submitAngleData();
+      // checkAngle();
 
     }
   };

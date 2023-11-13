@@ -1,12 +1,21 @@
 package com.example.demo.datatype;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Data
 public class Landmark {
+    @JsonProperty("x")
     private @Getter @Setter Double x;
+
+    @JsonProperty("y")
     private @Getter @Setter Double y;
+    @JsonProperty("z")
     private @Getter @Setter Double z;
+    @JsonProperty("visibility")
     private @Getter @Setter Double visibility;
 
 

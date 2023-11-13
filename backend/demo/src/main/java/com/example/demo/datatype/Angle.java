@@ -1,12 +1,10 @@
 package com.example.demo.datatype;
 
-import java.util.ArrayList;
-
 import lombok.Getter;
 import lombok.Setter;
 
 public class Angle {
-    private  @Getter @Setter ArrayList<Landmark> value;
+    private  @Getter @Setter String value;
     // private String part;
     // private String check;
 
@@ -14,7 +12,7 @@ public class Angle {
 
     }
 
-    public Angle(final ArrayList<Landmark> value) {
+    public Angle(final String value) {
         this.value = value;
     }
 
@@ -22,6 +20,6 @@ public class Angle {
     @Override
     public String toString() {
         return "Landmarks: " +
-                value.toString();
+                value;
     }
 }
