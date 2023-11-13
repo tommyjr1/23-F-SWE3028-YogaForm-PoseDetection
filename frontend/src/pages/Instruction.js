@@ -6,7 +6,6 @@ import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
 import { useNavigate } from "react-router-dom";
-import YogaCoach from './YogaCoach';
 
 function Instruction() {
     const bodyStyle = {
