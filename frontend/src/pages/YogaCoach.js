@@ -31,10 +31,14 @@ const YogaCoach = () => {
     let userPoseAngle = null;
   
     const [message, setMessage] = useState("");
+    const [audioSource, setAudioSource] = useState('');
+
 
     async function onResults(results) {
       let landmarks = results.poseLandmarks // * all the landmarks in the pose
-      submitLandmarkData(landmarks);
+      // submitLandmarkData(landmarks);
+      requestAudioFile();
+
   
       //  * getting the values for the three landmarks that we want to use
       try { // * we get errors every time the landmarks are not available
@@ -96,8 +100,8 @@ const YogaCoach = () => {
     userPoseAngle = angle.toFixed(2);
     console.log(userPoseAngle);
     if(userPoseAngle!=null){
-      submitAngleData();
-      checkAngle();
+      // submitAngleData();
+      // checkAngle();
 
     }
   };
@@ -146,6 +150,37 @@ const YogaCoach = () => {
     });
 };
 
+  const requestAudioFile = async () => {      
+      const response = await axios.get("http://3.35.60.125:8080/api/feedback",{
+          responseType : 'arraybuffer'
+      })
+
+      console.log("response : ",response);
+
+      // let arr = toArrayBuffer(response.data);
+      // makeAudio(arr);
+
+      const audioContext = getAudioContext();
+
+      // makeAudio(response)
+      const audioBuffer = await audioContext.decodeAudioData(response.data);
+
+      //create audio source
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      source.start();
+      console.log("source : ", source);
+      setAudioSource(source);
+  }
+
+  const getAudioContext = () => {
+
+    const audioContent = new (window.AudioContext || window.webkitAudioContext)();
+    return audioContent;
+  }
+
+
 
   useEffect(() => {
     const userPose = new Pose({
@@ -176,6 +211,7 @@ const YogaCoach = () => {
         height: 400
       });
       camera.start();
+
     }
   }, []);
   // Tts.getInitStatus().then(() => {
@@ -197,6 +233,9 @@ const YogaCoach = () => {
           <div>
             <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
             <p>{message}</p>
+            <audio controls>
+                <source type = "audio/mpeg" /*src={audioSource}*//>
+            </audio>
 
             <Webcam ref={webcamRef} style={{position: "absolute",
                   marginLeft: "auto",
