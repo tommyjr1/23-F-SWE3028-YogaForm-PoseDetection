@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.datatype.Angle;
 import com.example.demo.datatype.Landmark;
 import com.example.demo.datatype.Login;
+import com.example.demo.tts.Tts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.ByteString;
 
 
 @RestController
@@ -31,7 +33,8 @@ public class ApiController {
     // private Landmark[] landmark1 = new Landmark();
     private List<Landmark> landmark1 = new ArrayList<>();
     private static final ObjectMapper mapper = new ObjectMapper();
-
+    // private Tts tts = new Tts();
+    
 
 
 
@@ -105,6 +108,22 @@ public class ApiController {
     @PostMapping("/api/login")
     public void postLogin(@RequestBody Login login){
         System.out.println(login);
+    }
+
+    // @GetMapping("/api/feedback")
+    // public byte[] getFeedback() throws Exception{
+    //     ByteString audiofile = Tts.main();
+    //     byte[] audio = audiofile.toByteArray();
+    //     return audio;
+        
+    // }
+
+    @GetMapping("/api/feedback")
+    public ByteString getFeedback() throws Exception{
+        ByteString audiofile = Tts.main();
+        // byte[] audio = audiofile.toByteArray();
+        return audiofile;
+        
     }
 
     
