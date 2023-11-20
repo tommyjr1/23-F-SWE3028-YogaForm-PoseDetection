@@ -22,7 +22,8 @@ public class Login {
     
     @Override
     public String toString() {
-        return "Login: " +
+        return "Credential: " + credential + 
+            "Token" + 
                 token;
     }
 }

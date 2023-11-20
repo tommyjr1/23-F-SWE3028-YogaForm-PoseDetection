@@ -1,8 +1,13 @@
 package com.example.demo.controller;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,12 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.datatype.Angle;
 import com.example.demo.datatype.Landmark;
-import com.example.demo.datatype.Login;
 import com.example.demo.tts.Tts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.protobuf.ByteString;
 
 
 @RestController
@@ -105,24 +108,26 @@ public class ApiController {
         
     }
 
-    @PostMapping("/api/login")
-    public void postLogin(@RequestBody Login login){
-        System.out.println(login);
-    }
-
-    // @GetMapping("/api/feedback")
-    // public byte[] getFeedback() throws Exception{
-    //     ByteString audiofile = Tts.main();
-    //     byte[] audio = audiofile.toByteArray();
-    //     return audio;
-        
-    // }
-
     @GetMapping("/api/feedback")
-    public ByteString getFeedback() throws Exception{
-        ByteString audiofile = Tts.main();
-        // byte[] audio = audiofile.toByteArray();
-        return audiofile;
+    public ResponseEntity getFeedback() throws Exception{
+        // ByteString audiofile = Tts.main();
+        // // byte[] audio = audiofile.toByteArray();
+
+        // HttpHeaders headers = new HttpHeaders();
+        // headers.set("Client-Geo-Location", "Korea,Seoul");
+
+        // return audiofile;
+
+        Tts.main();
+        File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
+        byte[] file = Files.readAllBytes(f.toPath());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition", "attachment; filename=\"" + f.getName() +".wav\"");
+        ResponseEntity<byte[]> response = new ResponseEntity(file, headers, HttpStatus.OK);
+
+        return response;
+
         
     }
 

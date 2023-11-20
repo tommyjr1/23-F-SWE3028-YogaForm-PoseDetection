@@ -20,7 +20,7 @@ import com.google.protobuf.ByteString;
 public class Tts {
 
   /** Demonstrates using the Text-to-Speech API. */
-  public static ByteString main(String... args) throws Exception {
+  public static void main(String... args) throws Exception {
     // Instantiates a client
     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
       // Set the text input to be synthesized
@@ -53,7 +53,7 @@ public class Tts {
         System.out.println("Audio content written to file \"output.mp3\"");
       }
 
-      return audioContents;
+      // return audioContents;
 
     }
   }
