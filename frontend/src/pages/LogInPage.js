@@ -6,8 +6,7 @@ import LandingPage from './LandingPage';
 import useScript from '../hooks/useScript';
 
 
-const LogInPage = () => {  
-    const [isLogin, setIsLogin] = useState("");
+const LogInPage = () => {
 
     const bodyStyle = {
         position: "absolute",
@@ -27,10 +26,8 @@ const LogInPage = () => {
       const navigate = useNavigate();
 
       const onGoogleLogIn = async res => {
-        console.log(res);
-        const { credential } = res;
-        const result = await postLoginToken(credential, setIsLogin);
-        setIsLogin(result);
+        console.log(res.credential);
+        await postLoginToken(res.credential);
       };
 
       const postLoginToken = async idToken => {
@@ -41,7 +38,7 @@ const LogInPage = () => {
         })
         .then((response)=>{
           console.log(response.data)
-          navigate('/LandingPage');
+          navigate('/');
         })
         .catch((error)=>{
           console.log(error);
@@ -69,38 +66,6 @@ const LogInPage = () => {
       return <div ref={googleLogInButton}></div>;
     }
 
-    // const postLoginToken = async idToken => {
-    //     const API_URL = process.env.REACT_APP_API_URL;
-    //     const path = "http://3.35.60.125:8080/api/login";
-      
-    //     try {
-    //       const response = await fetch(`${API_URL}${path}`, {
-    //         method: 'POST',
-    //         credentials: 'include', // include, *same-origin, omit
-    //         headers: {
-    //           Accept: 'application/json',
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(idToken), // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
-    //       });
-    //       if (!response.ok) throw new Error('bad server condition');
-    //       return true;
-    //     } catch (e) {
-    //       console.error('postLoginToken Error: ', e.message);
-    //       return false;
-    //     }
-    //   };
-    
-    //   useEffect(() => {
-    //     if (!isLogin) return;
-    //     navigate('/Instruction');
-    //   }, [isLogin]);
-
-    // useEffect(() => {
-    //     if (!isLogin) return;
-    //     navigate('/Instruction');
-    //   });
-
     return (
       <div className="App" style={bodyStyle}>
         <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
@@ -109,10 +74,6 @@ const LogInPage = () => {
         <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
             <h1>Google Login</h1><br/>
             <GoogleLogin onGoogleLogIn={onGoogleLogIn} text="LogIn" />       
-            {/* <a href="http://ec2-3-35-60-125.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/google" target="_blank" rel="noopener noreferrer">
-              <div ref={googleSignInButton}></div>
-              <Button>Log In</Button>
-            </a>  */}
         </div>
     </div>
     );
