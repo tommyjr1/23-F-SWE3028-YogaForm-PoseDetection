@@ -9,7 +9,7 @@ export default function GoogleLogin({
 
   useScript('https://accounts.google.com/gsi/client', () => {
     window.google.accounts.id.initialize({
-      client_id: "806313581738-ctsshl683bn720t368a6vc65cbh4u4lm.apps.googleusercontent.com",
+      client_id: "1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com",
       callback: onGoogleLogIn,
     });
 

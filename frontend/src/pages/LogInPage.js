@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 // import YogaCoach from './YogaCoach';
 // import Instruction from './Instruction';
-import GoogleLogin from '../components/GoogleLogin';
+// import GoogleLogin from '../components/GoogleLogin';
 import useScript from '../hooks/useScript';
 
 
@@ -29,13 +29,13 @@ const LogInPage = () => {
       const navigate = useNavigate();
 
       const onGoogleLogIn = async res => {
+        console.log(res);
         const { credential } = res;
         const result = await postLoginToken(credential, setIsLogin);
         setIsLogin(result);
       };
 
       const postLoginToken = async idToken => {
-        // console.log(typeof userPoseAngle);
   
         await axios
         .post("http://3.35.60.125:8080/api/login",{
@@ -49,6 +49,27 @@ const LogInPage = () => {
           console.log(error);
         });
     };
+
+    function GoogleLogin({
+      onGoogleLogIn = () => {},
+      text = 'signin_with',
+    }) {
+      const googleSignInButton = useRef(null);
+    
+      useScript('https://accounts.google.com/gsi/client', () => {
+        window.google.accounts.id.initialize({
+          client_id: "1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com",
+          callback: onGoogleLogIn,
+        });
+    
+        window.google.accounts.id.renderButton(
+          googleSignInButton.current,
+          { theme: 'filled_blue', size: 'large', text, width: '250' }, // customization attributes
+        );
+      });
+    
+      return <div ref={googleSignInButton}></div>;
+    }
 
     // const postLoginToken = async idToken => {
     //     const API_URL = process.env.REACT_APP_API_URL;

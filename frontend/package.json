@@ -16,6 +16,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
+    "react-h5-audio-player": "^3.9.0",
     "react-native-tts": "^4.1.0",
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",

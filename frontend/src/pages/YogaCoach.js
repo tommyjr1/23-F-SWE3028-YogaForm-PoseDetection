@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
+// import AudioPlayer from 'react-h5-audio-player';
 
 const YogaCoach = () => {  
     const bodyStyle = {
@@ -26,18 +27,19 @@ const YogaCoach = () => {
     }
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
+    const audioRef = useRef(null);
     let camera = null;
     // const [userPoseAngle, setUserPoseAngle] = use
     let userPoseAngle = null;
   
     const [message, setMessage] = useState("");
-    const [audioSource, setAudioSource] = useState('');
+    const [audio, setAudio] = useState();
 
 
     async function onResults(results) {
       let landmarks = results.poseLandmarks // * all the landmarks in the pose
       // submitLandmarkData(landmarks);
-      requestAudioFile();
+      // requestAudioFile();
 
   
       //  * getting the values for the three landmarks that we want to use
@@ -85,18 +87,6 @@ const YogaCoach = () => {
     // Calculate the angle between the left hand, elbow, and shoulder landmarks in degrees
     let angle = await (Math.acos(dot_product / (point_1_2_mag * point_2_3_mag))* (180 / Math.PI));
 
-    // let radians =
-    //   Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x); // * fetching the radians using the atan2 function
-    // let angle = radians * (180 / Math.PI); // * calculating the angle from the radian
-    // // need to provide dynamic values for angles as per requirement later along with the number of reps.
-    // if (angle > 180) {
-    //   // * if the angle is greater than 180, then it is negative so changing it back to positive or an actual angle possible for a human being, lol..
-    //   angle = 360 - angle;
-    // }
-    // if (angle > 0 && angle < 180) {
-    //   // * if the angle is positive, then it is a positive angle
-    //   // console.log(angle.toFixed(2), "currentAngle");
-    // }
     userPoseAngle = angle.toFixed(2);
     console.log(userPoseAngle);
     if(userPoseAngle!=null){
@@ -150,36 +140,46 @@ const YogaCoach = () => {
     });
 };
 
-  const requestAudioFile = async () => {      
-      const response = await axios.get("http://3.35.60.125:8080/api/feedback",{
-          responseType : 'arraybuffer'
-      })
+  const requestAudioFile = async () => {
 
-      console.log("response : ",response);
+    // const isNext = await axios.get('http://3.35.60.125:8080/api/complete', {
 
-      // let arr = toArrayBuffer(response.data);
-      // makeAudio(arr);
+    // })
+    console.log("request audio");
 
-      const audioContext = getAudioContext();
+    const { data } =  await axios.get('http://3.35.60.125:8080/api/feedback', {
+      responseType: 'arraybuffer',
+      headers: { 'Accept': '*/*', 'Content-Type': 'audio/wav' }
+    }).then(resp => resp);
+    const blob = new Blob([data], {
+        type: 'audio/wav'
+    })
+    const url = URL.createObjectURL(blob);
+    setAudio(url);
 
-      // makeAudio(response)
-      const audioBuffer = await audioContext.decodeAudioData(response.data);
+    var audio_bell = document.getElementById("tts");
+    setInterval(function(){
+      audio_bell.play();
+    }, 2.5*1000);
 
-      //create audio source
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-      source.start();
-      console.log("source : ", source);
-      setAudioSource(source);
+    // const audioElement = audioRef.current;
+    // If audio source changes and it's set
+    // if (audio && audioElement) {
+    //   audioElement.autoplay = true; // Set autoplay attribute
+    //   audioElement.load(); // Reload the audio element
+    // }
+
+    // const element = document.getElementById('tts');
+    // element.click();
+    // audioElement.play();
   }
 
-  const getAudioContext = () => {
+  setInterval(requestAudioFile, 2000);
+  setInterval(submitLandmarkData, 1000);
 
-    const audioContent = new (window.AudioContext || window.webkitAudioContext)();
-    return audioContent;
+  function AudioPlayer ({audio}) {
+    return <audio id="tts" controls ref={audioRef} src={audio}/>;
   }
-
 
 
   useEffect(() => {
@@ -214,13 +214,7 @@ const YogaCoach = () => {
 
     }
   }, []);
-  // Tts.getInitStatus().then(() => {
-  //   Tts.speak('Hello, world!', {
-  //     iosVoiceId: 'com.apple.ttsbundle.Moira-compact',
-  //     rate: 0.5,
-  //   });
-  //   Tts.stop();
-  // });
+
     return (
         <div className="App" style={bodyStyle}>
         <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
@@ -233,9 +227,9 @@ const YogaCoach = () => {
           <div>
             <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
             <p>{message}</p>
-            <audio controls>
-                <source type = "audio/mpeg" /*src={audioSource}*//>
-            </audio>
+            {/* type="audio/mpeg" */}
+            <AudioPlayer {...{audio}} />
+            {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
             <Webcam ref={webcamRef} style={{position: "absolute",
                   marginLeft: "auto",
