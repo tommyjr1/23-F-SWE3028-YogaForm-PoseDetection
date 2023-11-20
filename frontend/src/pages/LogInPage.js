@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from "axios";
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-// import YogaCoach from './YogaCoach';
-// import Instruction from './Instruction';
-// import GoogleLogin from '../components/GoogleLogin';
+import LandingPage from './LandingPage';
 import useScript from '../hooks/useScript';
 
 
@@ -39,11 +37,11 @@ const LogInPage = () => {
   
         await axios
         .post("http://3.35.60.125:8080/api/login",{
-            credentials: 'include',
-            token: JSON.stringify(idToken)
+            credential: JSON.stringify(idToken)
         })
         .then((response)=>{
           console.log(response.data)
+          navigate('/LandingPage');
         })
         .catch((error)=>{
           console.log(error);
@@ -54,7 +52,7 @@ const LogInPage = () => {
       onGoogleLogIn = () => {},
       text = 'signin_with',
     }) {
-      const googleSignInButton = useRef(null);
+      const googleLogInButton = useRef(null);
     
       useScript('https://accounts.google.com/gsi/client', () => {
         window.google.accounts.id.initialize({
@@ -63,12 +61,12 @@ const LogInPage = () => {
         });
     
         window.google.accounts.id.renderButton(
-          googleSignInButton.current,
+          googleLogInButton.current,
           { theme: 'filled_blue', size: 'large', text, width: '250' }, // customization attributes
         );
       });
     
-      return <div ref={googleSignInButton}></div>;
+      return <div ref={googleLogInButton}></div>;
     }
 
     // const postLoginToken = async idToken => {
@@ -98,10 +96,10 @@ const LogInPage = () => {
     //     navigate('/Instruction');
     //   }, [isLogin]);
 
-    useEffect(() => {
-        if (!isLogin) return;
-        navigate('/Instruction');
-      });
+    // useEffect(() => {
+    //     if (!isLogin) return;
+    //     navigate('/Instruction');
+    //   });
 
     return (
       <div className="App" style={bodyStyle}>
@@ -110,7 +108,11 @@ const LogInPage = () => {
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
             <h1>Google Login</h1><br/>
-            <GoogleLogin onGoogleSignIn={onGoogleLogIn} text="LogIn" />
+            <GoogleLogin onGoogleLogIn={onGoogleLogIn} text="LogIn" />       
+            {/* <a href="http://ec2-3-35-60-125.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/google" target="_blank" rel="noopener noreferrer">
+              <div ref={googleSignInButton}></div>
+              <Button>Log In</Button>
+            </a>  */}
         </div>
     </div>
     );
