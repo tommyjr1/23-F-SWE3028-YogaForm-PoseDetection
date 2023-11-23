@@ -1,10 +1,8 @@
-import axios from "axios";
-import React, { useRef } from "react";
-import { Button } from "react-bootstrap";
+import React from "react";
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import useScript from "../hooks/useScript";
 
-const LogInPage = () => {
+const YogaList = () => {
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -21,56 +19,18 @@ const LogInPage = () => {
     fontSize: "1.6rem",
   };
   const navigate = useNavigate();
-  const goToYogaList = () => {
-    navigate("/YogaList")
-  }
   const goToLandingPage = () => {
     navigate("/LandingPage");
+  };
+  const goToInstrction = () => {
+    navigate("/Instruction");
   };
   const goToLogInPage = () => {
     navigate("/LogInPage");
   };
-
-  const onGoogleLogIn = async (res) => {
-    console.log(res.credential);
-    await postLoginToken(res.credential);
+  const goToYogaList = () => {
+    navigate("/YogaList");
   };
-
-  const postLoginToken = async idToken => {
-
-    await axios
-    .post("http://3.35.60.125:8080/yf/user/login",{
-      credential: JSON.stringify(idToken)
-    })
-    .then((response)=>{
-      // console.log(response.data)
-      console.log("yes");
-      navigate('/?isLogin=true');
-    })
-    .catch((error)=>{
-      console.log("no");
-      console.log(error);
-    });
-  };
-
-  function GoogleLogin({ onGoogleLogIn = () => {}, text = "signin_with" }) {
-    const googleLogInButton = useRef(null);
-
-    useScript("https://accounts.google.com/gsi/client", () => {
-      window.google.accounts.id.initialize({
-        client_id:
-          "1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com",
-        callback: onGoogleLogIn,
-      });
-
-      window.google.accounts.id.renderButton(
-        googleLogInButton.current,
-        { theme: "filled_blue", size: "large", text, width: "250" } // customization attributes
-      );
-    });
-
-    return <div ref={googleLogInButton}></div>;
-  }
 
   return (
     <div className="App" style={bodyStyle}>
@@ -117,17 +77,17 @@ const LogInPage = () => {
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          flexDirection: "row",
           alignItems: "center",
+          justifyContent: "space-around",
         }}
       >
-        <h1>Google Login</h1>
-        <br />
-        <GoogleLogin onGoogleLogIn={onGoogleLogIn} text="LogIn" />
+        <p>
+            afsadjflakd
+        </p>
       </div>
     </div>
   );
 };
 
-export default LogInPage;
+export default YogaList;
