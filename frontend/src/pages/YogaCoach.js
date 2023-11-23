@@ -165,6 +165,9 @@ const YogaCoach = () => {
       });
       const url = URL.createObjectURL(blob);
       setAudio(url);
+      // var audio_bell = document.getElementById("tts");
+      // audio_bell.src(url);
+      // audio_bell.play();
     })
     .catch((error) => {
       console.log(error);
@@ -184,10 +187,12 @@ const YogaCoach = () => {
 
     var audio_bell = document.getElementById("tts");
     // audio_bell.src(url);
+    // audio_bell.play();
+
     setInterval(function () {
       audio_bell.play();
     }, 3 * 1000);
-    // checkPass(images[index]);
+    checkPass(images[index]);
 
     // const audioElement = audioRef.current;
     // If audio source changes and it's set
@@ -329,6 +334,7 @@ const YogaCoach = () => {
           <p>{message}</p>
           {/* type="audio/mpeg" */}
           <AudioPlayer {...{ audio }} />
+          {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
           <Webcam ref={webcamRef} style={{
