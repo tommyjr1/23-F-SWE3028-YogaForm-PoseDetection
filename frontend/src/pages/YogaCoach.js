@@ -62,9 +62,7 @@ const YogaCoach = () => {
     try {
       // * we get errors every time the landmarks are not available
       // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-      let leftShoulder = await landmarks[
-        mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER
-      ];
+      let leftShoulder = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
       let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
       let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
       // console.log(leftWrist);
@@ -130,7 +128,7 @@ const YogaCoach = () => {
 
   const checkAngle = async () => {
     await axios
-      .get("http://3.35.60.125:8080/api/check")
+      .get("http://3.35.60.125:8080/pose/check")
       .then((response) => {
         if (response.data !== "none") {
           setMessage(response.data);
@@ -145,7 +143,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/api/angle", {
+      .post("http://3.35.60.125:8080/pose/angle", {
         value: userPoseAngle
       })
       .then((response) => {
@@ -160,7 +158,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/api/angle", {
+      .post("http://3.35.60.125:8080/pose/angle", {
         value: JSON.stringify(landmarks),
       })
       .then((response) => {
@@ -172,13 +170,13 @@ const YogaCoach = () => {
   };
 
   const requestAudioFile = async () => {
-    // const isNext = await axios.get('http://3.35.60.125:8080/api/complete', {
+    // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
     // })
     console.log("request audio");
 
     const { data } = await axios
-      .get("http://3.35.60.125:8080/api/feedback", {
+      .get("http://3.35.60.125:8080/pose/feedback", {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })

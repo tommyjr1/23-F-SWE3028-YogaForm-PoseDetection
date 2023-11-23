@@ -76,7 +76,6 @@ const LandingPage = () => {
           <img src={yogaImages}></img>
         </div>
       </div>
-    </div>
   );
 };
 

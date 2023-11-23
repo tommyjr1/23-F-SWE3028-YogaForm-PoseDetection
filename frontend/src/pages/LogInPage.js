@@ -40,7 +40,7 @@ const LogInPage = () => {
       const postLoginToken = async idToken => {
   
         await axios
-        .post("http://3.35.60.125:8080/api/login",{
+        .post("http://3.35.60.125:8080/user/login",{
             credential: JSON.stringify(idToken)
         })
         .then((response)=>{
