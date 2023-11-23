@@ -36,12 +36,6 @@ const LandingPage = () => {
           navigate("/Instruction");
         }
       }
-      const goToLogInPage = () => {
-        navigate("/LogInPage");
-      }
-      const goToMyPage = () => {
-        navigate("/MyPage");
-      }
       
       useEffect(() => {
         try{

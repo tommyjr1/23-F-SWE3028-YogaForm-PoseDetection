@@ -13,6 +13,7 @@ import queryString from 'query-string'
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [routine, setRoutine] = useState('defaultEasy');
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -38,6 +39,11 @@ const YogaCoach = () => {
 
   const [message, setMessage] = useState("");
   const [audio, setAudio] = useState();
+  const [landmarks, setLandmarks] = useState();
+  // const [first, setFirst] = useState(true);
+  const [index, setIndex] = useState(0);
+  const [pass, setPass] = useState(false);
+  let images = [];
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -54,22 +60,23 @@ const YogaCoach = () => {
   };
 
   async function onResults(results) {
-    let landmarks = results.poseLandmarks; // * all the landmarks in the pose
+    // let landmarks = results.poseLandmarks; // * all the landmarks in the pose
+    setLandmarks(results.poseLandmarks);
     // submitLandmarkData(landmarks);
     // requestAudioFile();
 
     //  * getting the values for the three landmarks that we want to use
-    try {
-      // * we get errors every time the landmarks are not available
-      // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-      let leftShoulder = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
-      let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
-      let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
-      // console.log(leftWrist);
-      // calculatePoseAngle(leftWrist, leftElbow, leftShoulder);
-    } catch (error) {
-      // console.error(error);
-    }
+    // try {
+    //   // * we get errors every time the landmarks are not available
+    //   // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
+    //   let leftShoulder = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
+    //   let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
+    //   let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
+    //   // console.log(leftWrist);
+    //   // calculatePoseAngle(leftWrist, leftElbow, leftShoulder);
+    // } catch (error) {
+    //   // console.error(error);
+    // }
     // Define the canvas element dimensions using the earlier created refs
     canvasRef.current.width = webcamRef.current.video.videoWidth;
     canvasRef.current.height = webcamRef.current.video.videoHeight;
@@ -126,34 +133,6 @@ const YogaCoach = () => {
     }
   };
 
-  const checkAngle = async () => {
-    await axios
-      .get("http://3.35.60.125:8080/yf/pose/check")
-      .then((response) => {
-        if (response.data !== "none") {
-          setMessage(response.data);
-          console.log(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const submitAngleData = async () => {
-    // console.log(typeof userPoseAngle);
-
-    await axios
-      .post("http://3.35.60.125:8080/yf/pose/angle", {
-        value: userPoseAngle
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const submitLandmarkData = async (landmarks) => {
     // console.log(typeof userPoseAngle);
 
@@ -169,28 +148,46 @@ const YogaCoach = () => {
       });
   };
 
-  const requestAudioFile = async () => {
+  const requestAudioFile = async (name) => {
     // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
     // })
     console.log("request audio");
 
-    const { data } = await axios
-      .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
-        responseType: "arraybuffer",
-        headers: { Accept: "*/*", "Content-Type": "audio/wav" },
-      })
-      .then((resp) => resp);
-    const blob = new Blob([data], {
-      type: "audio/wav",
+    await axios
+    .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
+      responseType: "arraybuffer",
+      headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+    })
+    .then((response) => {
+      const blob = new Blob([response.data], {
+        type: "audio/wav",
+      });
+      const url = URL.createObjectURL(blob);
+      setAudio(url);
+    })
+    .catch((error) => {
+      console.log(error);
     });
-    const url = URL.createObjectURL(blob);
-    setAudio(url);
+
+    // const { data } = await axios
+    //   .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
+    //     responseType: "arraybuffer",
+    //     headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+    //   })
+    //   .then((resp) => resp);
+    // const blob = new Blob([data], {
+    //   type: "audio/wav",
+    // });
+    // const url = URL.createObjectURL(blob);
+    // setAudio(url);
 
     var audio_bell = document.getElementById("tts");
+    // audio_bell.src(url);
     setInterval(function () {
       audio_bell.play();
-    }, 2.5 * 1000);
+    }, 3 * 1000);
+    // checkPass(images[index]);
 
     // const audioElement = audioRef.current;
     // If audio source changes and it's set
@@ -204,8 +201,57 @@ const YogaCoach = () => {
     // audioElement.play();
   };
 
-  setInterval(requestAudioFile, 2000);
-  setInterval(submitLandmarkData, 1000);
+  const getRoutine = async (routine) => {
+    // console.log(typeof userPoseAngle);
+
+    await axios
+      .get("http://3.35.60.125:8080/yf/user/routine", {
+        routineName: JSON.stringify(routine),
+      })
+      .then((response) => {
+        console.log(response.data);
+        // images = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getYogaImage = async (name) => {
+    // console.log(typeof userPoseAngle);
+
+    await axios
+    .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
+      responseType: "arraybuffer",
+      headers: { Accept: "*/*", "Content-Type": "image/png" },
+    })
+    .then((response) => {
+      const blob = new Blob([response.data], {
+        type: "image/png",
+      });
+      const imgUrl = URL.createObjectURL(blob);
+      document.getelementbyid("yogaImg").src = imgUrl;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
+  const checkPass = async (name) => {
+    await axios
+      .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
+      .then((response) => {
+          console.log(response.data);
+          setIndex(index+1);
+          getYogaImage(images[index]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  setInterval(() => requestAudioFile('chair'), 3 * 1000);
+  setInterval(() => submitLandmarkData(landmarks), 1000);
 
   function AudioPlayer({ audio }) {
     return <audio id="tts" controls ref={audioRef} src={audio} />;
@@ -221,6 +267,7 @@ const YogaCoach = () => {
   };
 
   useEffect(() => {
+    console.log("again");
     const userPose = new Pose({
       locateFile: (file) => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
@@ -257,13 +304,17 @@ const YogaCoach = () => {
     try {
       const { search } = location;
       const queryObj = queryString.parse(search);
-      const { isLogin } = queryObj;
+      const { isLogin, userRoutine } = queryObj;
       setIsLoggedIn((isLogin === 'true'));
+      setRoutine(userRoutine);
+
     } catch {
-      console.log("no");
       setIsLoggedIn(false);
     }
-  }, [location]);
+    getRoutine(routine);
+    // getYogaImage(images[index]);
+
+  }, []);
 
   return (
     <div className="App" style={bodyStyle}>
@@ -271,7 +322,7 @@ const YogaCoach = () => {
       <hr style={{ borderColor: "#3B2C77" }} />
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
         <div style={{ position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9 }}>
-          <img src={yogaImage} style={{ height: "20rem" }}></img>
+          <img id="yogaImg" src={yogaImage} style={{ height: "20rem" }}></img>
         </div>
         <div>
           <div style={{ width: "600px", fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%" }}>무희자세</div>
