@@ -128,7 +128,7 @@ const YogaCoach = () => {
 
   const checkAngle = async () => {
     await axios
-      .get("http://3.35.60.125:8080/pose/check")
+      .get("http://3.35.60.125:8080/yf/pose/check")
       .then((response) => {
         if (response.data !== "none") {
           setMessage(response.data);
@@ -143,7 +143,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/pose/angle", {
+      .post("http://3.35.60.125:8080/yf/pose/angle", {
         value: userPoseAngle
       })
       .then((response) => {
@@ -158,7 +158,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/pose/angle", {
+      .post("http://3.35.60.125:8080/yf/pose/angle", {
         value: JSON.stringify(landmarks),
       })
       .then((response) => {
@@ -176,7 +176,7 @@ const YogaCoach = () => {
     console.log("request audio");
 
     const { data } = await axios
-      .get("http://3.35.60.125:8080/pose/feedback", {
+      .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })
@@ -254,51 +254,55 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-    try{
+    try {
       const { search } = location;
-      const queryObj = queryString.parse(search);	
+      const queryObj = queryString.parse(search);
       const { isLogin } = queryObj;
       setIsLoggedIn((isLogin === 'true'));
-    }catch{
+    } catch {
       console.log("no");
       setIsLoggedIn(false);
     }
   }, [location]);
 
-    return (
-        <div className="App" style={bodyStyle}>
-        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
-        <hr style={{borderColor: "#3B2C77"}}/>
-        <div style={{display: "flex", flexDirection: "row",justifyContent: "center", alignItems: "center"}}>
-          <div style={{position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9}}>
-            <img src={yogaImage} style={{height: "20rem"}}></img>
-          </div>
-          <div>
-            <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
-            <p>{message}</p>
-            {/* type="audio/mpeg" */}
-            <AudioPlayer {...{audio}} />
-            {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
+  return (
+    <div className="App" style={bodyStyle}>
+      <ConditionalHeader isLoggedIn={isLoggedIn} webcamRef={webcamRef}></ConditionalHeader>
+      <hr style={{ borderColor: "#3B2C77" }} />
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+        <div style={{ position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9 }}>
+          <img src={yogaImage} style={{ height: "20rem" }}></img>
+        </div>
+        <div>
+          <div style={{ width: "600px", fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%" }}>무희자세</div>
+          <p>{message}</p>
+          {/* type="audio/mpeg" */}
+          <AudioPlayer {...{ audio }} />
+          {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
-            <Webcam ref={webcamRef} style={{position: "absolute",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  left: 500,
-                  right: 0,
-                  zindex: 9,               
-                  width: 600,
-                  height: 400}}/>
-            <canvas ref={canvasRef} style={{position: "absolute",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  left: 500,
-                  right: 0,
-                  zindex: 9,
-                  width: 600,
-                  height: 400}}></canvas>
-          </div>
+          <Webcam ref={webcamRef} style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 500,
+            right: 0,
+            zindex: 9,
+            width: 600,
+            height: 400
+          }} />
+          <canvas ref={canvasRef} style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 500,
+            right: 0,
+            zindex: 9,
+            width: 600,
+            height: 400
+          }}></canvas>
         </div>
       </div>
+    </div>
   );
 };
 
