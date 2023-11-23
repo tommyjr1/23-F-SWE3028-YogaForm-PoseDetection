@@ -13,7 +13,7 @@ import queryString from "query-string";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [routine, setRoutine] = useState('defaultEasy');
+  const [routine, setRoutine] = useState("defaultEasy");
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -155,23 +155,23 @@ const YogaCoach = () => {
     console.log("request audio");
 
     await axios
-    .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
-      responseType: "arraybuffer",
-      headers: { Accept: "*/*", "Content-Type": "audio/wav" },
-    })
-    .then((response) => {
-      const blob = new Blob([response.data], {
-        type: "audio/wav",
+      .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
+        responseType: "arraybuffer",
+        headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+      })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: "audio/wav",
+        });
+        const url = URL.createObjectURL(blob);
+        setAudio(url);
+        // var audio_bell = document.getElementById("tts");
+        // audio_bell.src(url);
+        // audio_bell.play();
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      const url = URL.createObjectURL(blob);
-      setAudio(url);
-      // var audio_bell = document.getElementById("tts");
-      // audio_bell.src(url);
-      // audio_bell.play();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 
     // const { data } = await axios
     //   .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
@@ -226,36 +226,36 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-    .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
-      responseType: "arraybuffer",
-      headers: { Accept: "*/*", "Content-Type": "image/png" },
-    })
-    .then((response) => {
-      const blob = new Blob([response.data], {
-        type: "image/png",
-      });
-      const imgUrl = URL.createObjectURL(blob);
-      document.getelementbyid("yogaImg").src = imgUrl;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  };
-
-  const checkPass = async (name) => {
-    await axios
-      .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
+      .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
+        responseType: "arraybuffer",
+        headers: { Accept: "*/*", "Content-Type": "image/png" },
+      })
       .then((response) => {
-          console.log(response.data);
-          setIndex(index+1);
-          getYogaImage(images[index]);
+        const blob = new Blob([response.data], {
+          type: "image/png",
+        });
+        const imgUrl = URL.createObjectURL(blob);
+        document.getelementbyid("yogaImg").src = imgUrl;
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  setInterval(() => requestAudioFile('chair'), 3 * 1000);
+  const checkPass = async (name) => {
+    await axios
+      .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
+      .then((response) => {
+        console.log(response.data);
+        setIndex(index + 1);
+        getYogaImage(images[index]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  setInterval(() => requestAudioFile("chair"), 3 * 1000);
   setInterval(() => submitLandmarkData(landmarks), 1000);
 
   function AudioPlayer({ audio }) {
@@ -312,15 +312,13 @@ const YogaCoach = () => {
       const { search } = location;
       const queryObj = queryString.parse(search);
       const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn((isLogin === 'true'));
+      setIsLoggedIn(isLogin === "true");
       setRoutine(userRoutine);
-
     } catch {
       setIsLoggedIn(false);
     }
     getRoutine(routine);
     // getYogaImage(images[index]);
-
   }, []);
 
   return (
@@ -332,8 +330,25 @@ const YogaCoach = () => {
         // timer2 = {timer2}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-        <div style={{ position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            top: 200,
+            left: 0,
+            right: 700,
+            zindex: 9,
+          }}
+        >
           <img id="yogaImg" src={yogaImage} style={{ height: "20rem" }}></img>
         </div>
         <div>

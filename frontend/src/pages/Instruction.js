@@ -140,7 +140,7 @@ function Instruction() {
     stopWebCam();
     if (isLoggedIn) {
       navigate("/YogaCoach?isLogin=true&routine=defaultEasy");
-    }else{
+    } else {
       navigate("/YogaCoach?routine=defaultEasy");
     }
   };

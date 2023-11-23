@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LandingPage from "./LandingPage";
 import useScript from "../hooks/useScript";
-import ConditionalHeader from '../components/ConditionalHeader';
+import ConditionalHeader from "../components/ConditionalHeader";
 
 const LogInPage = () => {
   const isLoggedIn = false;
@@ -25,8 +25,8 @@ const LogInPage = () => {
   };
   const navigate = useNavigate();
   const goToYogaList = () => {
-    navigate("/YogaList")
-  }
+    navigate("/YogaList");
+  };
   const goToLandingPage = () => {
     navigate("/LandingPage");
   };
@@ -39,19 +39,18 @@ const LogInPage = () => {
     await postLoginToken(res.credential);
   };
 
-  const postLoginToken = async idToken => {
-
+  const postLoginToken = async (idToken) => {
     await axios
-    .post("http://3.35.60.125:8080/yf/user/login",{
-      credential: JSON.stringify(idToken)
-    })
-    .then((response)=>{
-      // console.log(response.data)
-      navigate('/?isLogin=true');
-    })
-    .catch((error)=>{
-      console.log(error);
-    });
+      .post("http://3.35.60.125:8080/yf/user/login", {
+        credential: JSON.stringify(idToken),
+      })
+      .then((response) => {
+        // console.log(response.data)
+        navigate("/?isLogin=true");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   function GoogleLogin({ onGoogleLogIn = () => {}, text = "signin_with" }) {
