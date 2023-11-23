@@ -3,14 +3,17 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
+import { Button } from 'react-bootstrap';
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
-// import AudioPlayer from 'react-h5-audio-player';
+import ConditionalHeader from '../components/ConditionalHeader';
+import queryString from 'query-string'
 
 const YogaCoach = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -59,9 +62,7 @@ const YogaCoach = () => {
     try {
       // * we get errors every time the landmarks are not available
       // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-      let leftShoulder = await landmarks[
-        mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER
-      ];
+      let leftShoulder = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
       let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
       let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
       // console.log(leftWrist);
@@ -127,7 +128,7 @@ const YogaCoach = () => {
 
   const checkAngle = async () => {
     await axios
-      .get("http://3.35.60.125:8080/api/check")
+      .get("http://3.35.60.125:8080/pose/check")
       .then((response) => {
         if (response.data !== "none") {
           setMessage(response.data);
@@ -142,7 +143,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/api/angle", {
+      .post("http://3.35.60.125:8080/pose/angle", {
         value: userPoseAngle
       })
       .then((response) => {
@@ -157,7 +158,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/api/angle", {
+      .post("http://3.35.60.125:8080/pose/angle", {
         value: JSON.stringify(landmarks),
       })
       .then((response) => {
@@ -169,13 +170,13 @@ const YogaCoach = () => {
   };
 
   const requestAudioFile = async () => {
-    // const isNext = await axios.get('http://3.35.60.125:8080/api/complete', {
+    // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
     // })
     console.log("request audio");
 
     const { data } = await axios
-      .get("http://3.35.60.125:8080/api/feedback", {
+      .get("http://3.35.60.125:8080/pose/feedback", {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })
@@ -253,83 +254,48 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-  }, []);
+    try{
+      const { search } = location;
+      const queryObj = queryString.parse(search);	
+      const { isLogin } = queryObj;
+      setIsLoggedIn((isLogin === 'true'));
+    }catch{
+      console.log("no");
+      setIsLoggedIn(false);
+    }
+  }, [location]);
 
-  return (
-    <div className="App" style={bodyStyle}>
-      <header
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          paddingTop: "1rem",
-          paddingBottom: "1rem",
-          justifyContent: "space-around",
-        }}
-      >
-        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>YOGA FORM</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <Button variany="secondary" style={buttonStyle} onClick={goToLandingPage}>
-          HOME
-        </Button>
-        <Button variany="secondary" style={buttonStyle}>
-          ABOUT
-        </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
-          YOGA
-        </Button>
-        <Button
-          variany="secondary"
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "120px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
-          onClick={goToLogInPage}
-        >
-          My page
-        </Button>
-      </header>
-      <hr style={{ borderColor: "#3B2C77" }} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            top: 200,
-            left: 0,
-            right: 700,
-            zindex: 9,
-          }}
-        >
-          <img src={yogaImage} style={{ height: "20rem" }}></img>
-        </div>
-        <div>
-          <div
-            style={{
-              width: "600px",
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              padding: "1.5rem",
-              position: "relative",
-              left: "40%",
-            }}
-          >
-            무희자세
+    return (
+        <div className="App" style={bodyStyle}>
+        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+        <hr style={{borderColor: "#3B2C77"}}/>
+        <div style={{display: "flex", flexDirection: "row",justifyContent: "center", alignItems: "center"}}>
+          <div style={{position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9}}>
+            <img src={yogaImage} style={{height: "20rem"}}></img>
+          </div>
+          <div>
+            <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
+            <p>{message}</p>
+            {/* type="audio/mpeg" */}
+            <AudioPlayer {...{audio}} />
+            {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
+
+            <Webcam ref={webcamRef} style={{position: "absolute",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  left: 500,
+                  right: 0,
+                  zindex: 9,               
+                  width: 600,
+                  height: 400}}/>
+            <canvas ref={canvasRef} style={{position: "absolute",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  left: 500,
+                  right: 0,
+                  zindex: 9,
+                  width: 600,
+                  height: 400}}></canvas>
           </div>
           <p>{message}</p>
           {/* type="audio/mpeg" */}
@@ -363,7 +329,6 @@ const YogaCoach = () => {
           ></canvas>
         </div>
       </div>
-    </div>
   );
 };
 

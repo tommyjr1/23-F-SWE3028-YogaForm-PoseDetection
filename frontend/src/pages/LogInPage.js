@@ -37,19 +37,20 @@ const LogInPage = () => {
     await postLoginToken(res.credential);
   };
 
-  const postLoginToken = async (idToken) => {
-    await axios
-      .post("http://3.35.60.125:8080/api/login", {
-        credential: JSON.stringify(idToken),
-      })
-      .then((response) => {
-        console.log(response.data);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+      const postLoginToken = async idToken => {
+  
+        await axios
+        .post("http://3.35.60.125:8080/user/login",{
+            credential: JSON.stringify(idToken)
+        })
+        .then((response)=>{
+          // console.log(response.data)
+          navigate('/?isLogin=true');
+        })
+        .catch((error)=>{
+          console.log(error);
+        });
+    };
 
   function GoogleLogin({ onGoogleLogIn = () => {}, text = "signin_with" }) {
     const googleLogInButton = useRef(null);
