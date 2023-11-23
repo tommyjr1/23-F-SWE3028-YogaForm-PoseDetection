@@ -3,13 +3,13 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from 'react-bootstrap';
+import { Button } from "react-bootstrap";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
-import ConditionalHeader from '../components/ConditionalHeader';
-import queryString from 'query-string'
+import ConditionalHeader from "../components/ConditionalHeader";
+import queryString from "query-string";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,7 +62,9 @@ const YogaCoach = () => {
     try {
       // * we get errors every time the landmarks are not available
       // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-      let leftShoulder = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
+      let leftShoulder = await landmarks[
+        mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER
+      ];
       let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
       let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
       // console.log(leftWrist);
@@ -128,7 +130,7 @@ const YogaCoach = () => {
 
   const checkAngle = async () => {
     await axios
-      .get("http://3.35.60.125:8080/pose/check")
+      .get("http://3.35.60.125:8080/yf/pose/check")
       .then((response) => {
         if (response.data !== "none") {
           setMessage(response.data);
@@ -143,8 +145,8 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/pose/angle", {
-        value: userPoseAngle
+      .post("http://3.35.60.125:8080/yf/pose/angle", {
+        value: userPoseAngle,
       })
       .then((response) => {
         console.log(response.data);
@@ -158,7 +160,7 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-      .post("http://3.35.60.125:8080/pose/angle", {
+      .post("http://3.35.60.125:8080/yf/pose/angle", {
         value: JSON.stringify(landmarks),
       })
       .then((response) => {
@@ -176,7 +178,7 @@ const YogaCoach = () => {
     console.log("request audio");
 
     const { data } = await axios
-      .get("http://3.35.60.125:8080/pose/feedback", {
+      .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })
@@ -188,9 +190,9 @@ const YogaCoach = () => {
     setAudio(url);
 
     var audio_bell = document.getElementById("tts");
-    setInterval(function () {
+    //setInterval(function () {
       audio_bell.play();
-    }, 2.5 * 1000);
+    //}, 2.5 * 1000);
 
     // const audioElement = audioRef.current;
     // If audio source changes and it's set
@@ -204,8 +206,8 @@ const YogaCoach = () => {
     // audioElement.play();
   };
 
-  setInterval(requestAudioFile, 2000);
-  setInterval(submitLandmarkData, 1000);
+  //setInterval(requestAudioFile, 10 * 1000);
+  //setInterval(submitLandmarkData, 1000);
 
   function AudioPlayer({ audio }) {
     return <audio id="tts" controls ref={audioRef} src={audio} />;
@@ -254,51 +256,92 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-    try{
+    try {
       const { search } = location;
-      const queryObj = queryString.parse(search);	
+      const queryObj = queryString.parse(search);
       const { isLogin } = queryObj;
-      setIsLoggedIn((isLogin === 'true'));
-    }catch{
+      setIsLoggedIn(isLogin === "true");
+    } catch {
       console.log("no");
       setIsLoggedIn(false);
     }
+
+    const timer1 = setInterval(requestAudioFile, 10 * 1000);
+    const timer2 = setInterval(submitLandmarkData, 1000);
   }, [location]);
 
-    return (
-        <div className="App" style={bodyStyle}>
-        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
-        <hr style={{borderColor: "#3B2C77"}}/>
-        <div style={{display: "flex", flexDirection: "row",justifyContent: "center", alignItems: "center"}}>
-          <div style={{position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9}}>
-            <img src={yogaImage} style={{height: "20rem"}}></img>
+  return (
+    <div className="App" style={bodyStyle}>
+      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <hr style={{ borderColor: "#3B2C77" }} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            top: 200,
+            left: 0,
+            right: 700,
+            zindex: 9,
+          }}
+        >
+          <img src={yogaImage} style={{ height: "20rem" }}></img>
+        </div>
+        <div>
+          <div
+            style={{
+              width: "600px",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              padding: "1.5rem",
+              position: "relative",
+              left: "40%",
+            }}
+          >
+            무희자세
           </div>
-          <div>
-            <div style={{width: "600px",fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%"}}>무희자세</div>
-            <p>{message}</p>
-            {/* type="audio/mpeg" */}
-            <AudioPlayer {...{audio}} />
-            {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
+          <p>{message}</p>
+          {/* type="audio/mpeg" */}
+          <AudioPlayer {...{ audio }} />
+          {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
-            <Webcam ref={webcamRef} style={{position: "absolute",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  left: 500,
-                  right: 0,
-                  zindex: 9,               
-                  width: 600,
-                  height: 400}}/>
-            <canvas ref={canvasRef} style={{position: "absolute",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  left: 500,
-                  right: 0,
-                  zindex: 9,
-                  width: 600,
-                  height: 400}}></canvas>
-          </div>
+          <Webcam
+            ref={webcamRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 500,
+              right: 0,
+              zindex: 9,
+              width: 600,
+              height: 400,
+            }}
+          />
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 500,
+              right: 0,
+              zindex: 9,
+              width: 600,
+              height: 400,
+            }}
+          ></canvas>
         </div>
       </div>
+    </div>
   );
 };
 
