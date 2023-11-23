@@ -1,10 +1,7 @@
 import React from 'react';
-import yogaIcon from '../assets/yoga_icon.png';
-import yogaImages from '../assets/yoga_images.png';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-import YogaCoach from './YogaCoach';
-import Instruction from './Instruction';
+import yogaImages from '../assets/yoga_images.png';
 
 const LogInPage = () => {  
     const bodyStyle = {
@@ -40,6 +37,9 @@ const LogInPage = () => {
               START
             </Button>
           </div>
+          {/* <div th:if="${loginType == 'security-login'}">
+            {/* <a href="/oauth2/authorization/google">구글 로그인</a>
+           </div>  */}
           <div>
             <img src={yogaImages}></img>
           </div>
