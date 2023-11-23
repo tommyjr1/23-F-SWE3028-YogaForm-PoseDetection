@@ -6,7 +6,7 @@ import LandingPage from './LandingPage';
 import useScript from '../hooks/useScript';
 
 
-const LogInPage = () => {
+const MyPage = () => {
 
     const bodyStyle = {
         position: "absolute",
@@ -25,46 +25,7 @@ const LogInPage = () => {
       }
       const navigate = useNavigate();
 
-      const onGoogleLogIn = async res => {
-        console.log(res.credential);
-        await postLoginToken(res.credential);
-      };
-
-      const postLoginToken = async idToken => {
-  
-        await axios
-        .post("http://3.35.60.125:8080/api/login",{
-            credential: JSON.stringify(idToken)
-        })
-        .then((response)=>{
-          // console.log(response.data)
-          navigate('/?isLogin=true');
-        })
-        .catch((error)=>{
-          console.log(error);
-        });
-    };
-
-    function GoogleLogin({
-      onGoogleLogIn = () => {},
-      text = 'signin_with',
-    }) {
-      const googleLogInButton = useRef(null);
-    
-      useScript('https://accounts.google.com/gsi/client', () => {
-        window.google.accounts.id.initialize({
-          client_id: "1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com",
-          callback: onGoogleLogIn,
-        });
-    
-        window.google.accounts.id.renderButton(
-          googleLogInButton.current,
-          { theme: 'filled_blue', size: 'large', text, width: '250' }, // customization attributes
-        );
-      });
-    
-      return <div ref={googleLogInButton}></div>;
-    }
+      
 
     return (
       <div className="App" style={bodyStyle}>
@@ -72,11 +33,10 @@ const LogInPage = () => {
           <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}}>Log-in</Button></header>
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-            <h1>Google Login</h1><br/>
-            <GoogleLogin onGoogleLogIn={onGoogleLogIn} text="LogIn" />       
+            <h1>My page</h1><br/>    
         </div>
     </div>
     );
 };
 
-export default LogInPage;
+export default MyPage;

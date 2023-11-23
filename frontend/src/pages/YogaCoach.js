@@ -4,13 +4,16 @@ import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from 'react-bootstrap';
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
-// import AudioPlayer from 'react-h5-audio-player';
+import ConditionalHeader from '../components/ConditionalHeader';
+import queryString from 'query-string'
 
 const YogaCoach = () => {  
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const location = useLocation();
     const bodyStyle = {
       position: "absolute",
       top: 0,
@@ -219,12 +222,20 @@ const YogaCoach = () => {
       camera.start();
 
     }
-  }, []);
+    try{
+      const { search } = location;
+      const queryObj = queryString.parse(search);	
+      const { isLogin } = queryObj;
+      setIsLoggedIn((isLogin === 'true'));
+    }catch{
+      console.log("no");
+      setIsLoggedIn(false);
+    }
+  }, [location]);
 
     return (
         <div className="App" style={bodyStyle}>
-        <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
-          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "120px", color: "#3B2C77",fontSize: "1.6rem"}} onClick={goToLogInPage}>My page</Button></header>
+        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "row",justifyContent: "center", alignItems: "center"}}>
           <div style={{position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9}}>

@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import yogaIcon from '../assets/yoga_icon.png';
 import yogaImages from '../assets/yoga_images.png';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import YogaCoach from './YogaCoach';
 import Instruction from './Instruction';
 import LogInPage from './LogInPage';
+import MyPage from './MyPage';
+import ConditionalHeader from '../components/ConditionalHeader';
+import queryString from 'query-string'
 
 const LandingPage = () => {  
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const location = useLocation();
     const bodyStyle = {
         position: "absolute",
         top: 0,
@@ -25,16 +30,35 @@ const LandingPage = () => {
       }
       const navigate = useNavigate();
       const goToInstrction = () => {
-        navigate("/Instruction");
+        if (isLoggedIn) {
+          navigate("/Instruction?isLogin=true");
+        }else{
+          navigate("/Instruction");
+        }
       }
       const goToLogInPage = () => {
         navigate("/LogInPage");
       }
+      const goToMyPage = () => {
+        navigate("/MyPage");
+      }
+      
+      useEffect(() => {
+        try{
+          const { search } = location;
+          const queryObj = queryString.parse(search);	
+          const { isLogin } = queryObj;
+          setIsLoggedIn((isLogin === 'true'));
+        }catch{
+          console.log("no");
+          setIsLoggedIn(false);
+        }
+      }, [location]);
+      
 
     return (
       <div className="App" style={bodyStyle}>
-        <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
-          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}} onClick={goToLogInPage}>Log-in</Button></header>
+        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around"}}>
           <div>

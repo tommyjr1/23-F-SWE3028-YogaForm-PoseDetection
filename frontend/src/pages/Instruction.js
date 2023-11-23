@@ -5,10 +5,14 @@ import { useRef, useEffect } from "react";
 import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import YogaCoach from './YogaCoach';
+import ConditionalHeader from '../components/ConditionalHeader';
+import queryString from 'query-string'
 
 function Instruction() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const location = useLocation();
     const bodyStyle = {
         position: "absolute",
         top: 0,
@@ -96,7 +100,16 @@ function Instruction() {
       });
       camera.start();
     }
-  }, []);
+    try{
+      const { search } = location;
+      const queryObj = queryString.parse(search);	
+      const { isLogin } = queryObj;
+      setIsLoggedIn((isLogin === 'true'));
+    }catch{
+      console.log("no");
+      setIsLoggedIn(false);
+    }
+  }, [location]);
 
   const checkVisibility = (a, b, c) => {
     if (
@@ -113,16 +126,16 @@ function Instruction() {
 
   const navigate = useNavigate();
   const goToYogaCoach = () => {
-    navigate("/YogaCoach");
-  };
-  const goToLogInPage = () => {
-    navigate("/LogInPage");
+    if (isLoggedIn) {
+      navigate("/YogaCoach?isLogin=true");
+    }else{
+      navigate("/YogaCoach");
+    }
   };
 
   return (
     <div className="Instruction" style={bodyStyle}>
-        <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
-          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}} onClick={goToLogInPage}>Log-in</Button></header>
+        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
             <h1 style={{paddingLeft: "40px"}}>Instruction</h1>

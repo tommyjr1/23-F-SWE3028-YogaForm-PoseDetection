@@ -9,6 +9,7 @@ import LandingPage from "./pages/LandingPage";
 import Instruction from './pages/Instruction';
 import YogaCoach from './pages/YogaCoach';
 import LogInPage from './pages/LogInPage';
+import MyPage from './pages/MyPage';
 
 function App() {
 
@@ -23,6 +24,8 @@ function App() {
         <Route path="/YogaCoach" element={<YogaCoach />} />
         {/* <LogInPage /> */}
         <Route path="/LogInPage" element={<LogInPage />} />
+        {/* <MyPage /> */}
+        <Route path="/MyPage" element={<MyPage />} />
       </Routes>
     </BrowserRouter> 
   );
