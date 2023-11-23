@@ -44,7 +44,7 @@ const LogInPage = () => {
             credential: JSON.stringify(idToken)
         })
         .then((response)=>{
-          // console.log(response.data)
+          console.log(response.data)
           navigate('/?isLogin=true');
         })
         .catch((error)=>{
