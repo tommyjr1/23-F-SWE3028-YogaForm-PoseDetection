@@ -38,6 +38,7 @@ const YogaCoach = () => {
 
   const [message, setMessage] = useState("");
   const [audio, setAudio] = useState();
+  const [landmarks, setLandmarks] = useState();
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -54,7 +55,7 @@ const YogaCoach = () => {
   };
 
   async function onResults(results) {
-    let landmarks = results.poseLandmarks; // * all the landmarks in the pose
+    setLandmarks(results.poseLandmarks); // * all the landmarks in the pose
     // submitLandmarkData(landmarks);
     // requestAudioFile();
 
@@ -171,28 +172,88 @@ const YogaCoach = () => {
       });
   };
 
-  const requestAudioFile = async () => {
+  // const requestAudioFile = async () => {
+  //   // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
+
+  //   // })
+  //   console.log("request audio");
+
+  //   const { data } = await axios
+  //     .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
+  //       responseType: "arraybuffer",
+  //       headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+  //     })
+  //     .then((response) => {
+  //       const blob = new Blob([response.data], {
+  //         type: "audio/wav",
+  //       });
+  //       const url = URL.createObjectURL(blob);
+  //       setAudio(url);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+
+  //   var audio_bell = document.getElementById("tts");
+  //   setInterval(function () {
+  //     audio_bell.play();
+  //   }, 5 * 1000);
+
+  //   // const audioElement = audioRef.current;
+  //   // If audio source changes and it's set
+  //   // if (audio && audioElement) {
+  //   //   audioElement.autoplay = true; // Set autoplay attribute
+  //   //   audioElement.load(); // Reload the audio element
+  //   // }
+
+  //   // const element = document.getElementById('tts');
+  //   // element.click();
+  //   // audioElement.play();
+  // };
+
+  //setInterval(requestAudioFile, 10 * 1000);
+  //setInterval(submitLandmarkData, 1000);
+
+  const requestAudioFile = async (name) => {
     // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
     // })
     console.log("request audio");
 
-    const { data } = await axios
-      .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
-        responseType: "arraybuffer",
-        headers: { Accept: "*/*", "Content-Type": "audio/wav" },
-      })
-      .then((resp) => resp);
-    const blob = new Blob([data], {
-      type: "audio/wav",
+    await axios
+    .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
+      responseType: "arraybuffer",
+      headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+    })
+    .then((response) => {
+      const blob = new Blob([response.data], {
+        type: "audio/wav",
+      });
+      const url = URL.createObjectURL(blob);
+      setAudio(url);
+    })
+    .catch((error) => {
+      console.log(error);
     });
-    const url = URL.createObjectURL(blob);
-    setAudio(url);
+
+    // const { data } = await axios
+    //   .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
+    //     responseType: "arraybuffer",
+    //     headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+    //   })
+    //   .then((resp) => resp);
+    // const blob = new Blob([data], {
+    //   type: "audio/wav",
+    // });
+    // const url = URL.createObjectURL(blob);
+    // setAudio(url);
 
     var audio_bell = document.getElementById("tts");
-    //setInterval(function () {
+    // audio_bell.src(url);
+    setInterval(function () {
       audio_bell.play();
-    //}, 2.5 * 1000);
+    }, 3 * 1000);
+    // checkPass(images[index]);
 
     // const audioElement = audioRef.current;
     // If audio source changes and it's set
@@ -206,11 +267,10 @@ const YogaCoach = () => {
     // audioElement.play();
   };
 
-  //setInterval(requestAudioFile, 10 * 1000);
-  //setInterval(submitLandmarkData, 1000);
-
   function AudioPlayer({ audio }) {
-    return <audio id="tts" controls ref={audioRef} src={audio} />;
+    return (
+      <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
+    );
   }
 
   const stopWebCam = () => {
@@ -265,46 +325,85 @@ const YogaCoach = () => {
       console.log("no");
       setIsLoggedIn(false);
     }
-
-    const timer1 = setInterval(requestAudioFile, 10 * 1000);
-    const timer2 = setInterval(submitLandmarkData, 1000);
   }, [location]);
+
+  setInterval(() => requestAudioFile('chair'), 10 * 1000);
+  setInterval(() => submitLandmarkData(landmarks), 10 * 1000);
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn} webcamRef={webcamRef}></ConditionalHeader>
+      <ConditionalHeader
+        isLoggedIn={isLoggedIn}
+        webcamRef={webcamRef}
+        // timer1 = {timer1}
+        // timer2 = {timer2}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-        <div style={{ position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            top: 200,
+            left: 0,
+            right: 700,
+            zindex: 9,
+          }}
+        >
           <img src={yogaImage} style={{ height: "20rem" }}></img>
         </div>
         <div>
-          <div style={{ width: "600px", fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%" }}>무희자세</div>
+          <div
+            style={{
+              width: "600px",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              padding: "1.5rem",
+              position: "relative",
+              left: "40%",
+            }}
+          >
+            무희자세
+          </div>
           <p>{message}</p>
           {/* type="audio/mpeg" */}
           <AudioPlayer {...{ audio }} />
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
-          <Webcam ref={webcamRef} style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 500,
-            right: 0,
-            zindex: 9,
-            width: 600,
-            height: 400
-          }} />
-          <canvas ref={canvasRef} style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 500,
-            right: 0,
-            zindex: 9,
-            width: 600,
-            height: 400
-          }}></canvas>
+          <Webcam
+            ref={webcamRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 500,
+              right: 0,
+              zindex: 9,
+              width: 600,
+              height: 400,
+            }}
+          />
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 500,
+              right: 0,
+              zindex: 9,
+              width: 600,
+              height: 400,
+            }}
+          ></canvas>
         </div>
       </div>
     </div>
