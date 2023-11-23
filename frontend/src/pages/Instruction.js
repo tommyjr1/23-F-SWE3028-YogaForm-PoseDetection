@@ -1,36 +1,37 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import Webcam from "react-webcam";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useLayoutEffect } from "react";
 import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
 import { useNavigate } from "react-router-dom";
 
+
 function Instruction() {
-    const bodyStyle = {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#F2CCFF",
-        color: "#3B2C77"
-    }
-    const buttonStyle = {
-    backgroundColor:"#F2CCFF", 
+  const bodyStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#F2CCFF",
+    color: "#3B2C77",
+  };
+  const buttonStyle = {
+    backgroundColor: "#F2CCFF",
     border: "1px solid #F2CCFF",
     color: "#3B2C77",
-    fontSize: "1.6rem"
-    }
-    const webcamRef = useRef(null);
-    const canvasRef = useRef(null);
-    let camera = null;
-    let userPoseAngle = null;
-    const [x, setX] = useState(false);
-    const [msg, setMsg] = useState(
-        "Stand so that your entire body is visible on the camera."
-    );
+    fontSize: "1.6rem",
+  };
+  const webcamRef = useRef(null);
+  const canvasRef = useRef(null);
+  let camera = null;
+  let userPoseAngle = null;
+  const [x, setX] = useState(false);
+  const [msg, setMsg] = useState(
+    "Stand so that your entire body is visible on the camera."
+  );
 
   function onResults(results) {
     let landmarks = results.poseLandmarks; // * all the landmarks in the pose
@@ -65,36 +66,51 @@ function Instruction() {
     );
     canvasCtx.restore();
   }
+
+  const stopWebCam = () => {
+    if(webcamRef.current.video){
+      let stream = webcamRef.current.video.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach((track)=>track.stop());
+      webcamRef.current.video.srcObject = null;
+    }
+  };
+
   useEffect(() => {
-    const userPose = new Pose({
-      locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-      },
-    });
-    userPose.setOptions({
-      selfieMode: true,
-      modelComplexity: 0,
-      smoothLandmarks: true,
-      enableSegmentation: false,
-      smoothSegmentation: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5,
-    });
-    userPose.onResults(onResults);
-    if (typeof webcamRef.current !== "undefined" && webcamRef.current && webcamRef.current.video) {
-        console.log(webcamRef.current.video);
+    if (typeof webcamRef.current !== "undefined" && webcamRef.current) {
+      console.log(webcamRef.current);
+      const userPose = new Pose({
+        locateFile: (file) => {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+        },
+      });
+      userPose.setOptions({
+        selfieMode: true,
+        modelComplexity: 0,
+        smoothLandmarks: true,
+        enableSegmentation: false,
+        smoothSegmentation: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+      userPose.onResults(onResults);
       camera = new cam.Camera(webcamRef.current.video, {
         // no issues with the exaustive-deps. We do not need to store the camera object for current purposes
         onFrame: async () => {
+          //console.log(webcamRef.current);
           await userPose.send({ image: webcamRef.current.video });
         },
         // width: 1280,
         // height: 720,
         width: 600,
-        height: 400
+        height: 400,
       });
       camera.start();
     }
+     return () => {
+      console.log("아왜이래");
+      stopWebCam();
+    };
   }, []);
 
   const checkVisibility = (a, b, c) => {
@@ -112,41 +128,103 @@ function Instruction() {
 
   const navigate = useNavigate();
   const goToYogaCoach = () => {
+    //stopWebCam();
     navigate("/YogaCoach");
+  };
+
+  const goToYogaList = () => {
+    //stopWebCam();
+    navigate("/YogaList");
   };
 
   return (
     <div className="Instruction" style={bodyStyle}>
-        <header style={{display: "flex", flexDirection: "row", paddingTop: "1rem",paddingBottom: "1rem", justifyContent:"space-around"}}><div style={{fontWeight: "bold", fontSize: "1.8rem"}}>YOGA FORM</div><div></div><div></div><div></div><div></div><div></div>
-          <Button variany="secondary" style={buttonStyle}>HOME</Button><Button variany="secondary" style={buttonStyle}>ABOUT</Button><Button variany="secondary" style={buttonStyle}>YOGA</Button><Button variany="secondary" style={{backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC",borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}}>Log-in</Button></header>
-        <hr style={{borderColor: "#3B2C77"}}/>
-        <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-            <h1 style={{paddingLeft: "40px"}}>Instruction</h1>
-            <p style={{fontSize: "1.4rem", paddingRight: "180px"}}> {`${msg}`}</p>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-            <Webcam
-            ref={webcamRef}
-            style={{
-                position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                zindex: 9,
-            }}
-            />
-            <canvas
-            ref={canvasRef}
-            style={{
-                position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                zindex: 9,
-            }}
-            ></canvas>
-        </div>
-        <button style={{ opacity: x ? 100 : 0 , position: "absolute", left: "80%", bottom: "10%",backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC", borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}} onClick={goToYogaCoach}>
-            NEXT
-        </button>
+      <header
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          paddingTop: "1rem",
+          paddingBottom: "1rem",
+          justifyContent: "space-around",
+        }}
+      >
+        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>YOGA FORM</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <Button variany="secondary" style={buttonStyle}>
+          HOME
+        </Button>
+        <Button variany="secondary" style={buttonStyle}>
+          ABOUT
+        </Button>
+        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
+          YOGA
+        </Button>
+        <Button
+          variany="secondary"
+          style={{
+            backgroundColor: "#FFF2CC",
+            border: "1px solid #FFF2CC",
+            borderRadius: "2rem",
+            width: "100px",
+            color: "#3B2C77",
+            fontSize: "1.6rem",
+          }}
+        >
+          Log-in
+        </Button>
+      </header>
+      <hr style={{ borderColor: "#3B2C77" }} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1 style={{ paddingLeft: "40px" }}>Instruction</h1>
+        <p style={{ fontSize: "1.4rem", paddingRight: "180px" }}> {`${msg}`}</p>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <Webcam
+          ref={webcamRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            zindex: 9,
+          }}
+        />
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            zindex: 9,
+          }}
+        ></canvas>
+      </div>
+      <button
+        style={{
+          opacity: x ? 100 : 0,
+          position: "absolute",
+          left: "80%",
+          bottom: "10%",
+          backgroundColor: "#FFF2CC",
+          border: "1px solid #FFF2CC",
+          borderRadius: "2rem",
+          width: "100px",
+          color: "#3B2C77",
+          fontSize: "1.6rem",
+        }}
+        onClick={goToYogaCoach}
+      >
+        NEXT
+      </button>
     </div>
   );
 }

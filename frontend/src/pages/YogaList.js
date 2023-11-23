@@ -1,10 +1,8 @@
 import React from "react";
-import yogaIcon from "../assets/yoga_icon.png";
-import yogaImages from "../assets/yoga_images.png";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const LandingPage = () => {
+const YogaList = () => {
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -21,12 +19,11 @@ const LandingPage = () => {
     fontSize: "1.6rem",
   };
   const navigate = useNavigate();
+  const goToLandingPage = () => {
+    navigate("/LandingPage");
+  };
   const goToInstrction = () => {
     navigate("/Instruction");
-  };
-
-  const goToYogaList = () => {
-    navigate("/YogaList");
   };
 
   return (
@@ -46,13 +43,13 @@ const LandingPage = () => {
         <div></div>
         <div></div>
         <div></div>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" style={buttonStyle} onClick={goToLandingPage}>
           HOME
         </Button>
         <Button variany="secondary" style={buttonStyle}>
           ABOUT
         </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
+        <Button variany="secondary" style={buttonStyle}>
           YOGA
         </Button>
         <Button
@@ -78,47 +75,12 @@ const LandingPage = () => {
           justifyContent: "space-around",
         }}
       >
-        <div>
-          <p
-            style={{
-              fontSize: "2.6rem",
-              marginTop: "7rem",
-              marginBottom: "0rem",
-            }}
-          >
-            Welcome to <strong>YOGA FORM!</strong>
-          </p>
-          <p style={{ fontSize: "1.8rem", marginTop: "0rem" }}>
-            AI-based yoga pose correction
-          </p>
-          <br />
-          <br />
-          <br />
-          <br />
-          <Button
-            variany="secondary"
-            style={{
-              position: "relative",
-              bottom: "70px",
-              width: "130px",
-              height: "50px",
-              backgroundColor: "#FFF2CC",
-              border: "1px solid #FFF2CC",
-              borderRadius: "2rem",
-              fontSize: "1.7rem",
-              color: "#3B2C77",
-            }}
-            onClick={goToInstrction}
-          >
-            START
-          </Button>
-        </div>
-        <div>
-          <img src={yogaImages}></img>
-        </div>
+        <p>
+            afsadjflakd
+        </p>
       </div>
     </div>
   );
 };
 
-export default LandingPage;
+export default YogaList;
