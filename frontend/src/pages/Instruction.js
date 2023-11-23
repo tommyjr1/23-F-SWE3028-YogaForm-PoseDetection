@@ -155,7 +155,7 @@ function Instruction() {
 
   return (
     <div className="Instruction" style={bodyStyle}>
-        <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+        <ConditionalHeader isLoggedIn={isLoggedIn} webcamRef={webcamRef}></ConditionalHeader>
         <hr style={{borderColor: "#3B2C77"}}/>
         <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
             <h1 style={{paddingLeft: "40px"}}>Instruction</h1>

@@ -272,73 +272,39 @@ const YogaCoach = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader isLoggedIn={isLoggedIn} webcamRef={webcamRef}></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            top: 200,
-            left: 0,
-            right: 700,
-            zindex: 9,
-          }}
-        >
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+        <div style={{ position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9 }}>
           <img src={yogaImage} style={{ height: "20rem" }}></img>
         </div>
         <div>
-          <div
-            style={{
-              width: "600px",
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              padding: "1.5rem",
-              position: "relative",
-              left: "40%",
-            }}
-          >
-            무희자세
-          </div>
+          <div style={{ width: "600px", fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%" }}>무희자세</div>
           <p>{message}</p>
           {/* type="audio/mpeg" */}
           <AudioPlayer {...{ audio }} />
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
-          <Webcam
-            ref={webcamRef}
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 500,
-              right: 0,
-              zindex: 9,
-              width: 600,
-              height: 400,
-            }}
-          />
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 500,
-              right: 0,
-              zindex: 9,
-              width: 600,
-              height: 400,
-            }}
-          ></canvas>
+          <Webcam ref={webcamRef} style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 500,
+            right: 0,
+            zindex: 9,
+            width: 600,
+            height: 400
+          }} />
+          <canvas ref={canvasRef} style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 500,
+            right: 0,
+            zindex: 9,
+            width: 600,
+            height: 400
+          }}></canvas>
         </div>
       </div>
     </div>
