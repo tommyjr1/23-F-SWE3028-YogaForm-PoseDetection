@@ -1,10 +1,12 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import ConditionalHeader from "../components/ConditionalHeader";
 import { useNavigate, useLocation } from "react-router-dom";
-import queryString from "query-string";
+import ConditionalHeader from '../components/ConditionalHeader';
+import queryString from 'query-string'
 
 const YogaList = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -20,16 +22,14 @@ const YogaList = () => {
     color: "#3B2C77",
     fontSize: "1.6rem",
   };
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation();
-
+  
   useEffect(() => {
-    try {
+    try{
       const { search } = location;
-      const queryObj = queryString.parse(search);
+      const queryObj = queryString.parse(search);	
       const { isLogin } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-    } catch {
+      setIsLoggedIn((isLogin === 'true'));
+    }catch{
       console.log("no");
       setIsLoggedIn(false);
     }

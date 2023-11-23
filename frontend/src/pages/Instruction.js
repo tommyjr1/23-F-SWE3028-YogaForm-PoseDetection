@@ -139,9 +139,9 @@ function Instruction() {
   const goToYogaCoach = () => {
     stopWebCam();
     if (isLoggedIn) {
-      navigate("/YogaCoach?isLogin=true");
-    } else {
-      navigate("/YogaCoach");
+      navigate("/YogaCoach?isLogin=true&routine=defaultEasy");
+    }else{
+      navigate("/YogaCoach?routine=defaultEasy");
     }
   };
   const goToYogaList = () => {
