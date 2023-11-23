@@ -208,10 +208,11 @@ const YogaCoach = () => {
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);
+    console.log(routine);
 
     await axios
-      .get("http://3.35.60.125:8080/yf/user/routine", {
-        routineName: JSON.stringify(routine),
+      .get(`http://3.35.60.125:8080/yf/user/routine/${routine}`, {
+        responseType: "json"
       })
       .then((response) => {
         console.log(response.data);
