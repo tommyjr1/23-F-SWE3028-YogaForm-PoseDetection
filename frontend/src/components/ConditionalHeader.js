@@ -41,12 +41,16 @@ export default function ConditionalHeader(props) {
     }
 
     const stopWebCam = () => {
-        const webcamRef = props.webcamRef;
-        if (webcamRef.current.video) {
-            let stream = webcamRef.current.video.srcObject;
-            const tracks = stream.getTracks();
-            tracks.forEach((track) => track.stop());
-            webcamRef.current.video.srcObject = null;
+        try{
+            const webcamRef = props.webcamRef;
+            if (webcamRef.current.video) {
+                let stream = webcamRef.current.video.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach((track) => track.stop());
+                webcamRef.current.video.srcObject = null;
+            }
+        }catch{
+            console.log("no camera usage");
         }
     };
 
