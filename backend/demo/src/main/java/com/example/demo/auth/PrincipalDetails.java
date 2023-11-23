@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.example.demo.datatype.user.User;
+import com.example.demo.dto.user.User;
 
 public class PrincipalDetails implements UserDetails, OAuth2User {
 

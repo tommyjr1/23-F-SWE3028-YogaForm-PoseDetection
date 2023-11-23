@@ -1,4 +1,4 @@
-package com.example.demo.datatype.user;
+package com.example.demo.dto.user;
 
 public enum UserRole {
     USER, ADMIN;

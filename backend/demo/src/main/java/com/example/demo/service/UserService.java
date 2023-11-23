@@ -7,9 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.datatype.user.User;
 import com.example.demo.dto.JoinRequest;
 import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.user.User;
 import com.example.demo.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;

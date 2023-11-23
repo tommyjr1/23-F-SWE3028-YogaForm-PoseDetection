@@ -24,7 +24,8 @@ public class Tts {
     // Instantiates a client
     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
       // Set the text input to be synthesized
-      SynthesisInput input = SynthesisInput.newBuilder().setText("Hello, World!").build();
+      System.out.println(String.join(" ", args));
+      SynthesisInput input = SynthesisInput.newBuilder().setText(String.join(" ", args)).build();
 
       // Build the voice request, select the language code ("en-US") and the ssml voice gender
       // ("neutral")

@@ -1,0 +1,212 @@
+[
+    {
+        "name": "BirdOfParadiseRevolved",
+        "lelbow": 135.3754020781,
+        "relbow": 157.2373066008,
+        "lshoulder": 15.6731179862,
+        "rshoulder": 42.8074507556,
+        "lknee": 155.8304213399,
+        "rknee": 161.438784391,
+        "neck": 72.4843307477
+    },
+    {
+        "name": "Chair",
+        "lelbow": 137.6130162867,
+        "relbow": 102.578659407,
+        "lshoulder": 131.467497672,
+        "rshoulder": 133.0750595121,
+        "lknee": 112.8398825998,
+        "rknee": 116.0114478267,
+        "neck": 8.5480030308
+    },
+    {
+        "name": "ChairTwistBindUp",
+        "lelbow": 62.8173153097,
+        "relbow": 48.225834654,
+        "lshoulder": 58.7011348725,
+        "rshoulder": 41.291304123,
+        "lknee": 149.5437649598,
+        "rknee": 175.325754032,
+        "neck": 1.8291992312
+    },
+    {
+        "name": "CrescentMoon",
+        "lelbow": 157.2728585146,
+        "relbow": 103.9262500523,
+        "lshoulder": 157.1063494053,
+        "rshoulder": 170.1995602304,
+        "lknee": 159.3574537624,
+        "rknee": 175.0907661338,
+        "neck": 1.3613674172
+    },
+    {
+        "name": "Eagle",
+        "lelbow": 90.047123233,
+        "relbow": 80.6919488977,
+        "lshoulder": 117.7162711709,
+        "rshoulder": 127.0958523384,
+        "lknee": 105.8147642678,
+        "rknee": 172.294788056,
+        "neck": 2.9814651003
+    },
+    {
+        "name": "Goddess",
+        "lelbow": 98.5364504771,
+        "relbow": 107.8703461061,
+        "lshoulder": 64.8637134448,
+        "rshoulder": 45.2891123708,
+        "lknee": 85.7182283697,
+        "rknee": 113.7185927595,
+        "neck": 51.3737352911
+    },
+    {
+        "name": "HalfMoon",
+        "lelbow": 138.237911583,
+        "relbow": 18.7243125439,
+        "lshoulder": 91.1033411554,
+        "rshoulder": 108.4024897951,
+        "lknee": 147.7038243475,
+        "rknee": 154.7220912401,
+        "neck": 41.4532495019
+    },
+    {
+        "name": "LordOfTheDance",
+        "lelbow": 164.6417148483,
+        "relbow": 39.6087461958,
+        "lshoulder": 81.6971425987,
+        "rshoulder": 82.0638239162,
+        "lknee": 53.1167427049,
+        "rknee": 151.412199964,
+        "neck": 13.4502159046
+    },
+    {
+        "name": "LungeCrescent",
+        "lelbow": 161.9644630346,
+        "relbow": 116.0849299152,
+        "lshoulder": 158.641869752,
+        "rshoulder": 158.1301461172,
+        "lknee": 128.6257279396,
+        "rknee": 172.7539493622,
+        "neck": 3.6245383819
+    },
+    {
+        "name": "MountainArmsSide",
+        "lelbow": 152.8272871162,
+        "relbow": 100.1702776062,
+        "lshoulder": 45.8042785924,
+        "rshoulder": 60.8083775298,
+        "lknee": 169.9521896937,
+        "rknee": 160.7701408241,
+        "neck": 1.7507128298
+    },
+    {
+        "name": "PyramidPrayer",
+        "lelbow": 172.3534499218,
+        "relbow": 151.2317781064,
+        "lshoulder": 117.445056071,
+        "rshoulder": 117.4361011,
+        "lknee": 165.3307346502,
+        "rknee": 161.0153545558,
+        "neck": 25.0313258615
+    },
+    {
+        "name": "ShivaSquat",
+        "lelbow": 171.966522604,
+        "relbow": 124.6207664977,
+        "lshoulder": 102.4829439039,
+        "rshoulder": 97.1907727807,
+        "lknee": 108.2915835497,
+        "rknee": 156.0629175739,
+        "neck": 3.3260144984
+    },
+    {
+        "name": "StandingFootBehindHead",
+        "lelbow": 79.1049229272,
+        "relbow": 70.1077874996,
+        "lshoulder": 27.1919430813,
+        "rshoulder": 33.8519510178,
+        "lknee": 155.1889701821,
+        "rknee": 152.362956039,
+        "neck": 0.4365100506
+    },
+    {
+        "name": "StandingHandToToeExtended",
+        "lelbow": 127.0566530497,
+        "relbow": 12.3981266132,
+        "lshoulder": 95.645097184,
+        "rshoulder": 110.9469298375,
+        "lknee": 133.3853096205,
+        "rknee": 168.9999504358,
+        "neck": 7.8631961002
+    },
+    {
+        "name": "StandingHandToToeFull",
+        "lelbow": 130.8834044852,
+        "relbow": 95.5752967177,
+        "lshoulder": 100.9117672766,
+        "rshoulder": 107.5375793643,
+        "lknee": 160.9186226222,
+        "rknee": 167.9451350872,
+        "neck": 1.802438463
+    },
+    {
+        "name": "StandingHandToToeRevolved",
+        "lelbow": 165.8398972068,
+        "relbow": 157.5427758402,
+        "lshoulder": 97.2829919087,
+        "rshoulder": 102.6846473916,
+        "lknee": 175.2765072699,
+        "rknee": 169.5415093863,
+        "neck": 84.3790959187
+    },
+    {
+        "name": "Star",
+        "lelbow": 174.278736647,
+        "relbow": 169.9797724564,
+        "lshoulder": 93.3512189045,
+        "rshoulder": 87.2906543239,
+        "lknee": 172.9109897496,
+        "rknee": 176.4751627685,
+        "neck": 46.6731472353
+    },
+    {
+        "name": "TriangleForward",
+        "lelbow": 163.385014243,
+        "relbow": 96.6063047059,
+        "lshoulder": 122.2771484953,
+        "rshoulder": 92.7691535248,
+        "lknee": 149.8950189714,
+        "rknee": 170.1414224861,
+        "neck": 25.457242935
+    },
+    {
+        "name": "TrivikramaI",
+        "lelbow": 118.9766179587,
+        "relbow": 88.6746683851,
+        "lshoulder": 160.3283680659,
+        "rshoulder": 156.0193036731,
+        "lknee": 151.9715732968,
+        "rknee": 174.7179081868,
+        "neck": 8.7240663196
+    },
+    {
+        "name": "WarriorIIForwardArmForward",
+        "lelbow": 137.1685693628,
+        "relbow": 126.2132077929,
+        "lshoulder": 127.1041878709,
+        "rshoulder": 130.3250338813,
+        "lknee": 168.7975546439,
+        "rknee": 160.1200803407,
+        "neck": 5.6769968602
+    },
+    {
+        "name": "WarriorIKneeling",
+        "lelbow": 141.07472998,
+        "relbow": 87.6437420693,
+        "lshoulder": 159.7561483948,
+        "rshoulder": 171.7668096812,
+        "lknee": 84.5554555395,
+        "rknee": 126.8661409611,
+        "neck": 0.494064582
+    }
+]

@@ -2,8 +2,8 @@ package com.example.demo.dto;
 
 import javax.validation.constraints.NotBlank;
 
-import com.example.demo.datatype.user.User;
-import com.example.demo.datatype.user.UserRole;
+import com.example.demo.dto.user.User;
+import com.example.demo.dto.user.UserRole;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

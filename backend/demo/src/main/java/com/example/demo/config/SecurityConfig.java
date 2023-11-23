@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import com.example.demo.auth.MyAccessDeniedHandler;
 import com.example.demo.auth.MyAuthenticationEntryPoint;
 import com.example.demo.auth.oauth.PrincipalOauth2UserService;
-import com.example.demo.datatype.user.UserRole;
+import com.example.demo.dto.user.UserRole;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,5 +62,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new MyAuthenticationEntryPoint())
                 .accessDeniedHandler(new MyAccessDeniedHandler());
-    }
-}
+}  }
