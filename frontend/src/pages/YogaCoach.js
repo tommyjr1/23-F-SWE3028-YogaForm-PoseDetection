@@ -297,36 +297,6 @@ const YogaCoach = () => {
                   width: 600,
                   height: 400}}></canvas>
           </div>
-          <p>{message}</p>
-          {/* type="audio/mpeg" */}
-          <AudioPlayer {...{ audio }} />
-          {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
-          <Webcam
-            ref={webcamRef}
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 500,
-              right: 0,
-              zindex: 9,
-              width: 600,
-              height: 400,
-            }}
-          />
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              marginLeft: "auto",
-              marginRight: "auto",
-              left: 500,
-              right: 0,
-              zindex: 9,
-              width: 600,
-              height: 400,
-            }}
-          ></canvas>
         </div>
       </div>
   );
