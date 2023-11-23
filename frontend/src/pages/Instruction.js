@@ -6,24 +6,24 @@ import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
 import { useNavigate, useLocation } from "react-router-dom";
-import YogaCoach from './YogaCoach';
-import ConditionalHeader from '../components/ConditionalHeader';
-import queryString from 'query-string'
+import YogaCoach from "./YogaCoach";
+import ConditionalHeader from "../components/ConditionalHeader";
+import queryString from "query-string";
 
 function Instruction() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const location = useLocation();
-    const bodyStyle = {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#F2CCFF",
-        color: "#3B2C77"
-    }
-    const buttonStyle = {
-    backgroundColor:"#F2CCFF", 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
+  const bodyStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#F2CCFF",
+    color: "#3B2C77",
+  };
+  const buttonStyle = {
+    backgroundColor: "#F2CCFF",
     border: "1px solid #F2CCFF",
     color: "#3B2C77",
     fontSize: "1.6rem",
@@ -111,12 +111,12 @@ function Instruction() {
       });
       camera.start();
     }
-    try{
+    try {
       const { search } = location;
-      const queryObj = queryString.parse(search);	
+      const queryObj = queryString.parse(search);
       const { isLogin } = queryObj;
-      setIsLoggedIn((isLogin === 'true'));
-    }catch{
+      setIsLoggedIn(isLogin === "true");
+    } catch {
       console.log("no");
       setIsLoggedIn(false);
     }
@@ -140,7 +140,7 @@ function Instruction() {
     stopWebCam();
     if (isLoggedIn) {
       navigate("/YogaCoach?isLogin=true&routine=defaultEasy");
-    }else{
+    } else {
       navigate("/YogaCoach?routine=defaultEasy");
     }
   };
@@ -155,35 +155,58 @@ function Instruction() {
 
   return (
     <div className="Instruction" style={bodyStyle}>
-        <ConditionalHeader isLoggedIn={isLoggedIn} webcamRef={webcamRef}></ConditionalHeader>
-        <hr style={{borderColor: "#3B2C77"}}/>
-        <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-            <h1 style={{paddingLeft: "40px"}}>Instruction</h1>
-            <p style={{fontSize: "1.4rem", paddingRight: "180px"}}> {`${msg}`}</p>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-            <Webcam
-            ref={webcamRef}
-            style={{
-                position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                zindex: 9,
-            }}
-            />
-            <canvas
-            ref={canvasRef}
-            style={{
-                position: "absolute",
-                marginLeft: "auto",
-                marginRight: "auto",
-                zindex: 9,
-            }}
-            ></canvas>
-        </div>
-        <button style={{ opacity: x ? 100 : 0 , position: "absolute", left: "80%", bottom: "10%",backgroundColor: "#FFF2CC", border: "1px solid #FFF2CC", borderRadius: '2rem', width: "100px", color: "#3B2C77",fontSize: "1.6rem"}} onClick={goToYogaCoach}>
-            NEXT
-        </button>
+      <ConditionalHeader
+        isLoggedIn={isLoggedIn}
+        webcamRef={webcamRef}
+      ></ConditionalHeader>
+      <hr style={{ borderColor: "#3B2C77" }} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1 style={{ paddingLeft: "40px" }}>Instruction</h1>
+        <p style={{ fontSize: "1.4rem", paddingRight: "180px" }}> {`${msg}`}</p>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <Webcam
+          ref={webcamRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            zindex: 9,
+          }}
+        />
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            zindex: 9,
+          }}
+        ></canvas>
+      </div>
+      <button
+        style={{
+          opacity: x ? 100 : 0,
+          position: "absolute",
+          left: "80%",
+          bottom: "10%",
+          backgroundColor: "#FFF2CC",
+          border: "1px solid #FFF2CC",
+          borderRadius: "2rem",
+          width: "100px",
+          color: "#3B2C77",
+          fontSize: "1.6rem",
+        }}
+        onClick={goToYogaCoach}
+      >
+        NEXT
+      </button>
     </div>
   );
 }

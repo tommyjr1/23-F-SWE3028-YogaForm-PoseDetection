@@ -3,17 +3,17 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from 'react-bootstrap';
+import { Button } from "react-bootstrap";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
-import ConditionalHeader from '../components/ConditionalHeader';
-import queryString from 'query-string'
+import ConditionalHeader from "../components/ConditionalHeader";
+import queryString from "query-string";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [routine, setRoutine] = useState('defaultEasy');
+  const [routine, setRoutine] = useState("defaultEasy");
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -155,23 +155,23 @@ const YogaCoach = () => {
     console.log("request audio");
 
     await axios
-    .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
-      responseType: "arraybuffer",
-      headers: { Accept: "*/*", "Content-Type": "audio/wav" },
-    })
-    .then((response) => {
-      const blob = new Blob([response.data], {
-        type: "audio/wav",
+      .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
+        responseType: "arraybuffer",
+        headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+      })
+      .then((response) => {
+        const blob = new Blob([response.data], {
+          type: "audio/wav",
+        });
+        const url = URL.createObjectURL(blob);
+        setAudio(url);
+        // var audio_bell = document.getElementById("tts");
+        // audio_bell.src(url);
+        // audio_bell.play();
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      const url = URL.createObjectURL(blob);
-      setAudio(url);
-      // var audio_bell = document.getElementById("tts");
-      // audio_bell.src(url);
-      // audio_bell.play();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 
     // const { data } = await axios
     //   .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
@@ -227,40 +227,42 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
 
     await axios
-    .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
-      responseType: "arraybuffer",
-      headers: { Accept: "*/*", "Content-Type": "image/png" },
-    })
-    .then((response) => {
-      const blob = new Blob([response.data], {
-        type: "image/png",
-      });
-      const imgUrl = URL.createObjectURL(blob);
-      document.getelementbyid("yogaImg").src = imgUrl;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  };
-
-  const checkPass = async (name) => {
-    await axios
-      .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
+      .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
+        responseType: "arraybuffer",
+        headers: { Accept: "*/*", "Content-Type": "image/png" },
+      })
       .then((response) => {
-          console.log(response.data);
-          setIndex(index+1);
-          getYogaImage(images[index]);
+        const blob = new Blob([response.data], {
+          type: "image/png",
+        });
+        const imgUrl = URL.createObjectURL(blob);
+        document.getelementbyid("yogaImg").src = imgUrl;
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  setInterval(() => requestAudioFile('chair'), 3 * 1000);
+  const checkPass = async (name) => {
+    await axios
+      .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
+      .then((response) => {
+        console.log(response.data);
+        setIndex(index + 1);
+        getYogaImage(images[index]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  setInterval(() => requestAudioFile("chair"), 3 * 1000);
   setInterval(() => submitLandmarkData(landmarks), 1000);
 
   function AudioPlayer({ audio }) {
-    return <audio id="tts" controls ref={audioRef} src={audio} />;
+    return (
+      <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
+    );
   }
 
   const stopWebCam = () => {
@@ -311,53 +313,90 @@ const YogaCoach = () => {
       const { search } = location;
       const queryObj = queryString.parse(search);
       const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn((isLogin === 'true'));
+      setIsLoggedIn(isLogin === "true");
       setRoutine(userRoutine);
-
     } catch {
       setIsLoggedIn(false);
     }
     getRoutine(routine);
     // getYogaImage(images[index]);
-
   }, []);
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn} webcamRef={webcamRef}></ConditionalHeader>
+      <ConditionalHeader
+        isLoggedIn={isLoggedIn}
+        webcamRef={webcamRef}
+        // timer1 = {timer1}
+        // timer2 = {timer2}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-        <div style={{ position: "absolute", marginLeft: "auto", marginRight: "auto", top: 200, left: 0, right: 700, zindex: 9 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            top: 200,
+            left: 0,
+            right: 700,
+            zindex: 9,
+          }}
+        >
           <img id="yogaImg" src={yogaImage} style={{ height: "20rem" }}></img>
         </div>
         <div>
-          <div style={{ width: "600px", fontSize: "1.2rem", fontWeight: "bold", padding: "1.5rem", position: "relative", left: "40%" }}>무희자세</div>
+          <div
+            style={{
+              width: "600px",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
+              padding: "1.5rem",
+              position: "relative",
+              left: "40%",
+            }}
+          >
+            무희자세
+          </div>
           <p>{message}</p>
           {/* type="audio/mpeg" */}
           <AudioPlayer {...{ audio }} />
           {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
-          <Webcam ref={webcamRef} style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 500,
-            right: 0,
-            zindex: 9,
-            width: 600,
-            height: 400
-          }} />
-          <canvas ref={canvasRef} style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 500,
-            right: 0,
-            zindex: 9,
-            width: 600,
-            height: 400
-          }}></canvas>
+          <Webcam
+            ref={webcamRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 500,
+              right: 0,
+              zindex: 9,
+              width: 600,
+              height: 400,
+            }}
+          />
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 500,
+              right: 0,
+              zindex: 9,
+              width: 600,
+              height: 400,
+            }}
+          ></canvas>
         </div>
       </div>
     </div>

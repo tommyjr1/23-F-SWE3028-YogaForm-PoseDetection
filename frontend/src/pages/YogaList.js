@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
-import ConditionalHeader from '../components/ConditionalHeader';
-import queryString from 'query-string'
+import ConditionalHeader from "../components/ConditionalHeader";
+import queryString from "query-string";
 
 const YogaList = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,14 +22,14 @@ const YogaList = () => {
     color: "#3B2C77",
     fontSize: "1.6rem",
   };
-  
+
   useEffect(() => {
-    try{
+    try {
       const { search } = location;
-      const queryObj = queryString.parse(search);	
+      const queryObj = queryString.parse(search);
       const { isLogin } = queryObj;
-      setIsLoggedIn((isLogin === 'true'));
-    }catch{
+      setIsLoggedIn(isLogin === "true");
+    } catch {
       console.log("no");
       setIsLoggedIn(false);
     }
@@ -43,12 +43,13 @@ const YogaList = () => {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-around",
+          justifyContent: "space-between",
         }}
       >
-        <p>
-            afsadjflakd
+        <h1 style={{ paddingLeft: "40px" }}>Instruction</h1>
+        <p style={{ fontSize: "1.4rem", paddingRight: "180px" }}>
+          {" "}
+          qqqqqqqqqqqqqqqqq
         </p>
       </div>
     </div>
