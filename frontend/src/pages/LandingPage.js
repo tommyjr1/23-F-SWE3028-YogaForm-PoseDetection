@@ -3,6 +3,9 @@ import yogaIcon from "../assets/yoga_icon.png";
 import yogaImages from "../assets/yoga_images.png";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import YogaCoach from "./YogaCoach";
+import Instruction from "./Instruction";
+import LogInPage from "./LogInPage";
 
 const LandingPage = () => {
   const bodyStyle = {
@@ -24,9 +27,14 @@ const LandingPage = () => {
   const goToInstrction = () => {
     navigate("/Instruction");
   };
-
+  const goToLogInPage = () => {
+    navigate("/LogInPage");
+  };
   const goToYogaList = () => {
-    navigate("/YogaList");
+    navigate("/YogaList")
+  }
+  const goToLandingPage = () => {
+    navigate("/LandingPage");
   };
 
   return (
@@ -46,7 +54,7 @@ const LandingPage = () => {
         <div></div>
         <div></div>
         <div></div>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" style={buttonStyle} onClick={goToLandingPage}>
           HOME
         </Button>
         <Button variany="secondary" style={buttonStyle}>
@@ -65,6 +73,7 @@ const LandingPage = () => {
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
+          onClick={goToLogInPage}
         >
           Log-in
         </Button>

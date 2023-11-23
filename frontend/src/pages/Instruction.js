@@ -7,7 +7,6 @@ import * as cam from "@mediapipe/camera_utils";
 import { Pose } from "@mediapipe/pose";
 import { useNavigate } from "react-router-dom";
 
-
 function Instruction() {
   const bodyStyle = {
     position: "absolute",
@@ -68,10 +67,10 @@ function Instruction() {
   }
 
   const stopWebCam = () => {
-    if(webcamRef.current.video){
+    if (webcamRef.current.video) {
       let stream = webcamRef.current.video.srcObject;
       const tracks = stream.getTracks();
-      tracks.forEach((track)=>track.stop());
+      tracks.forEach((track) => track.stop());
       webcamRef.current.video.srcObject = null;
     }
   };
@@ -107,10 +106,6 @@ function Instruction() {
       });
       camera.start();
     }
-     return () => {
-      console.log("아왜이래");
-      stopWebCam();
-    };
   }, []);
 
   const checkVisibility = (a, b, c) => {
@@ -128,13 +123,20 @@ function Instruction() {
 
   const navigate = useNavigate();
   const goToYogaCoach = () => {
-    //stopWebCam();
+    stopWebCam();
     navigate("/YogaCoach");
   };
-
+  const goToLogInPage = () => {
+    stopWebCam();
+    navigate("/LogInPage");
+  };
   const goToYogaList = () => {
-    //stopWebCam();
+    stopWebCam();
     navigate("/YogaList");
+  };
+  const goToLandingPage = () => {
+    stopWebCam();
+    navigate("/LandingPage");
   };
 
   return (
@@ -154,7 +156,7 @@ function Instruction() {
         <div></div>
         <div></div>
         <div></div>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" style={buttonStyle} onClick={goToLandingPage}>
           HOME
         </Button>
         <Button variany="secondary" style={buttonStyle}>
@@ -173,6 +175,7 @@ function Instruction() {
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
+          onClick={goToLogInPage}
         >
           Log-in
         </Button>

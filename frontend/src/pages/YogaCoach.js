@@ -3,11 +3,12 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
-import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
-import { useNavigate } from "react-router-dom";
+// import AudioPlayer from 'react-h5-audio-player';
 
 const YogaCoach = () => {
   const bodyStyle = {
@@ -27,25 +28,44 @@ const YogaCoach = () => {
   };
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const audioRef = useRef(null);
   let camera = null;
   // const [userPoseAngle, setUserPoseAngle] = use
   let userPoseAngle = null;
 
   const [message, setMessage] = useState("");
+  const [audio, setAudio] = useState();
 
-  function onResults(results) {
+  const navigate = useNavigate();
+  const goToLogInPage = () => {
+    stopWebCam();
+    navigate("/LogInPage");
+  };
+  const goToYogaList = () => {
+    stopWebCam();
+    navigate("/YogaList");
+  };
+  const goToLandingPage = () => {
+    stopWebCam();
+    navigate("/LandingPage");
+  };
+
+  async function onResults(results) {
     let landmarks = results.poseLandmarks; // * all the landmarks in the pose
-    let leftShoulder = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
-    let leftElbow = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
-    let leftWrist = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
+    // submitLandmarkData(landmarks);
+    // requestAudioFile();
+
     //  * getting the values for the three landmarks that we want to use
     try {
       // * we get errors every time the landmarks are not available
       // * will provide dynamic landmarks later "landmarks[mediapipePose.POSE_LANDMARKS.{landmark}]"
-      // let leftShoulder = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER];
-      // let leftElbow = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
-      // let leftWrist = landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
-      calculatePoseAngle(leftShoulder, leftElbow, leftWrist);
+      let leftShoulder = await landmarks[
+        mediapipePose.POSE_LANDMARKS.LEFT_SHOULDER
+      ];
+      let leftElbow = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_ELBOW];
+      let leftWrist = await landmarks[mediapipePose.POSE_LANDMARKS.LEFT_WRIST];
+      // console.log(leftWrist);
+      // calculatePoseAngle(leftWrist, leftElbow, leftShoulder);
     } catch (error) {
       // console.error(error);
     }
@@ -66,45 +86,43 @@ const YogaCoach = () => {
     );
     drawConnectors(
       canvasCtx,
-      //results.poseLandmarks,
-      [leftShoulder, leftElbow, leftWrist],
+      results.poseLandmarks,
       mediapipePose.POSE_CONNECTIONS,
       { color: "white", lineWidth: 1 }
     );
     // * The dots are the landmarks
-    drawLandmarks(
-      canvasCtx,
-      //results.poseLandmarks,
-      [leftShoulder, leftElbow, leftWrist],
-      {
-        color: "red",
-        lineWidth: 1,
-        radius: 2,
-      }
-    );
+    drawLandmarks(canvasCtx, results.poseLandmarks, {
+      color: "red",
+      lineWidth: 1,
+      radius: 2,
+    });
     canvasCtx.restore();
   }
 
-  const calculatePoseAngle = (a, b, c) => {
-    let radians =
-      Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x); // * fetching the radians using the atan2 function
-    let angle = radians * (180 / Math.PI); // * calculating the angle from the radian
-    // need to provide dynamic values for angles as per requirement later along with the number of reps.
-    if (angle > 180) {
-      // * if the angle is greater than 180, then it is negative so changing it back to positive or an actual angle possible for a human being, lol..
-      angle = 360 - angle;
-    }
-    if (angle > 0 && angle < 180) {
-      // * if the angle is positive, then it is a positive angle
-      // console.log(angle.toFixed(2), "currentAngle");
-    }
+  const calculatePoseAngle = async (a, b, c) => {
+    // Calculate the dot product and the magnitudes of the vectors
+    let dot_product = await ((b.x - a.x) * (b.x - c.x) +
+      (b.y - a.y) * (b.y - c.y) +
+      (b.z - a.z) * (b.z - c.z));
+    let point_1_2_mag = await Math.sqrt(
+      Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2) + Math.pow(b.z - a.z, 2)
+    );
+    let point_2_3_mag = await Math.sqrt(
+      Math.pow(b.x - c.x, 2) + Math.pow(b.y - c.y, 2) + Math.pow(b.z - c.z, 2)
+    );
+
+    // Calculate the angle between the left hand, elbow, and shoulder landmarks in degrees
+    let angle = await (Math.acos(
+      dot_product / (point_1_2_mag * point_2_3_mag)
+    ) *
+      (180 / Math.PI));
+
     userPoseAngle = angle.toFixed(2);
-    //console.log(userPoseAngle);
+    console.log(userPoseAngle);
     if (userPoseAngle != null) {
-      submitAngleData();
-      checkAngle();
+      // submitAngleData();
+      // checkAngle();
     }
-    // calculateReps(userPoseAngle);
   };
 
   const checkAngle = async () => {
@@ -113,27 +131,84 @@ const YogaCoach = () => {
       .then((response) => {
         if (response.data !== "none") {
           setMessage(response.data);
-          //console.log(response.data);
+          console.log(response.data);
         }
       })
       .catch((error) => {
-        //console.log(error);
+        console.log(error);
       });
   };
   const submitAngleData = async () => {
-    //console.log(typeof userPoseAngle);
+    // console.log(typeof userPoseAngle);
 
     await axios
       .post("http://3.35.60.125:8080/api/angle", {
-        value: userPoseAngle,
+        value: userPoseAngle
       })
       .then((response) => {
-        //console.log(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        console.log(error);
       });
   };
+
+  const submitLandmarkData = async (landmarks) => {
+    // console.log(typeof userPoseAngle);
+
+    await axios
+      .post("http://3.35.60.125:8080/api/angle", {
+        value: JSON.stringify(landmarks),
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const requestAudioFile = async () => {
+    // const isNext = await axios.get('http://3.35.60.125:8080/api/complete', {
+
+    // })
+    console.log("request audio");
+
+    const { data } = await axios
+      .get("http://3.35.60.125:8080/api/feedback", {
+        responseType: "arraybuffer",
+        headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+      })
+      .then((resp) => resp);
+    const blob = new Blob([data], {
+      type: "audio/wav",
+    });
+    const url = URL.createObjectURL(blob);
+    setAudio(url);
+
+    var audio_bell = document.getElementById("tts");
+    setInterval(function () {
+      audio_bell.play();
+    }, 2.5 * 1000);
+
+    // const audioElement = audioRef.current;
+    // If audio source changes and it's set
+    // if (audio && audioElement) {
+    //   audioElement.autoplay = true; // Set autoplay attribute
+    //   audioElement.load(); // Reload the audio element
+    // }
+
+    // const element = document.getElementById('tts');
+    // element.click();
+    // audioElement.play();
+  };
+
+  setInterval(requestAudioFile, 2000);
+  setInterval(submitLandmarkData, 1000);
+
+  function AudioPlayer({ audio }) {
+    return <audio id="tts" controls ref={audioRef} src={audio} />;
+  }
 
   const stopWebCam = () => {
     if (webcamRef.current.video) {
@@ -145,24 +220,27 @@ const YogaCoach = () => {
   };
 
   useEffect(() => {
-    if (typeof webcamRef.current !== "undefined" && webcamRef.current) {
-      const userPose = new Pose({
-        locateFile: (file) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-        },
-      });
-      userPose.setOptions({
-        selfieMode: true,
-        modelComplexity: 0,
-        smoothLandmarks: true,
-        enableSegmentation: false,
-        smoothSegmentation: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-      userPose.onResults(onResults);
-
-      console.log(webcamRef.current.video);
+    const userPose = new Pose({
+      locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+      },
+    });
+    userPose.setOptions({
+      selfieMode: true,
+      modelComplexity: 0,
+      smoothLandmarks: true,
+      enableSegmentation: false,
+      smoothSegmentation: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+    userPose.onResults(onResults);
+    if (
+      typeof webcamRef.current !== "undefined" &&
+      webcamRef.current &&
+      webcamRef.current.video
+    ) {
+      // console.log(webcamRef.current.video);
       camera = new cam.Camera(webcamRef.current.video, {
         // no issues with the exaustive-deps. We do not need to store the camera object for current purposes
         onFrame: async () => {
@@ -176,19 +254,6 @@ const YogaCoach = () => {
       camera.start();
     }
   }, []);
-  // Tts.getInitStatus().then(() => {
-  //   Tts.speak('Hello, world!', {
-  //     iosVoiceId: 'com.apple.ttsbundle.Moira-compact',
-  //     rate: 0.5,
-  //   });
-  //   Tts.stop();
-  // });
-
-  const navigate = useNavigate();
-  const goToYogaList = () => {
-    stopWebCam();
-    navigate("/YogaList");
-  };
 
   return (
     <div className="App" style={bodyStyle}>
@@ -207,7 +272,7 @@ const YogaCoach = () => {
         <div></div>
         <div></div>
         <div></div>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" style={buttonStyle} onClick={goToLandingPage}>
           HOME
         </Button>
         <Button variany="secondary" style={buttonStyle}>
@@ -226,6 +291,7 @@ const YogaCoach = () => {
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
+          onClick={goToLogInPage}
         >
           My page
         </Button>
@@ -266,7 +332,9 @@ const YogaCoach = () => {
             무희자세
           </div>
           <p>{message}</p>
-
+          {/* type="audio/mpeg" */}
+          <AudioPlayer {...{ audio }} />
+          {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
           <Webcam
             ref={webcamRef}
             style={{
