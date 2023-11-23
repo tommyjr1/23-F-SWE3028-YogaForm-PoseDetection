@@ -72,8 +72,12 @@ const LandingPage = () => {
             <img src={yogaImages}></img>
           </div>
         </div>
+        <div>
+          <img src={yogaImages}></img>
+        </div>
+      </div>
     </div>
-    );
+  );
 };
 
 export default LandingPage;
