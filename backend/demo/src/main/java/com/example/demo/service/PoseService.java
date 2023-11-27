@@ -49,9 +49,9 @@ public class PoseService {
         // if(b==null){b=zero;}
         // if(c==null){c=zero;}
 
-        System.out.println("one: "+ landmarkArray.get(one).toString());
-        System.out.println("b: "+b.toString());
-        System.out.println(c);
+        // System.out.println("one: "+ landmarkArray.get(one).toString());
+        // System.out.println("b: "+b.toString());
+        // System.out.println(c);
 
 
         // Calculate the dot product and the magnitudes of the vectors

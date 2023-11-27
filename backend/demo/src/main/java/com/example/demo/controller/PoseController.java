@@ -38,7 +38,8 @@ public class PoseController {
     private static final ObjectMapper mapper = new ObjectMapper();
     private Joints currentJoints;
     private Pose currentPose;
-    
+    private String feedback;
+
     @Autowired
     PoseService poseService;
 
@@ -60,10 +61,10 @@ public class PoseController {
     @PostMapping("/yf/pose/angle")
     public void postData(@RequestBody Angle angle){
 
-        System.out.println(angle.toString());
+        // System.out.println(angle.toString());
 
         String values = angle.getValue();
-        System.out.println(values);
+        // System.out.println(values);
 
         landmark1 = null;
         try {
@@ -71,14 +72,17 @@ public class PoseController {
         } catch (JsonProcessingException e) {};
 
         currentJoints = poseService.calculateAll(landmark1);
-        System.err.println(currentJoints.getLelbow());
+        System.out.println(currentJoints.getLelbow());
     }
 
     @GetMapping("/yf/pose/feedback/{sentence}")
     public ResponseEntity getFeedback(@PathVariable("sentence") String sentence) throws Exception{
         // System.out.println(sentence);
-        String feedback = sentence;
-        // feedback = poseService.comparePose(currentPose, currentJoints);
+        feedback = sentence;
+        // if(currentJoints.!=null){
+        //     feedback = poseService.comparePose(currentPose, currentJoints);
+        // }
+        System.out.println(feedback);
         Tts.main(feedback);
         File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
         byte[] file = Files.readAllBytes(f.toPath());
@@ -88,9 +92,14 @@ public class PoseController {
         ResponseEntity<byte[]> response = new ResponseEntity(file, headers, HttpStatus.OK);
 
         return response;
-
-        
     }
+
+    @GetMapping("/yf/pose/pass")
+    public boolean getPass(){
+        if(feedback=="Good job."){ return true;}
+        else{ return false;}
+    }
+
 
     @ResponseBody
     @PostMapping("/yf/pose/addPose")
