@@ -3,8 +3,10 @@ import React, { useRef } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useScript from "../hooks/useScript";
+import ConditionalHeader from "../components/ConditionalHeader";
 
 const LogInPage = () => {
+  const isLoggedIn = false;
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -22,8 +24,8 @@ const LogInPage = () => {
   };
   const navigate = useNavigate();
   const goToYogaList = () => {
-    navigate("/YogaList")
-  }
+    navigate("/YogaList");
+  };
   const goToLandingPage = () => {
     navigate("/LandingPage");
   };
@@ -36,21 +38,18 @@ const LogInPage = () => {
     await postLoginToken(res.credential);
   };
 
-  const postLoginToken = async idToken => {
-
+  const postLoginToken = async (idToken) => {
     await axios
-    .post("http://3.35.60.125:8080/yf/user/login",{
-      credential: JSON.stringify(idToken)
-    })
-    .then((response)=>{
-      // console.log(response.data)
-      console.log("yes");
-      navigate('/?isLogin=true');
-    })
-    .catch((error)=>{
-      console.log("no");
-      console.log(error);
-    });
+      .post("http://3.35.60.125:8080/yf/user/login", {
+        credential: JSON.stringify(idToken),
+      })
+      .then((response) => {
+        // console.log(response.data)
+        navigate("/?isLogin=true");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   function GoogleLogin({ onGoogleLogIn = () => {}, text = "signin_with" }) {
@@ -74,45 +73,7 @@ const LogInPage = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <header
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          paddingTop: "1rem",
-          paddingBottom: "1rem",
-          justifyContent: "space-around",
-        }}
-      >
-        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>YOGA FORM</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <Button variany="secondary" style={buttonStyle} onClick={goToLandingPage}>
-          HOME
-        </Button>
-        <Button variany="secondary" style={buttonStyle}>
-          ABOUT
-        </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
-          YOGA
-        </Button>
-        <Button
-          variany="secondary"
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "100px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
-          onClick={goToLogInPage}
-        >
-          Log-in
-        </Button>
-      </header>
+      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         style={{
