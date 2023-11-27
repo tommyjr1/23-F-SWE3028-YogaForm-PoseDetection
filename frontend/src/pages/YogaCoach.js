@@ -41,6 +41,7 @@ const YogaCoach = () => {
   const [landmarks, setLandmarks] = useState();
   // const [first, setFirst] = useState(true);
   const [index, setIndex] = useState(0);
+  const [length, setLength] = useState();
   const [pass, setPass] = useState(false);
   let images = [];
 
@@ -218,8 +219,10 @@ const YogaCoach = () => {
         responseType: "json"
       })
       .then((response) => {
-        console.log(response.data);
-        images = response.data;
+        // console.log(response.data);
+        images = response.data.split(',');
+        setLength(images.length);
+        console.log(images);
       })
       .catch((error) => {
         console.log(error);
@@ -228,18 +231,21 @@ const YogaCoach = () => {
 
   const getYogaImage = async (name) => {
     // console.log(typeof userPoseAngle);
+    console.log("getYogaImage function");
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
+      .get(`http://3.35.60.125:8080/yf/pose/getInfo/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       })
       .then((response) => {
+        console.log('get image');
         const blob = new Blob([response.data], {
           type: "image/png",
         });
         const imgUrl = URL.createObjectURL(blob);
         document.getelementbyid("yogaImg").src = imgUrl;
+        document.getelementbyid("yogaName").text = name;
       })
       .catch((error) => {
         console.log(error);
@@ -320,8 +326,10 @@ const YogaCoach = () => {
       setIsLoggedIn(false);
     }
     getRoutine(routine);
-    // getYogaImage(images[index]);
-    console.log("useeffect");
+    while (images != []){
+    };
+    getYogaImage(images[index]);
+
     const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
     const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
 
@@ -363,7 +371,7 @@ const YogaCoach = () => {
           <img id="yogaImg" src={yogaImage} style={{ height: "20rem" }}></img>
         </div>
         <div>
-          <div
+          <div id="yogaName"
             style={{
               width: "600px",
               fontSize: "1.2rem",
