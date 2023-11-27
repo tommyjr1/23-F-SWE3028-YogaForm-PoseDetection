@@ -187,10 +187,14 @@ const YogaCoach = () => {
     var audio_bell = document.getElementById("tts");
     // audio_bell.src(url);
     // audio_bell.play();
-
-    setInterval(function () {
+    audio_bell.oncanplaythrough = function () {
+      // This event is fired when the browser can play the audio without stopping for buffering
       audio_bell.play();
-    }, 3 * 1000);
+    };
+
+    // setInterval(function () {
+    //   audio_bell.play();
+    // }, 3 * 1000);
     checkPass(images[index]);
 
     // const audioElement = audioRef.current;
@@ -215,7 +219,7 @@ const YogaCoach = () => {
       })
       .then((response) => {
         console.log(response.data);
-        // images = response.data;
+        images = response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -255,8 +259,6 @@ const YogaCoach = () => {
       });
   };
 
-  setInterval(() => requestAudioFile("chair"), 3 * 1000);
-  setInterval(() => submitLandmarkData(landmarks), 1000);
 
   function AudioPlayer({ audio }) {
     return (
@@ -313,21 +315,30 @@ const YogaCoach = () => {
       const queryObj = queryString.parse(search);
       const { isLogin, userRoutine } = queryObj;
       setIsLoggedIn(isLogin === "true");
-      setRoutine(userRoutine);
+      // setRoutine(userRoutine);
     } catch {
       setIsLoggedIn(false);
     }
     getRoutine(routine);
     // getYogaImage(images[index]);
-  }, []);
+    console.log("useeffect");
+    const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
+    const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
+
+    return () => {
+      clearInterval(timer1);
+      clearInterval(timer2);
+    };
+
+  }, [location.pathname]);
 
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader
         isLoggedIn={isLoggedIn}
         webcamRef={webcamRef}
-        // timer1 = {timer1}
-        // timer2 = {timer2}
+      // timer1 = {timer1}
+      // timer2 = {timer2}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
