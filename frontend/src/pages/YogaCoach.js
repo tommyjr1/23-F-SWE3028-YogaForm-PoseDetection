@@ -3,13 +3,12 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
+import queryString from "query-string";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
-import queryString from "query-string";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

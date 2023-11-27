@@ -1,12 +1,16 @@
-package com.example.demo.datatype;
+package com.example.demo.dto.pose;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Landmark {
     @JsonProperty("x")
     private @Getter @Setter Double x;
@@ -17,19 +21,6 @@ public class Landmark {
     private @Getter @Setter Double z;
     @JsonProperty("visibility")
     private @Getter @Setter Double visibility;
-
-
-    public Landmark() {
-
-    }
-
-    public Landmark(final Double x, final Double y, final Double z, final Double visibility) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.visibility = visibility;
-
-    }
 
 
     @Override
