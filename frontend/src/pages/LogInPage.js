@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import React, { useRef } from "react";
+import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import LandingPage from "./LandingPage";
 import useScript from "../hooks/useScript";
 import ConditionalHeader from "../components/ConditionalHeader";
 
