@@ -20,11 +20,12 @@ import com.google.protobuf.ByteString;
 public class Tts {
 
   /** Demonstrates using the Text-to-Speech API. */
-  public static ByteString main(String... args) throws Exception {
+  public static void main(String... args) throws Exception {
     // Instantiates a client
     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
       // Set the text input to be synthesized
-      SynthesisInput input = SynthesisInput.newBuilder().setText("Hello, World!").build();
+      System.out.println(String.join(" ", args));
+      SynthesisInput input = SynthesisInput.newBuilder().setText(String.join(" ", args)).build();
 
       // Build the voice request, select the language code ("en-US") and the ssml voice gender
       // ("neutral")
@@ -53,7 +54,7 @@ public class Tts {
         System.out.println("Audio content written to file \"output.mp3\"");
       }
 
-      return audioContents;
+      // return audioContents;
 
     }
   }
