@@ -85,7 +85,7 @@ export default function ConditionalHeader(props) {
           ABOUT
         </Button>
         <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
-          YOGA
+          POSES
         </Button>
         <Button
           variany="secondary"
