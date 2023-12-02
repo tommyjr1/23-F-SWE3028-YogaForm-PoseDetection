@@ -36,14 +36,16 @@ const YogaCoach = () => {
   // const [userPoseAngle, setUserPoseAngle] = use
   let userPoseAngle = null;
 
-  const [message, setMessage] = useState("");
   const [audio, setAudio] = useState();
   const [landmarks, setLandmarks] = useState();
   // const [first, setFirst] = useState(true);
   const [index, setIndex] = useState(0);
-  const [length, setLength] = useState();
   const [pass, setPass] = useState(false);
-  let images = [];
+  const [images, setImages] = useState([]);
+  const [imageUrl, setImageUrl] = useState(yogaImage);
+  const [yogaName, setYogaName] = useState('무희자세');
+  // let images = [];
+  // let images = [];
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -220,9 +222,8 @@ const YogaCoach = () => {
       })
       .then((response) => {
         // console.log(response.data);
-        images = response.data.split(',');
-        setLength(images.length);
-        console.log(images);
+        // images = response.data.split(',');
+        setImages(response.data.split(','));
       })
       .catch((error) => {
         console.log(error);
@@ -244,8 +245,10 @@ const YogaCoach = () => {
           type: "image/png",
         });
         const imgUrl = URL.createObjectURL(blob);
-        document.getelementbyid("yogaImg").src = imgUrl;
-        document.getelementbyid("yogaName").text = name;
+        // document.getelementbyid("yogaImg").src = imgUrl;
+        // document.getelementbyid("yogaName").text = name;
+        setImageUrl(imgUrl);
+        setYogaName(name);
       })
       .catch((error) => {
         console.log(error);
@@ -326,19 +329,26 @@ const YogaCoach = () => {
       setIsLoggedIn(false);
     }
     getRoutine(routine);
-    while (images != []){
-    };
-    getYogaImage(images[index]);
 
-    const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
+    // const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
     const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
 
     return () => {
-      clearInterval(timer1);
+      // clearInterval(timer1);
       clearInterval(timer2);
     };
 
   }, [location.pathname]);
+
+  useEffect(() => {
+    // Perform action when images or index change
+    console.log("images array changed");
+    console.log(images);
+    if (images.length > 0 && index < images.length) {
+      // Do something with images[index]
+      getYogaImage(images[index]);
+    }
+  }, [images, index]);
 
   return (
     <div className="App" style={bodyStyle}>
@@ -368,10 +378,10 @@ const YogaCoach = () => {
             zindex: 9,
           }}
         >
-          <img id="yogaImg" src={yogaImage} style={{ height: "20rem" }}></img>
+          <img id="yogaImg" src={imageUrl} style={{ height: "20rem" }}></img>
         </div>
         <div>
-          <div id="yogaName"
+          <div
             style={{
               width: "600px",
               fontSize: "1.2rem",
@@ -381,9 +391,8 @@ const YogaCoach = () => {
               left: "40%",
             }}
           >
-            무희자세
+            <p id="yogaName">{yogaName}</p>
           </div>
-          <p>{message}</p>
           {/* type="audio/mpeg" */}
           <AudioPlayer {...{ audio }} />
           {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
