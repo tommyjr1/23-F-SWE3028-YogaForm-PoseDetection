@@ -37,6 +37,7 @@ public class PoseController {
     private List<Pose> pose1 = new ArrayList<>();
     private static final ObjectMapper mapper = new ObjectMapper();
     private Joints currentJoints;
+    private Joints newJoints;
     private Pose currentPose;
     private String feedback;
 
@@ -59,7 +60,7 @@ public class PoseController {
 
     @ResponseBody
     @PostMapping("/yf/pose/angle")
-    public void postData(@RequestBody Angle angle){
+    public boolean postData(@RequestBody Angle angle) throws Exception {
 
         // System.out.println(angle.toString());
 
@@ -69,33 +70,65 @@ public class PoseController {
         landmark1 = null;
         try {
             landmark1 = mapper.readValue(values, new TypeReference<List<Landmark>>() {});
-        } catch (JsonProcessingException e) {};
+            newJoints = poseService.calculateAll(landmark1);
 
-        currentJoints = poseService.calculateAll(landmark1);
-        System.out.println(currentJoints.getLelbow());
+            return true ;
+
+        } catch (JsonProcessingException e) {
+            return false;
+        }
+
+        
+    }
+    
+    @ResponseBody
+    @GetMapping("yf/pose/feedback/{poseName}")
+    public ResponseEntity getData(@PathVariable("poseName") String poseName) throws Exception {
+        boolean sendFeeadback=false;
+        ResponseEntity<byte[]> response = ResponseEntity.noContent().build();
+
+        // System.out.println(angle.toString());
+
+        if(currentJoints!=null)
+        {
+            sendFeeadback = poseService.compareAngles(currentJoints, newJoints);
+            if (sendFeeadback){
+                feedback = poseService.comparePose(currentPose, currentJoints);
+                Tts.main(feedback);
+                File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
+                byte[] file = Files.readAllBytes(f.toPath());
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Content-Disposition", "attachment; filename=\"" + f.getName() +".wav\"");
+                response = new ResponseEntity(file, headers, HttpStatus.OK);
+            }
+        }
+        currentJoints=newJoints;
+
+        return response ;
     }
 
-    @GetMapping("/yf/pose/feedback/{sentence}")
-    public ResponseEntity getFeedback(@PathVariable("sentence") String sentence) throws Exception{
-        // System.out.println(sentence);
-        feedback = sentence;
-        // if(currentJoints.!=null){
-        //     feedback = poseService.comparePose(currentPose, currentJoints);
-        // }
-        System.out.println(feedback);
-        Tts.main(feedback);
-        File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
-        byte[] file = Files.readAllBytes(f.toPath());
+    // @GetMapping("/yf/pose/feedback/{sentence}")
+    // public ResponseEntity getFeedback(@PathVariable("sentence") String sentence) throws Exception{
+    //     // System.out.println(sentence);
+    //     feedback = sentence;
+    //     // if(currentJoints.!=null){
+    //     //     feedback = poseService.comparePose(currentPose, currentJoints);
+    //     // }
+    //     System.out.println(feedback);
+    //     Tts.main(feedback);
+    //     File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
+    //     byte[] file = Files.readAllBytes(f.toPath());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Disposition", "attachment; filename=\"" + f.getName() +".wav\"");
-        ResponseEntity<byte[]> response = new ResponseEntity(file, headers, HttpStatus.OK);
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.set("Content-Disposition", "attachment; filename=\"" + f.getName() +".wav\"");
+    //     ResponseEntity<byte[]> response = new ResponseEntity(file, headers, HttpStatus.OK);
 
-        return response;
-    }
+    //     return response;
+    // }
 
-    @GetMapping("/yf/pose/pass")
-    public boolean getPass(){
+    @GetMapping("/yf/pose/pass/{poseName}")
+    public boolean getPass(@PathVariable("poseName") String poseName){
         if(feedback=="Good job."){ return true;}
         else{ return false;}
     }
