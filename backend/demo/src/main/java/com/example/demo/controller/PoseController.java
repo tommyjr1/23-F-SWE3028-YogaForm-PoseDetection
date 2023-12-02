@@ -87,12 +87,14 @@ public class PoseController {
         boolean sendFeeadback=false;
         ResponseEntity<byte[]> response = ResponseEntity.noContent().build();
 
-        // System.out.println(angle.toString());
+        System.out.println(poseName);
+
 
         if(currentJoints!=null)
         {
             sendFeeadback = poseService.compareAngles(currentJoints, newJoints);
             if (sendFeeadback){
+                currentPose = poseService.getPosebyName(poseName);
                 feedback = poseService.comparePose(currentPose, currentJoints);
                 Tts.main(feedback);
                 File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
@@ -104,6 +106,8 @@ public class PoseController {
             }
         }
         currentJoints=newJoints;
+        System.out.println(sendFeeadback);
+
 
         return response ;
     }
