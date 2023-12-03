@@ -44,20 +44,6 @@ const YogaCoach = () => {
   const [pass, setPass] = useState(false);
   let images = [];
 
-  const navigate = useNavigate();
-  const goToLogInPage = () => {
-    stopWebCam();
-    navigate("/LogInPage");
-  };
-  const goToYogaList = () => {
-    stopWebCam();
-    navigate("/YogaList");
-  };
-  const goToLandingPage = () => {
-    stopWebCam();
-    navigate("/LandingPage");
-  };
-
   async function onResults(results) {
     // let landmarks = results.poseLandmarks; // * all the landmarks in the pose
     setLandmarks(results.poseLandmarks);
@@ -188,9 +174,10 @@ const YogaCoach = () => {
     // audio_bell.src(url);
     // audio_bell.play();
 
-    setInterval(function () {
+    audio_bell.oncanplaythrough = function () {
       audio_bell.play();
-    }, 3 * 1000);
+    };
+
     checkPass(images[index]);
 
     // const audioElement = audioRef.current;
@@ -254,9 +241,6 @@ const YogaCoach = () => {
       });
   };
 
-  setInterval(() => requestAudioFile("chair"), 3 * 1000);
-  setInterval(() => submitLandmarkData(landmarks), 1000);
-
   function AudioPlayer({ audio }) {
     return (
       <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
@@ -264,11 +248,15 @@ const YogaCoach = () => {
   }
 
   const stopWebCam = () => {
-    if (webcamRef.current.video) {
-      let stream = webcamRef.current.video.srcObject;
-      const tracks = stream.getTracks();
-      tracks.forEach((track) => track.stop());
-      webcamRef.current.video.srcObject = null;
+    try {
+      if (webcamRef.current.video) {
+        let stream = webcamRef.current.video.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop());
+        webcamRef.current.video.srcObject = null;
+      }
+    } catch {
+      console.log("no camera usage");
     }
   };
 
@@ -318,15 +306,21 @@ const YogaCoach = () => {
     }
     getRoutine(routine);
     // getYogaImage(images[index]);
-  }, []);
+
+    const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
+    const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
+
+    return () => {
+      clearInterval(timer1);
+      clearInterval(timer2);
+    };
+  }, [location.pathname]);
 
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader
         isLoggedIn={isLoggedIn}
         webcamRef={webcamRef}
-        // timer1 = {timer1}
-        // timer2 = {timer2}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div

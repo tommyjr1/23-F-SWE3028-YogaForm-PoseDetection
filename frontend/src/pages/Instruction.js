@@ -120,7 +120,10 @@ function Instruction() {
       console.log("no");
       setIsLoggedIn(false);
     }
-  }, [location]);
+    return () => {
+      //stopWebCam();
+    };
+  }, [location.pathname]);
 
   const checkVisibility = (a, b, c) => {
     if (
@@ -143,14 +146,6 @@ function Instruction() {
     } else {
       navigate("/YogaCoach?routine=defaultEasy");
     }
-  };
-  const goToYogaList = () => {
-    stopWebCam();
-    navigate("/YogaList");
-  };
-  const goToLandingPage = () => {
-    stopWebCam();
-    navigate("/LandingPage");
   };
 
   return (

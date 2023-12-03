@@ -17,12 +17,10 @@ export default function ConditionalHeader(props) {
   const goToLogInPage = () => {
     stopWebCam();
     navigate("/LogInPage");
-    window.location.reload();
   };
   const goToMyPage = () => {
     stopWebCam();
     navigate("/MyPage");
-    window.location.reload();
   };
   const goToYogaList = () => {
     stopWebCam();
@@ -31,7 +29,6 @@ export default function ConditionalHeader(props) {
     } else {
       navigate("/YogaList");
     }
-    window.location.reload();
   };
   const goToLandingPage = () => {
     stopWebCam();
@@ -40,7 +37,6 @@ export default function ConditionalHeader(props) {
     } else {
       navigate("/");
     }
-    window.location.reload();
   };
 
   const stopWebCam = () => {
