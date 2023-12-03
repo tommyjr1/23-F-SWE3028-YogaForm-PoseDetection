@@ -42,10 +42,10 @@ const YogaCoach = () => {
   const [index, setIndex] = useState(0);
   const [pass, setPass] = useState(false);
   const [images, setImages] = useState([]);
+  const [grades, setGrades] = useState([]);
   const [imageUrl, setImageUrl] = useState(yogaImage);
   const [yogaName, setYogaName] = useState('무희자세');
-  // let images = [];
-  // let images = [];
+  const [x, setX] = useState(false);
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -56,9 +56,9 @@ const YogaCoach = () => {
     stopWebCam();
     navigate("/YogaList");
   };
-  const goToLandingPage = () => {
+  const goToEndingPage = () => {
     stopWebCam();
-    navigate("/LandingPage");
+    navigate("/EndingPage");
   };
 
   async function onResults(results) {
@@ -144,6 +144,7 @@ const YogaCoach = () => {
       })
       .then((response) => {
         console.log(response.data);
+        requestAudioFile(images[index]);
       })
       .catch((error) => {
         console.log(error);
@@ -162,6 +163,7 @@ const YogaCoach = () => {
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })
       .then((response) => {
+        console.log(response.data);
         const blob = new Blob([response.data], {
           type: "audio/wav",
         });
@@ -224,6 +226,7 @@ const YogaCoach = () => {
         // console.log(response.data);
         // images = response.data.split(',');
         setImages(response.data.split(','));
+        setGrades([Array(response.data.split(',').length).fill(0)])
       })
       .catch((error) => {
         console.log(error);
@@ -260,8 +263,12 @@ const YogaCoach = () => {
       .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
       .then((response) => {
         console.log(response.data);
-        setIndex(index + 1);
-        getYogaImage(images[index]);
+        if (response.data >= 0){
+          const updatedGrades = [...grades]; // Create a copy of the grades array
+          updatedGrades[index] = 100 - response.data; // Update the value at index 0 to 96
+          setGrades(updatedGrades);
+          setIndex(index + 1);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -342,11 +349,13 @@ const YogaCoach = () => {
 
   useEffect(() => {
     // Perform action when images or index change
-    console.log("images array changed");
-    console.log(images);
     if (images.length > 0 && index < images.length) {
       // Do something with images[index]
       getYogaImage(images[index]);
+    }
+
+    if (index !== 0 && index >= images.length){
+      setX(true);
     }
   }, [images, index]);
 
@@ -425,6 +434,23 @@ const YogaCoach = () => {
             }}
           ></canvas>
         </div>
+        <button
+        style={{
+          opacity: x ? 100 : 0,
+          position: "absolute",
+          left: "80%",
+          bottom: "10%",
+          backgroundColor: "#FFF2CC",
+          border: "1px solid #FFF2CC",
+          borderRadius: "2rem",
+          width: "100px",
+          color: "#3B2C77",
+          fontSize: "1.6rem",
+        }}
+        onClick={goToEndingPage}
+      >
+        RESULTS
+      </button>
       </div>
     </div>
   );
