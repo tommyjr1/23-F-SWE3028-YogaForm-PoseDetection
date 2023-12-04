@@ -4,16 +4,18 @@ import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import queryString from "query-string";
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useLocation, useNavigate, useHistory } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
+import { throttle } from "lodash";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState("defaultEasy");
   const location = useLocation();
+  const history = useHistory();
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -46,6 +48,7 @@ const YogaCoach = () => {
   const [imageUrl, setImageUrl] = useState(yogaImage);
   const [yogaName, setYogaName] = useState('무희자세');
   const [x, setX] = useState(false);
+  const [timer, setTimer] = useState();
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -58,12 +61,20 @@ const YogaCoach = () => {
   };
   const goToEndingPage = () => {
     stopWebCam();
-    navigate("/EndingPage");
+
+    const queryParams = isLoggedIn ? 'isLogin=true' : 'isLogin=false';
+    const pathname = `/EndingPage?${queryParams}&routine=${routine}`;
+
+    history.push({
+      pathname,
+      state: { data: grades } // Pass the array as state
+    });
   };
 
   async function onResults(results) {
     // let landmarks = results.poseLandmarks; // * all the landmarks in the pose
     setLandmarks(results.poseLandmarks);
+    // console.log(results.poseLandmarks);
     // submitLandmarkData(landmarks);
     // requestAudioFile();
 
@@ -135,27 +146,33 @@ const YogaCoach = () => {
     }
   };
 
-  const submitLandmarkData = async (landmarks) => {
+  const submitLandmarkData = async (currentLandmarks, currentImages, currentIndex) => {
     // console.log(typeof userPoseAngle);
+    console.log("submit landmark");
+    console.log(currentImages);
 
     await axios
       .post("http://3.35.60.125:8080/yf/pose/angle", {
-        value: JSON.stringify(landmarks),
+        value: JSON.stringify(currentLandmarks),
       })
       .then((response) => {
-        console.log(response.data);
-        requestAudioFile(images[index]);
+        // console.log(response.data);
+        if (response.data){
+          // console.log(images);
+          requestAudioFile(currentImages, currentIndex);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const requestAudioFile = async (name) => {
+  const requestAudioFile = async (currentImages, currentIndex) => {
     // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
     // })
     console.log("request audio");
+    const name = currentImages[currentIndex];
 
     await axios
       .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
@@ -200,7 +217,8 @@ const YogaCoach = () => {
     // setInterval(function () {
     //   audio_bell.play();
     // }, 3 * 1000);
-    checkPass(images[index]);
+
+    checkPass(currentImages, currentIndex);
 
     // const audioElement = audioRef.current;
     // If audio source changes and it's set
@@ -238,7 +256,7 @@ const YogaCoach = () => {
     console.log("getYogaImage function");
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/pose/getInfo/${name}`, {
+      .get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       })
@@ -258,17 +276,20 @@ const YogaCoach = () => {
       });
   };
 
-  const checkPass = async (name) => {
+  const checkPass = async (currentImages, currentIndex) => {
+    // console.log(images);
+
+    const name = currentImages[currentIndex];
     await axios
       .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
       .then((response) => {
         console.log(response.data);
-        if (response.data >= 0){
-          const updatedGrades = [...grades]; // Create a copy of the grades array
-          updatedGrades[index] = 100 - response.data; // Update the value at index 0 to 96
-          setGrades(updatedGrades);
-          setIndex(index + 1);
-        }
+        // if (response.data >= 0){
+        //   const updatedGrades = [...grades]; // Create a copy of the grades array
+        //   updatedGrades[currentIndex] = response.data; // Update the value at index 0 to 96
+        //   setGrades(updatedGrades);
+        //   setIndex(currentIndex + 1);
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -290,6 +311,25 @@ const YogaCoach = () => {
       webcamRef.current.video.srcObject = null;
     }
   };
+
+  // const debouncedSubmitLandmarkData = useCallback(
+  //   debounce((currentLandmarks) => {
+  //     submitLandmarkData(currentLandmarks);
+  //   }, 1000),
+  //   []
+  // );
+  const throttleSubmitLandmarkData = useCallback(
+    throttle((currentLandmarks, currentImages, currentIndex) => {
+      submitLandmarkData(currentLandmarks, currentImages, currentIndex);
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+
+    setTimer(setInterval(() => throttleSubmitLandmarkData(landmarks, images, index), 1000));
+
+  }, [images, landmarks]);
 
   useEffect(() => {
     console.log("again");
@@ -338,11 +378,11 @@ const YogaCoach = () => {
     getRoutine(routine);
 
     // const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
-    const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
+    // const timer2 = setInterval(() => submitLandmarkData(), 1000);
+    // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
 
     return () => {
-      // clearInterval(timer1);
-      clearInterval(timer2);
+      clearInterval(timer);
     };
 
   }, [location.pathname]);

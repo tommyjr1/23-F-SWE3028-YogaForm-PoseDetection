@@ -6,6 +6,7 @@ import queryString from "query-string";
 
 const EndingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [routine, setRoutine] = useState('');
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -27,12 +28,14 @@ const EndingPage = () => {
     try {
       const { search } = location;
       const queryObj = queryString.parse(search);
-      const { isLogin } = queryObj;
+      const { isLogin, routine } = queryObj;
       setIsLoggedIn(isLogin === "true");
+      setRoutine(routine);
     } catch {
       console.log("no");
       setIsLoggedIn(false);
     }
+    const receivedGrade = location.state?.data || [];
   }, [location]);
 
   return (
