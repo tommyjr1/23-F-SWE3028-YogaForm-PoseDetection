@@ -33,6 +33,15 @@ public class PoseService {
         }
     }
 
+    public List<String> getAll(){
+        List<Pose> poses = poseRepository.findAll();
+        List<String> poseNames = new ArrayList<>();
+        for (Pose pose: poses){
+            poseNames.add(pose.getName());
+        }
+        return poseNames;
+    }
+
     public List<Landmark> landmarkArray = new ArrayList<>();
 
     public Double calculateEach(Integer one, Integer two, Integer three){
@@ -61,7 +70,7 @@ public class PoseService {
 
         // Calculate the angle between the left hand, elbow, and shoulder landmarks in degrees
         Double aangle = (Math.acos(dot_product / (point_1_2_mag * point_2_3_mag))* (180 / Math.PI));
-        System.out.println(Double.toString(aangle));
+        // System.out.println(Double.toString(aangle));
 
         return aangle;
 
@@ -108,26 +117,38 @@ public class PoseService {
     private List<String> tooCurved = new ArrayList<>();
 
 
-    public void compareEach(String name, Double pose, Double joint){
-            Double minval = pose*0.95;
-            Double maxval = pose*1.05;
-            if (maxval < joint){
-                tooStraight.add(name);
-            }
-            else if(minval > joint){
-                tooCurved.add(name);
-            }
-            return ;
+    public Double compareEach(String name, Double pose, Double joint){
+        Double error = (pose-joint)/pose*100;
+        System.out.println("Compare with correct val");
+        System.out.println(name);
+        System.out.println(error);
+        // Double minval = pose*0.95;
+        // Double maxval = pose*1.05;
+        if (error < -5){
+            tooStraight.add(name);
+        }
+        else if(error>5){
+            tooCurved.add(name);
+        }
+        return Math.abs(error);
     }
 
-    public String comparePose(Pose pose, Joints joints){
+    public Object[] comparePose(Pose pose, Joints joints){
 
-        compareEach("left elbow", pose.getLelbow(), joints.getLelbow());
-        compareEach("right elbow", pose.getRelbow(), joints.getRelbow());
-        compareEach("left shoulder", pose.getLshoulder(), joints.getLshoulder());
-        compareEach("right shoulder", pose.getRshoulder(), joints.getRshoulder());
-        compareEach("left knee", pose.getLknee(), joints.getLknee());
-        compareEach("right knee", pose.getRknee(), joints.getRknee());
+        Object returnVal;
+
+        tooCurved.clear();
+        tooStraight.clear();
+
+        Double error = 0.0;
+
+        error+=compareEach("left elbow", pose.getLelbow(), joints.getLelbow());
+        error+=compareEach("right elbow", pose.getRelbow(), joints.getRelbow());
+        error+=compareEach("left shoulder", pose.getLshoulder(), joints.getLshoulder());
+        error+=compareEach("right shoulder", pose.getRshoulder(), joints.getRshoulder());
+        error+=compareEach("left knee", pose.getLknee(), joints.getLknee());
+        error+=compareEach("right knee", pose.getRknee(), joints.getRknee());
+        error = 100 - (error/6);
 
         // boolean curved = tooCurved.isEmpty();
         // boolean straight = tooStraight.isEmpty();
@@ -149,24 +170,25 @@ public class PoseService {
         if(feedback==""){
             feedback="Good job.";
         }
-        return feedback;
-
+        return new Object[] {feedback, error};
     }
 
-    private Integer stop=0;
+    private Boolean stop;
 
     public void compareAngle(String name, Double joint, Double newjoint){
-        Double minval = joint*0.95;
-        Double maxval = joint*1.05;
-        if ((maxval < joint) || (minval > joint)){
-            return;
+        Double diff = Math.abs(joint-newjoint)/joint*100;
+        System.out.println("Compare with previous");
+        System.out.println(name);
+        System.out.println(diff);
+
+        if (diff>20){
+            stop=false;
         }
-        stop+=1;
         return ;
     }
 
     public boolean compareAngles(Joints currentJoints, Joints newJoints) {
-        stop=0;
+        stop=true;
 
         compareAngle("left elbow", currentJoints.getLelbow(), newJoints.getLelbow());
         compareAngle("right elbow", currentJoints.getRelbow(), newJoints.getRelbow());
@@ -175,7 +197,6 @@ public class PoseService {
         compareAngle("left knee", currentJoints.getLknee(), newJoints.getLknee());
         compareAngle("right knee", currentJoints.getRknee(), newJoints.getRknee());
 
-        if(stop>3) return true;
-        return false;
+        return stop;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.dto.user;
+package com.example.demo.dto;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,9 +22,8 @@ public class Routine {
     // private String credential;
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String userId;
     private String routineName;
     private String poses;
-
-
 
 }

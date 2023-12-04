@@ -1,11 +1,11 @@
 package com.example.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.dto.UserInfo;
+import com.example.demo.dto.Record;
 
 
-public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
-    boolean existsByUserId(String userId);
+public interface RecordRepository extends JpaRepository<Record, Long> {
+    // boolean existsByLoginId(String loginId);
     // boolean existsByNickname(String nickname);
     // Optional<User> findByLoginId(String loginId);
 

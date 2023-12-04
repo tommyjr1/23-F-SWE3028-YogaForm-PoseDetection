@@ -35,17 +35,29 @@ public class PoseController {
 
     private List<Landmark> landmark1 = new ArrayList<>();
     private List<Pose> pose1 = new ArrayList<>();
+    private List<String> poseNames = new ArrayList<>();
+
     private static final ObjectMapper mapper = new ObjectMapper();
     private Joints currentJoints;
     private Joints newJoints;
     private Pose currentPose;
     private String feedback;
+    private Long checkTime;
+    private Object[] results;
+
 
     @Autowired
     PoseService poseService;
 
-    @GetMapping("/yf/pose/getInfo/{poseName}")
+    @GetMapping("/yf/pose/getName")
+    public List<String> getPoses(){
+        poseNames = poseService.getAll();
+        return poseNames;
+    }
+
+    @GetMapping("/yf/pose/getImg/{poseName}")
     public ResponseEntity getMemberById(@PathVariable("poseName") String poseName) throws IOException{
+        // if (poseName=="")
         currentPose = poseService.getPosebyName(poseName);
         // File image = File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/src/main/resources/static/poses/"+ poseName +".png");
 
@@ -57,6 +69,7 @@ public class PoseController {
                 .body(inputStream);
 
     }
+
 
     @ResponseBody
     @PostMapping("/yf/pose/angle")
@@ -86,29 +99,38 @@ public class PoseController {
     public ResponseEntity getData(@PathVariable("poseName") String poseName) throws Exception {
         boolean sendFeeadback=false;
         ResponseEntity<byte[]> response = ResponseEntity.noContent().build();
+        System.out.println("Feedback: "+poseName);
 
-        System.out.println(poseName);
-
+        long curTime = System.currentTimeMillis(); 
+        if (checkTime==0 || ((curTime-checkTime)/1000)<10){
+            if(checkTime==0){
+                checkTime = System.currentTimeMillis();
+            }
+            return response ;
+        }
 
         if(currentJoints!=null)
         {
             sendFeeadback = poseService.compareAngles(currentJoints, newJoints);
+
             if (sendFeeadback){
                 currentPose = poseService.getPosebyName(poseName);
-                feedback = poseService.comparePose(currentPose, currentJoints);
-                Tts.main(feedback);
+                results = poseService.comparePose(currentPose, currentJoints);
+                System.out.println(results.toString());
+
+                System.out.println(results[0].toString());
+
+                Tts.main(results[0].toString());
                 File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
                 byte[] file = Files.readAllBytes(f.toPath());
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Content-Disposition", "attachment; filename=\"" + f.getName() +".wav\"");
                 response = new ResponseEntity(file, headers, HttpStatus.OK);
+                checkTime = System.currentTimeMillis();
             }
         }
         currentJoints=newJoints;
-        System.out.println(sendFeeadback);
-
-
         return response ;
     }
 
@@ -132,9 +154,9 @@ public class PoseController {
     // }
 
     @GetMapping("/yf/pose/pass/{poseName}")
-    public boolean getPass(@PathVariable("poseName") String poseName){
-        if(feedback=="Good job."){ return true;}
-        else{ return false;}
+    public Double getPass(@PathVariable("poseName") String poseName){
+        if(results[0].toString()=="Good job."){ return (Double) results[1];}
+        else{ return -1.0;}
     }
 
 

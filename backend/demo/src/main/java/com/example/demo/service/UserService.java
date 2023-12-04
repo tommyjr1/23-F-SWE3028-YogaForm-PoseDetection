@@ -7,9 +7,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.dto.JoinRequest;
-import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.UserInfo;
+import com.example.demo.dto.user.LoginRequest;
 import com.example.demo.dto.user.User;
+import com.example.demo.repository.UserInfoRepository;
 import com.example.demo.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
     private final BCryptPasswordEncoder encoder;
 
     /**
@@ -27,37 +29,46 @@ public class UserService {
      * 회원가입 기능 구현 시 사용
      * 중복되면 true return
      */
-    public boolean checkLoginIdDuplicate(String loginId) {
-        return userRepository.existsByLoginId(loginId);
+    public boolean checkLoginIdDuplicate(String userId) {
+        return userInfoRepository.existsByUserId(userId);
     }
 
-    /**
-     * nickname 중복 체크
-     * 회원가입 기능 구현 시 사용
-     * 중복되면 true return
-     */
-    public boolean checkNicknameDuplicate(String nickname) {
-        return userRepository.existsByNickname(nickname);
+    public void googleOauthLogin(String userId){
+        if (!userInfoRepository.existsByUserId(userId)){
+            UserInfo user = new UserInfo();
+            user.setUserId(userId);
+            userInfoRepository.save(user);
+        }
+        System.out.println(userId+" logged in.");
     }
 
-    /**
-     * 회원가입 기능 1
-     * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
-     * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
-     */
-    public void join(JoinRequest req) {
-        userRepository.save(req.toEntity());
-    }
+    // /**
+    //  * nickname 중복 체크
+    //  * 회원가입 기능 구현 시 사용
+    //  * 중복되면 true return
+    //  */
+    // public boolean checkNicknameDuplicate(String nickname) {
+    //     return userRepository.existsByNickname(nickname);
+    // }
 
-    /**
-     * 회원가입 기능 2
-     * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
-     * 회원가입 1과는 달리 비밀번호를 암호화해서 저장
-     * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
-     */
-    public void join2(JoinRequest req) {
-        userRepository.save(req.toEntity(encoder.encode(req.getPassword())));
-    }
+    // /**
+    //  * 회원가입 기능 1
+    //  * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
+    //  * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
+    //  */
+    // public void join(JoinRequest req) {
+    //     userRepository.save(req.toEntity());
+    // }
+
+    // /**
+    //  * 회원가입 기능 2
+    //  * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
+    //  * 회원가입 1과는 달리 비밀번호를 암호화해서 저장
+    //  * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
+    //  */
+    // public void join2(JoinRequest req) {
+    //     userRepository.save(req.toEntity(encoder.encode(req.getPassword())));
+    // }
 
     /**
      *  로그인 기능
