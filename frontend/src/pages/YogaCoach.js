@@ -5,7 +5,7 @@ import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { useLocation, useNavigate, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
@@ -15,7 +15,6 @@ const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState("defaultEasy");
   const location = useLocation();
-  const history = useHistory();
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -48,7 +47,9 @@ const YogaCoach = () => {
   const [imageUrl, setImageUrl] = useState(yogaImage);
   const [yogaName, setYogaName] = useState('무희자세');
   const [x, setX] = useState(false);
-  const [timer, setTimer] = useState();
+  const [timer1, setTimer1] = useState();
+  const [timer2, setTimer2] = useState();
+  const [lastExecution, setLastExecution] = useState(0);
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -62,13 +63,11 @@ const YogaCoach = () => {
   const goToEndingPage = () => {
     stopWebCam();
 
-    const queryParams = isLoggedIn ? 'isLogin=true' : 'isLogin=false';
-    const pathname = `/EndingPage?${queryParams}&routine=${routine}`;
-
-    history.push({
-      pathname,
-      state: { data: grades } // Pass the array as state
-    });
+    if (isLoggedIn) {
+      navigate(`/EndingPage?isLogin=true$routine=${routine}`, { state: { data: grades } });
+    } else {
+      navigate(`/EndingPage?isLogin=false$routine=${routine}`, { state: { data: grades } });
+    }
   };
 
   async function onResults(results) {
@@ -167,12 +166,12 @@ const YogaCoach = () => {
       });
   };
 
-  const requestAudioFile = async (currentImages, currentIndex) => {
-    // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
-    // })
+  const requestAudioFile = async (currentImages, currentIndex) => {
+
     console.log("request audio");
     const name = currentImages[currentIndex];
+    const flagAudio = false;
 
     await axios
       .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
@@ -181,56 +180,46 @@ const YogaCoach = () => {
       })
       .then((response) => {
         console.log(response.data);
-        const blob = new Blob([response.data], {
-          type: "audio/wav",
-        });
-        const url = URL.createObjectURL(blob);
-        setAudio(url);
-        // var audio_bell = document.getElementById("tts");
-        // audio_bell.src(url);
-        // audio_bell.play();
+        // const currentTime = Date.now();
+        if (response.data && response.data.byteLength !== 0){
+          console.log("yes audio");
+          // console.log("current:",currentTime);
+          // console.log("last",lastExecution);
+          const blob = new Blob([response.data], {
+            type: "audio/wav",
+          });
+          const url = URL.createObjectURL(blob);
+          setAudio(url);
+          flagAudio = true;
+          // setLastExecution(currentTime);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
 
-    // const { data } = await axios
-    //   .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
-    //     responseType: "arraybuffer",
-    //     headers: { Accept: "*/*", "Content-Type": "audio/wav" },
-    //   })
-    //   .then((resp) => resp);
-    // const blob = new Blob([data], {
-    //   type: "audio/wav",
-    // });
-    // const url = URL.createObjectURL(blob);
-    // setAudio(url);
+    
+    if (flagAudio){
+      var audio_bell = document.getElementById("tts");
 
-    var audio_bell = document.getElementById("tts");
-    // audio_bell.src(url);
-    // audio_bell.play();
-    audio_bell.oncanplaythrough = function () {
-      // This event is fired when the browser can play the audio without stopping for buffering
-      audio_bell.play();
-    };
+      audio_bell.oncanplaythrough = function () {
+        // This event is fired when the browser can play the audio without stopping for buffering
+        audio_bell.play();
+      };
 
-    // setInterval(function () {
-    //   audio_bell.play();
-    // }, 3 * 1000);
-
-    checkPass(currentImages, currentIndex);
-
-    // const audioElement = audioRef.current;
-    // If audio source changes and it's set
-    // if (audio && audioElement) {
-    //   audioElement.autoplay = true; // Set autoplay attribute
-    //   audioElement.load(); // Reload the audio element
-    // }
-
-    // const element = document.getElementById('tts');
-    // element.click();
-    // audioElement.play();
+      checkPass(currentImages, currentIndex);
+    }
   };
+
+  // const playAudio = async (currentImages, currentIndex) => {
+
+  //   console.log("play audio");
+  //   var audio_bell = document.getElementById("tts");
+  //   audio_bell.oncanplaythrough = function () {
+  //     audio_bell.play();
+  //   };
+  //   checkPass(currentImages, currentIndex);
+  // };
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);
@@ -324,12 +313,27 @@ const YogaCoach = () => {
     }, 1000),
     []
   );
+  // const throttleSubmitLandmarkData = useCallback(
+  //   throttle(() => {
+  //     submitLandmarkData();
+  //   }, 1000),
+  //   []
+  // );
+
+  // const throttlePlayAudio = useCallback(
+  //   throttle((currentImages, currentIndex) => {
+  //     requestAudioFile(currentImages, currentIndex);
+  //   }, 10000),
+  //   []
+  // );
 
   useEffect(() => {
 
-    setTimer(setInterval(() => throttleSubmitLandmarkData(landmarks, images, index), 1000));
+    // setTimer1(setInterval(() => throttleSubmitLandmarkData(landmarks, images, index), 1000));
+    // setTimer2(setInterval(() => throttleRequestAudio(images, index), 1000));
+    throttleSubmitLandmarkData(landmarks, images, index);
 
-  }, [images, landmarks]);
+  }, [images, landmarks, index]);
 
   useEffect(() => {
     console.log("again");
@@ -377,18 +381,19 @@ const YogaCoach = () => {
     }
     getRoutine(routine);
 
-    // const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
-    // const timer2 = setInterval(() => submitLandmarkData(), 1000);
     // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
+    // const timer2 = setInterval(() => playAudio(currentImages, currentIndex), 10000);
 
-    return () => {
-      clearInterval(timer);
-    };
+    // return () => {
+    //   clearInterval(timer1);
+    //   // clearInterval(timer2);
+    // };
 
   }, [location.pathname]);
 
   useEffect(() => {
     // Perform action when images or index change
+    console.log(images);
     if (images.length > 0 && index < images.length) {
       // Do something with images[index]
       getYogaImage(images[index]);
