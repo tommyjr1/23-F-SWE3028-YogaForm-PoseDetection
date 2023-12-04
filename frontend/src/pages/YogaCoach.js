@@ -177,7 +177,6 @@ const YogaCoach = () => {
     audio_bell.oncanplaythrough = function () {
       audio_bell.play();
     };
-
     checkPass(images[index]);
 
     // const audioElement = audioRef.current;
