@@ -152,4 +152,30 @@ public class PoseService {
         return feedback;
 
     }
+
+    private Integer stop=0;
+
+    public void compareAngle(String name, Double joint, Double newjoint){
+        Double minval = joint*0.95;
+        Double maxval = joint*1.05;
+        if ((maxval < joint) || (minval > joint)){
+            return;
+        }
+        stop+=1;
+        return ;
+    }
+
+    public boolean compareAngles(Joints currentJoints, Joints newJoints) {
+        stop=0;
+
+        compareAngle("left elbow", currentJoints.getLelbow(), newJoints.getLelbow());
+        compareAngle("right elbow", currentJoints.getRelbow(), newJoints.getRelbow());
+        compareAngle("left shoulder", currentJoints.getLshoulder(), newJoints.getLshoulder());
+        compareAngle("right shoulder", currentJoints.getRshoulder(), newJoints.getRshoulder());
+        compareAngle("left knee", currentJoints.getLknee(), newJoints.getLknee());
+        compareAngle("right knee", currentJoints.getRknee(), newJoints.getRknee());
+
+        if(stop>3) return true;
+        return false;
+    }
 }
