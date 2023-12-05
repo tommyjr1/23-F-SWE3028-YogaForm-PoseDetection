@@ -13,7 +13,8 @@ import { throttle } from "lodash";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [routine, setRoutine] = useState("defaultEasy");
+  // const [routine, setRoutine] = useState("defaultEasy");
+  const [routine, setRoutine] = useState("");
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -64,9 +65,9 @@ const YogaCoach = () => {
     stopWebCam();
 
     if (isLoggedIn) {
-      navigate(`/EndingPage?isLogin=true$routine=${routine}`, { state: { data: grades } });
+      navigate(`/EndingPage?isLogin=true&userRoutine=${routine}`, { state: { data: grades } });
     } else {
-      navigate(`/EndingPage?isLogin=false$routine=${routine}`, { state: { data: grades } });
+      navigate(`/EndingPage?isLogin=false&userRoutine=${routine}`, { state: { data: grades } });
     }
   };
 
@@ -190,8 +191,17 @@ const YogaCoach = () => {
           });
           const url = URL.createObjectURL(blob);
           setAudio(url);
-          flagAudio = true;
+          // flagAudio = true;
           // setLastExecution(currentTime);
+
+          // var audio_bell = document.getElementById("tts");
+
+          // audio_bell.oncanplaythrough = function () {
+          //   // This event is fired when the browser can play the audio without stopping for buffering
+          //   audio_bell.play();
+          // };
+
+          checkPass(currentImages, currentIndex);
         }
       })
       .catch((error) => {
@@ -199,16 +209,16 @@ const YogaCoach = () => {
       });
 
     
-    if (flagAudio){
-      var audio_bell = document.getElementById("tts");
+    // if (flagAudio){
+    //   var audio_bell = document.getElementById("tts");
 
-      audio_bell.oncanplaythrough = function () {
-        // This event is fired when the browser can play the audio without stopping for buffering
-        audio_bell.play();
-      };
+    //   audio_bell.oncanplaythrough = function () {
+    //     // This event is fired when the browser can play the audio without stopping for buffering
+    //     audio_bell.play();
+    //   };
 
-      checkPass(currentImages, currentIndex);
-    }
+    //   checkPass(currentImages, currentIndex);
+    // }
   };
 
   // const playAudio = async (currentImages, currentIndex) => {
@@ -255,14 +265,15 @@ const YogaCoach = () => {
           type: "image/png",
         });
         const imgUrl = URL.createObjectURL(blob);
-        // document.getelementbyid("yogaImg").src = imgUrl;
-        // document.getelementbyid("yogaName").text = name;
+
         setImageUrl(imgUrl);
         setYogaName(name);
       })
       .catch((error) => {
         console.log(error);
       });
+
+      setX(true);
   };
 
   const checkPass = async (currentImages, currentIndex) => {
@@ -286,11 +297,11 @@ const YogaCoach = () => {
   };
 
 
-  function AudioPlayer({ audio }) {
-    return (
-      <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
-    );
-  }
+  // function AudioPlayer({ audio }) {
+  //   return (
+  //     <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
+  //   );
+  // }
 
   const stopWebCam = () => {
     if (webcamRef.current.video) {
@@ -313,19 +324,6 @@ const YogaCoach = () => {
     }, 1000),
     []
   );
-  // const throttleSubmitLandmarkData = useCallback(
-  //   throttle(() => {
-  //     submitLandmarkData();
-  //   }, 1000),
-  //   []
-  // );
-
-  // const throttlePlayAudio = useCallback(
-  //   throttle((currentImages, currentIndex) => {
-  //     requestAudioFile(currentImages, currentIndex);
-  //   }, 10000),
-  //   []
-  // );
 
   useEffect(() => {
 
@@ -375,11 +373,11 @@ const YogaCoach = () => {
       const queryObj = queryString.parse(search);
       const { isLogin, userRoutine } = queryObj;
       setIsLoggedIn(isLogin === "true");
-      // setRoutine(userRoutine);
+      setRoutine(userRoutine);
     } catch {
       setIsLoggedIn(false);
     }
-    getRoutine(routine);
+    // getRoutine(routine);
 
     // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
     // const timer2 = setInterval(() => playAudio(currentImages, currentIndex), 10000);
@@ -390,6 +388,12 @@ const YogaCoach = () => {
     // };
 
   }, [location.pathname]);
+
+  useEffect(() => {
+    // console.log(routine);
+    getRoutine(routine);
+    
+  }, [routine]);
 
   useEffect(() => {
     // Perform action when images or index change
@@ -403,6 +407,14 @@ const YogaCoach = () => {
       setX(true);
     }
   }, [images, index]);
+
+  useEffect(() => {
+    // Play audio when 'audio' state is updated
+    if (audio) {
+      audioRef.current.src = audio; // Set the audio source
+      audioRef.current.play(); // Play the audio
+    }
+  }, [audio]);
 
   return (
     <div className="App" style={bodyStyle}>
@@ -448,7 +460,8 @@ const YogaCoach = () => {
             <p id="yogaName">{yogaName}</p>
           </div>
           {/* type="audio/mpeg" */}
-          <AudioPlayer {...{ audio }} />
+          {/* <AudioPlayer {...{ audio }} /> */}
+          <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
           {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
@@ -481,14 +494,16 @@ const YogaCoach = () => {
         </div>
         <button
         style={{
-          opacity: x ? 100 : 0,
+          // opacity: x ? 100 : 0,
+          opacity: 100,
           position: "absolute",
           left: "80%",
           bottom: "10%",
           backgroundColor: "#FFF2CC",
           border: "1px solid #FFF2CC",
           borderRadius: "2rem",
-          width: "100px",
+          width: "150px",
+          height: "50px",
           color: "#3B2C77",
           fontSize: "1.6rem",
         }}
