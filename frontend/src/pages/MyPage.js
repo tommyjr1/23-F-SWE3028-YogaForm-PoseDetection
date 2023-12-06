@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import ConditionalHeader from "../components/ConditionalHeader";
+import { Chart as ChartJS, registerables } from "chart.js";
 import queryString from "query-string";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, registerables } from "chart.js";
-import { Bar, Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from "react";
+import { Bar } from 'react-chartjs-2';
+import { useLocation } from "react-router-dom";
+import ConditionalHeader from "../components/ConditionalHeader";
 
 const MyPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,7 +43,7 @@ const MyPage = () => {
     console.log(routine);
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/user/routine/${routine}`, {
+      .get(`http://3.35.60.125:8080/yf/routine/${routine}`, {
         responseType: "json"
       })
       .then((response) => {

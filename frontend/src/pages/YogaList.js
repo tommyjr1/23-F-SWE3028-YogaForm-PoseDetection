@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
-import ConditionalHeader from "../components/ConditionalHeader";
-import queryString from "query-string";
 import axios from "axios";
+import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import ConditionalHeader from "../components/ConditionalHeader";
 
 const YogaList = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,7 +30,7 @@ const YogaList = () => {
 
   const getPoseName = async () => {
     await axios
-      .get("http://3.35.60.125:8080/yf/pose/getName/")
+      .get("http://3.35.60.125:8080/yf/pose/getName")
       .then((res) => {
         //poseNames = res.data;
         // res.data.forEach(item => {
