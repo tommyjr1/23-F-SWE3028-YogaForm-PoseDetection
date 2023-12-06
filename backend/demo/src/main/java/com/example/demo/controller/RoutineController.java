@@ -27,7 +27,7 @@ public class RoutineController {
     private String userId="";
 
 
-    @GetMapping("/yf/routine/")
+    @GetMapping("/yf/routine")
     public List<String> getRoutine(){
         List<String> routines = routineService.getUserRoutines(userId);
         return routines;
