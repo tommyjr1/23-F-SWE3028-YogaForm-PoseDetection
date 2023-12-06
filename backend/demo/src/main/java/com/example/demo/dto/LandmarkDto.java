@@ -1,4 +1,4 @@
-package com.example.demo.dto.pose;
+package com.example.demo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Landmark {
+public class LandmarkDto {
     @JsonProperty("x")
     private @Getter @Setter Double x;
 

@@ -3,13 +3,13 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
+import { throttle } from "lodash";
 import queryString from "query-string";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
-import { throttle } from "lodash";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -152,7 +152,7 @@ const YogaCoach = () => {
     console.log(currentImages);
 
     await axios
-      .post("http://3.35.60.125:8080/yf/pose/angle", {
+      .post("http://3.35.60.125:8080/yf/coach/angle", {
         value: JSON.stringify(currentLandmarks),
       })
       .then((response) => {
@@ -175,7 +175,7 @@ const YogaCoach = () => {
     const flagAudio = false;
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
+      .get(`http://3.35.60.125:8080/yf/coach/feedback/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })
@@ -236,7 +236,7 @@ const YogaCoach = () => {
     console.log(routine);
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/user/routine/${routine}`, {
+      .get(`http://3.35.60.125:8080/yf/routine/${routine}`, {
         responseType: "json"
       })
       .then((response) => {
@@ -281,7 +281,7 @@ const YogaCoach = () => {
 
     const name = currentImages[currentIndex];
     await axios
-      .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
+      .get(`http://3.35.60.125:8080/yf/coach/pass/${name}`)
       .then((response) => {
         console.log(response.data);
         // if (response.data >= 0){
