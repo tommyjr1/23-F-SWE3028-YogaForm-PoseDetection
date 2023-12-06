@@ -7,8 +7,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.Routine;
-import com.example.demo.repository.RoutineRepository;
+import com.example.demo.dao.RoutineRepository;
+import com.example.demo.entity.Routine;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +30,8 @@ public class RoutineService {
         }
     }
 
-    public List<String> getUserRoutines(String userId) {
-        List<Routine> routines = routineRepository.findByUserId(userId);
+    public List<String> getUserRoutines(String userEmail) {
+        List<Routine> routines = routineRepository.findByUserEmail(userEmail);
         List<String> routineNames = new ArrayList<>();
 
         for(Routine  rou : routines){
@@ -39,8 +39,8 @@ public class RoutineService {
             routineNames.add(name);
         }
 
-        if(userId!=""){
-            routines = routineRepository.findByUserId("");
+        if(userEmail!=""){
+            routines = routineRepository.findByUserEmail("");
             for(Routine  rou : routines){
                 String name = rou.getRoutineName();
                 routineNames.add(name);
@@ -50,9 +50,9 @@ public class RoutineService {
         return routineNames;
     }
 
-    public void saveRoutine(Routine routine, String userId) {
-        routine.setUserId(userId);
-        routineRepository.save(routine);
+    public void saveRoutine(Routine routine) {
+        Routine rou = routineRepository.save(routine);
+        System.out.println(rou);
     }
     
 }

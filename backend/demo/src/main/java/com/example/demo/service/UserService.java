@@ -1,125 +1,92 @@
 package com.example.demo.service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 
-import java.util.Optional;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.dto.UserInfo;
-import com.example.demo.dto.user.LoginRequest;
-import com.example.demo.dto.user.User;
-import com.example.demo.repository.UserInfoRepository;
-import com.example.demo.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
+import com.example.demo.dao.UserRepository;
+import com.example.demo.dto.LoginDto;
+import com.example.demo.entity.User;
+import com.example.demo.entity.UserRole;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final UserInfoRepository userInfoRepository;
-    private final BCryptPasswordEncoder encoder;
+    @Autowired
+    UserRepository userRepository;
+    
+    public static String client_id = "1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com";
+    // private final BCryptPasswordEncoder encoder;
 
-    /**
-     * loginId 중복 체크
-     * 회원가입 기능 구현 시 사용
-     * 중복되면 true return
-     */
-    public boolean checkLoginIdDuplicate(String userId) {
-        return userInfoRepository.existsByUserId(userId);
+
+    private NetHttpTransport transport = new NetHttpTransport();
+    private GsonFactory jsonFactory = new GsonFactory();
+    
+
+    //회원가입
+    public User signup(Payload payload) throws GeneralSecurityException, IOException{
+        System.out.println("Sign Up");
+        String email = payload.getEmail();
+
+        String nickname = (String) payload.get("name");
+
+        // 사용자 ROLE 확인
+        UserRole role = UserRole.ROLE_MEMBER;
+
+        // boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+
+    //   // Get profile information from payload
+    //   String pictureUrl = (String) payload.get("picture");
+    //   String locale = (String) payload.get("locale");
+    //   String familyName = (String) payload.get("family_name");
+    //   String givenName = (String) payload.get("given_name");
+        User user = new User(email, nickname,"",role);
+        User result = userRepository.save(user);
+        return  result;
+        // }
+        // else{
+        //     throw new CustomException(ErrorCode.NO_USER);
+        // }
+
     }
 
-    public void googleOauthLogin(String userId){
-        if (!userInfoRepository.existsByUserId(userId)){
-            UserInfo user = new UserInfo();
-            user.setUserId(userId);
-            userInfoRepository.save(user);
+    //로그인
+    public User login(LoginDto loginDto) throws GeneralSecurityException, IOException {
+
+        String credential = loginDto.getCredential().replaceAll("\"","");
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+            // Specify the CLIENT_ID of the app that accesses the backend
+            .setAudience(Collections.singletonList(client_id))
+            // Or, if multiple clients access the backend:
+            //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+            .build();
+
+        GoogleIdToken idToken = verifier.verify(credential);
+        // if (idToken != null) {
+        Payload payload = idToken.getPayload();
+
+        String email = payload.getEmail();
+
+        boolean exists = userRepository.existsByEmail(email);
+        System.out.println("This user exists: "+exists);
+        if(exists==false){
+            signup(payload);
         }
-        System.out.println(userId+" logged in.");
-    }
-
-    // /**
-    //  * nickname 중복 체크
-    //  * 회원가입 기능 구현 시 사용
-    //  * 중복되면 true return
-    //  */
-    // public boolean checkNicknameDuplicate(String nickname) {
-    //     return userRepository.existsByNickname(nickname);
-    // }
-
-    // /**
-    //  * 회원가입 기능 1
-    //  * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
-    //  * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
-    //  */
-    // public void join(JoinRequest req) {
-    //     userRepository.save(req.toEntity());
-    // }
-
-    // /**
-    //  * 회원가입 기능 2
-    //  * 화면에서 JoinRequest(loginId, password, nickname)을 입력받아 User로 변환 후 저장
-    //  * 회원가입 1과는 달리 비밀번호를 암호화해서 저장
-    //  * loginId, nickname 중복 체크는 Controller에서 진행 => 에러 메세지 출력을 위해
-    //  */
-    // public void join2(JoinRequest req) {
-    //     userRepository.save(req.toEntity(encoder.encode(req.getPassword())));
-    // }
-
-    /**
-     *  로그인 기능
-     *  화면에서 LoginRequest(loginId, password)을 입력받아 loginId와 password가 일치하면 User return
-     *  loginId가 존재하지 않거나 password가 일치하지 않으면 null return
-     */
-    public User login(LoginRequest req) {
-        Optional<User> optionalUser = userRepository.findByLoginId(req.getLoginId());
-
-        // loginId와 일치하는 User가 없으면 null return
-        if(optionalUser.isEmpty()) {
-            return null;
-        }
-
-        User user = optionalUser.get();
-
-        // 찾아온 User의 password와 입력된 password가 다르면 null return
-        if(!user.getPassword().equals(req.getPassword())) {
-            return null;
-        }
-
+        User user = userRepository.findByEmail(email);
+        
         return user;
     }
 
-    /**
-     * userId(Long)를 입력받아 User을 return 해주는 기능
-     * 인증, 인가 시 사용
-     * userId가 null이거나(로그인 X) userId로 찾아온 User가 없으면 null return
-     * userId로 찾아온 User가 존재하면 User return
-     */
-    public User getLoginUserById(Long userId) {
-        if(userId == null) return null;
-
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty()) return null;
-
-        return optionalUser.get();
-    }
-
-    /**
-     * loginId(String)를 입력받아 User을 return 해주는 기능
-     * 인증, 인가 시 사용
-     * loginId가 null이거나(로그인 X) userId로 찾아온 User가 없으면 null return
-     * loginId로 찾아온 User가 존재하면 User return
-     */
-    public User getLoginUserByLoginId(String loginId) {
-        if(loginId == null) return null;
-
-        Optional<User> optionalUser = userRepository.findByLoginId(loginId);
-        if(optionalUser.isEmpty()) return null;
-
-        return optionalUser.get();
-    }
+ 
 }

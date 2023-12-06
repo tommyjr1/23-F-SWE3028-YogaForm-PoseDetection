@@ -2,137 +2,78 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.Login;
-import com.example.demo.dto.Routine;
-import com.example.demo.service.RoutineService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
+import com.example.demo.dto.LoginDto;
+import com.example.demo.entity.User;
+import com.example.demo.entity.UserRole;
+import com.example.demo.service.JwtTokenProvider;
+import com.example.demo.service.UserService;
 
 
 @RestController
+@ConfigurationProperties("ggl")
 public class UserController {
 
     @Autowired
-    RoutineService routineService;
+    UserService userService;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
     
-    private String userId="";
+    /*
+     * 로그인을 요청하면 동시에 JWT 토큰을 만들어서 반환해줘야 하기 때문에, 세션과 다르게 직접 로그인 만들어야함
 
-    private HttpTransport transport;
-    private JsonFactory jsonFactory;
-    private static final ObjectMapper mapper = new ObjectMapper();
-    
+    전달받은 크레덴셜을 가지고 실제 DB에 존재하는 유저인지 확인 후, User 객체로 반환을 해줍니다.
+
+    그리고 User의 이메일과 권한을 추출해 토큰을 만들어주는 작업을 해줍니다.
+     */
     @PostMapping("/yf/user/login")
-    public void postLogin(@RequestBody Login login) throws GeneralSecurityException, IOException{
-        String CLIENT_ID="1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com";
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-            // Specify the CLIENT_ID of the app that accesses the backend
-            .setAudience(Collections.singletonList(CLIENT_ID))
-            // Or, if multiple clients access the backend:
-            //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-            .build();
+    public String postLogin(@RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException{
 
 
-        GoogleIdToken idToken = verifier.verify(login.getCredential());
-        if (idToken != null) {
-          Payload payload = idToken.getPayload();
+        User user = userService.login(loginDto);
+        String email = user.getEmail();
+        UserRole role = user.getRole();
+        System.out.println(email+role);
+        String token = jwtTokenProvider.createToken(email, role);
+        response.setHeader("JWT", token);
 
-          // Print user identifier
-          userId = payload.getSubject();
-
-        //   // Get profile information from payload
-        //   String email = payload.getEmail();
-        //   boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
-        //   String name = (String) payload.get("name");
-        //   String pictureUrl = (String) payload.get("picture");
-        //   String locale = (String) payload.get("locale");
-        //   String familyName = (String) payload.get("family_name");
-        //   String givenName = (String) payload.get("given_name");
-
-        //   // Use or store profile information
-        //   // ...
-
-        System.out.println(userId);
-        } 
-        else {
-          System.out.println("Invalid ID token.");
-        }
-    }
-
-    @GetMapping("/yf/user/routine/{name}")
-    public String getRoutine(@PathVariable("name") String name){
-        System.out.println(name);        
-        Routine routine = routineService.getByRoutineName(name);
-        return routine.getPoses();
-    }
-
-    @GetMapping("/yf/user/routine/")
-    public List<String> getRoutine(){
-        List<String> routines = routineService.getUserRoutines(userId);
-        return routines;
+        return token;
 
     }
 
+    
 
-    @ResponseBody
-    @PostMapping("/yf/user/addRoutines")
-    public void postAddRoutines(@RequestBody String routines){
-        
-        List<Routine> routine1 = new ArrayList<>();
-        try {
-            routine1 = mapper.readValue(routines, new TypeReference<List<Routine>>() {});
-        } catch (JsonProcessingException e) {};
-        System.out.println(routine1.size());
 
-        routineService.saveAll(routine1);
-        return;
-    }
-
-    @ResponseBody
-    @PostMapping("/yf/user/addRoutine")
-    public void postAddRoutines(@RequestBody Routine routine){
-        System.out.println(routine);
-        routineService.saveRoutine(routine, userId);
-    }
 
     // // 저장
-    // private final UserInfoRepository userInfoRepository;
-    // UserInfo userInfo = new UserInfo();
+    // private final UserRepository UserRepository;
+    // User User = new User();
 
 
     // private Long id;
-    // userInfoRepository.save();
+    // UserRepository.save();
 
     // // 조회 findById
-    // Optional<UserInfo> optionalUserInfo = userInfoRepository.findById(id);
-    // UserInfo findUserInfo = optionalUserInfo.get();
+    // Optional<User> optionalUser = UserRepository.findById(id);
+    // User findUser = optionalUser.get();
 
     // // 조회 findAll
-    // List<UserInfo> userInfos = userInfoRepository.findAll();
+    // List<User> Users = UserRepository.findAll();
 
     // // 수정
-    // userInfo = userInfoRepository.findById(id).get();
-    // userInfo.setName(newName);
-    // userInfoRepository.save(userInfo);
+    // User = UserRepository.findById(id).get();
+    // User.setName(newName);
+    // UserRepository.save(User);
 
     // // 삭제
-    // userInfoRepository.delete(userInfo);
+    // UserRepository.delete(User);
 
 }

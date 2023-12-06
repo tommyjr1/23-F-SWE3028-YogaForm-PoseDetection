@@ -1,7 +1,7 @@
-package com.example.demo.repository;
+package com.example.demo.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.dto.Record;
+import com.example.demo.entity.Record;
 
 
 public interface RecordRepository extends JpaRepository<Record, Long> {
