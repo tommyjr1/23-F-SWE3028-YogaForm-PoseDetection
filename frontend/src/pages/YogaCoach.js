@@ -202,24 +202,22 @@ const YogaCoach = () => {
     if (flagAudio){
       var audio_bell = document.getElementById("tts");
 
-      audio_bell.oncanplaythrough = function () {
-        // This event is fired when the browser can play the audio without stopping for buffering
-        audio_bell.play();
-      };
+    audio_bell.oncanplaythrough = function () {
+      audio_bell.play();
+    };
+    checkPass(images[index]);
 
-      checkPass(currentImages, currentIndex);
-    }
+    // const audioElement = audioRef.current;
+    // If audio source changes and it's set
+    // if (audio && audioElement) {
+    //   audioElement.autoplay = true; // Set autoplay attribute
+    //   audioElement.load(); // Reload the audio element
+    // }
+
+    // const element = document.getElementById('tts');
+    // element.click();
+    // audioElement.play();
   };
-
-  // const playAudio = async (currentImages, currentIndex) => {
-
-  //   console.log("play audio");
-  //   var audio_bell = document.getElementById("tts");
-  //   audio_bell.oncanplaythrough = function () {
-  //     audio_bell.play();
-  //   };
-  //   checkPass(currentImages, currentIndex);
-  // };
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);
@@ -284,7 +282,6 @@ const YogaCoach = () => {
         console.log(error);
       });
   };
-
 
   function AudioPlayer({ audio }) {
     return (
@@ -380,29 +377,16 @@ const YogaCoach = () => {
       setIsLoggedIn(false);
     }
     getRoutine(routine);
+    // getYogaImage(images[index]);
 
-    // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
-    // const timer2 = setInterval(() => playAudio(currentImages, currentIndex), 10000);
+    const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
+    const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
 
-    // return () => {
-    //   clearInterval(timer1);
-    //   // clearInterval(timer2);
-    // };
-
+    return () => {
+      clearInterval(timer1);
+      clearInterval(timer2);
+    };
   }, [location.pathname]);
-
-  useEffect(() => {
-    // Perform action when images or index change
-    console.log(images);
-    if (images.length > 0 && index < images.length) {
-      // Do something with images[index]
-      getYogaImage(images[index]);
-    }
-
-    if (index !== 0 && index >= images.length){
-      setX(true);
-    }
-  }, [images, index]);
 
   return (
     <div className="App" style={bodyStyle}>
