@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, { useRef } from "react";
-import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import useScript from "../hooks/useScript";
 import ConditionalHeader from "../components/ConditionalHeader";
+import useScript from "../hooks/useScript";
 
 const LogInPage = () => {
   const isLoggedIn = false;
@@ -44,7 +43,7 @@ const LogInPage = () => {
         credential: JSON.stringify(idToken),
       })
       .then((response) => {
-        // console.log(response.data)
+        console.log(response)
         navigate("/?isLogin=true");
       })
       .catch((error) => {
