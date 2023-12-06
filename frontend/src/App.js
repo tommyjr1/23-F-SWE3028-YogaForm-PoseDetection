@@ -6,6 +6,7 @@ import YogaCoach from './pages/YogaCoach';
 import LogInPage from './pages/LogInPage';
 import YogaList from './pages/YogaList';
 import MyPage from './pages/MyPage';
+import EndingPage from './pages/EndingPage';
 
 function App() {
 
@@ -25,6 +26,8 @@ function App() {
         <Route path="/YogaList" element={<YogaList />} />
         {/* <MyPage /> */}
         <Route path="/MyPage" element={<MyPage />} />
+        {/* <MyPage /> */}
+        <Route path="/EndingPage" element={<EndingPage />} />
       </Routes>
     </BrowserRouter> 
   );

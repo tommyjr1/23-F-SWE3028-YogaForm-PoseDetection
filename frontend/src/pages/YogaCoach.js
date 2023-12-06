@@ -4,15 +4,17 @@ import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import queryString from "query-string";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
+import { throttle } from "lodash";
 
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [routine, setRoutine] = useState("defaultEasy");
+  // const [routine, setRoutine] = useState("defaultEasy");
+  const [routine, setRoutine] = useState("");
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -36,13 +38,19 @@ const YogaCoach = () => {
   // const [userPoseAngle, setUserPoseAngle] = use
   let userPoseAngle = null;
 
-  const [message, setMessage] = useState("");
   const [audio, setAudio] = useState();
   const [landmarks, setLandmarks] = useState();
   // const [first, setFirst] = useState(true);
   const [index, setIndex] = useState(0);
   const [pass, setPass] = useState(false);
-  let images = [];
+  const [images, setImages] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [imageUrl, setImageUrl] = useState(yogaImage);
+  const [yogaName, setYogaName] = useState('무희자세');
+  const [x, setX] = useState(false);
+  const [timer1, setTimer1] = useState();
+  const [timer2, setTimer2] = useState();
+  const [lastExecution, setLastExecution] = useState(0);
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -53,14 +61,20 @@ const YogaCoach = () => {
     stopWebCam();
     navigate("/YogaList");
   };
-  const goToLandingPage = () => {
+  const goToEndingPage = () => {
     stopWebCam();
-    navigate("/LandingPage");
+
+    if (isLoggedIn) {
+      navigate(`/EndingPage?isLogin=true&userRoutine=${routine}`, { state: { data: grades } });
+    } else {
+      navigate(`/EndingPage?isLogin=false&userRoutine=${routine}`, { state: { data: grades } });
+    }
   };
 
   async function onResults(results) {
     // let landmarks = results.poseLandmarks; // * all the landmarks in the pose
     setLandmarks(results.poseLandmarks);
+    // console.log(results.poseLandmarks);
     // submitLandmarkData(landmarks);
     // requestAudioFile();
 
@@ -132,26 +146,33 @@ const YogaCoach = () => {
     }
   };
 
-  const submitLandmarkData = async (landmarks) => {
+  const submitLandmarkData = async (currentLandmarks, currentImages, currentIndex) => {
     // console.log(typeof userPoseAngle);
+    console.log("submit landmark");
+    console.log(currentImages);
 
     await axios
       .post("http://3.35.60.125:8080/yf/pose/angle", {
-        value: JSON.stringify(landmarks),
+        value: JSON.stringify(currentLandmarks),
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
+        if (response.data){
+          // console.log(images);
+          requestAudioFile(currentImages, currentIndex);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const requestAudioFile = async (name) => {
-    // const isNext = await axios.get('http://3.35.60.125:8080/pose/complete', {
 
-    // })
+  const requestAudioFile = async (currentImages, currentIndex) => {
+
     console.log("request audio");
+    const name = currentImages[currentIndex];
+    const flagAudio = false;
 
     await axios
       .get(`http://3.35.60.125:8080/yf/pose/feedback/${name}`, {
@@ -159,62 +180,70 @@ const YogaCoach = () => {
         headers: { Accept: "*/*", "Content-Type": "audio/wav" },
       })
       .then((response) => {
-        const blob = new Blob([response.data], {
-          type: "audio/wav",
-        });
-        const url = URL.createObjectURL(blob);
-        setAudio(url);
-        // var audio_bell = document.getElementById("tts");
-        // audio_bell.src(url);
-        // audio_bell.play();
+        console.log(response.data);
+        // const currentTime = Date.now();
+        if (response.data && response.data.byteLength !== 0){
+          console.log("yes audio");
+          // console.log("current:",currentTime);
+          // console.log("last",lastExecution);
+          const blob = new Blob([response.data], {
+            type: "audio/wav",
+          });
+          const url = URL.createObjectURL(blob);
+          setAudio(url);
+          // flagAudio = true;
+          // setLastExecution(currentTime);
+
+          // var audio_bell = document.getElementById("tts");
+
+          // audio_bell.oncanplaythrough = function () {
+          //   // This event is fired when the browser can play the audio without stopping for buffering
+          //   audio_bell.play();
+          // };
+
+          checkPass(currentImages, currentIndex);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
 
-    // const { data } = await axios
-    //   .get("http://3.35.60.125:8080/yf/pose/feedback/chair", {
-    //     responseType: "arraybuffer",
-    //     headers: { Accept: "*/*", "Content-Type": "audio/wav" },
-    //   })
-    //   .then((resp) => resp);
-    // const blob = new Blob([data], {
-    //   type: "audio/wav",
-    // });
-    // const url = URL.createObjectURL(blob);
-    // setAudio(url);
+    
+    // if (flagAudio){
+    //   var audio_bell = document.getElementById("tts");
 
-    var audio_bell = document.getElementById("tts");
-    // audio_bell.src(url);
-    // audio_bell.play();
+    //   audio_bell.oncanplaythrough = function () {
+    //     // This event is fired when the browser can play the audio without stopping for buffering
+    //     audio_bell.play();
+    //   };
 
-    audio_bell.oncanplaythrough = function () {
-      audio_bell.play();
-    };
-    checkPass(images[index]);
-
-    // const audioElement = audioRef.current;
-    // If audio source changes and it's set
-    // if (audio && audioElement) {
-    //   audioElement.autoplay = true; // Set autoplay attribute
-    //   audioElement.load(); // Reload the audio element
+    //   checkPass(currentImages, currentIndex);
     // }
-
-    // const element = document.getElementById('tts');
-    // element.click();
-    // audioElement.play();
   };
+
+  // const playAudio = async (currentImages, currentIndex) => {
+
+  //   console.log("play audio");
+  //   var audio_bell = document.getElementById("tts");
+  //   audio_bell.oncanplaythrough = function () {
+  //     audio_bell.play();
+  //   };
+  //   checkPass(currentImages, currentIndex);
+  // };
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);
+    console.log(routine);
 
     await axios
-      .get("http://3.35.60.125:8080/yf/user/routine", {
-        routineName: JSON.stringify(routine),
+      .get(`http://3.35.60.125:8080/yf/user/routine/${routine}`, {
+        responseType: "json"
       })
       .then((response) => {
-        console.log(response.data);
-        // images = response.data;
+        // console.log(response.data);
+        // images = response.data.split(',');
+        setImages(response.data.split(','));
+        setGrades([Array(response.data.split(',').length).fill(0)])
       })
       .catch((error) => {
         console.log(error);
@@ -223,42 +252,56 @@ const YogaCoach = () => {
 
   const getYogaImage = async (name) => {
     // console.log(typeof userPoseAngle);
+    console.log("getYogaImage function");
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/user/routine/${name}`, {
+      .get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       })
       .then((response) => {
+        console.log('get image');
         const blob = new Blob([response.data], {
           type: "image/png",
         });
         const imgUrl = URL.createObjectURL(blob);
-        document.getelementbyid("yogaImg").src = imgUrl;
+
+        setImageUrl(imgUrl);
+        setYogaName(name);
       })
       .catch((error) => {
         console.log(error);
       });
+
+      setX(true);
   };
 
-  const checkPass = async (name) => {
+  const checkPass = async (currentImages, currentIndex) => {
+    // console.log(images);
+
+    const name = currentImages[currentIndex];
     await axios
       .get(`http://3.35.60.125:8080/yf/pose/pass/${name}`)
       .then((response) => {
         console.log(response.data);
-        setIndex(index + 1);
-        getYogaImage(images[index]);
+        // if (response.data >= 0){
+        //   const updatedGrades = [...grades]; // Create a copy of the grades array
+        //   updatedGrades[currentIndex] = response.data; // Update the value at index 0 to 96
+        //   setGrades(updatedGrades);
+        //   setIndex(currentIndex + 1);
+        // }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  function AudioPlayer({ audio }) {
-    return (
-      <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
-    );
-  }
+
+  // function AudioPlayer({ audio }) {
+  //   return (
+  //     <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
+  //   );
+  // }
 
   const stopWebCam = () => {
     if (webcamRef.current.video) {
@@ -268,6 +311,27 @@ const YogaCoach = () => {
       webcamRef.current.video.srcObject = null;
     }
   };
+
+  // const debouncedSubmitLandmarkData = useCallback(
+  //   debounce((currentLandmarks) => {
+  //     submitLandmarkData(currentLandmarks);
+  //   }, 1000),
+  //   []
+  // );
+  const throttleSubmitLandmarkData = useCallback(
+    throttle((currentLandmarks, currentImages, currentIndex) => {
+      submitLandmarkData(currentLandmarks, currentImages, currentIndex);
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+
+    // setTimer1(setInterval(() => throttleSubmitLandmarkData(landmarks, images, index), 1000));
+    // setTimer2(setInterval(() => throttleRequestAudio(images, index), 1000));
+    throttleSubmitLandmarkData(landmarks, images, index);
+
+  }, [images, landmarks, index]);
 
   useEffect(() => {
     console.log("again");
@@ -313,25 +377,52 @@ const YogaCoach = () => {
     } catch {
       setIsLoggedIn(false);
     }
-    getRoutine(routine);
-    // getYogaImage(images[index]);
+    // getRoutine(routine);
 
-    const timer1 = setInterval(() => requestAudioFile("chair"), 3 * 1000);
-    const timer2 = setInterval(() => submitLandmarkData(landmarks), 1000);
+    // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
+    // const timer2 = setInterval(() => playAudio(currentImages, currentIndex), 10000);
 
-    return () => {
-      clearInterval(timer1);
-      clearInterval(timer2);
-    };
+    // return () => {
+    //   clearInterval(timer1);
+    //   // clearInterval(timer2);
+    // };
+
   }, [location.pathname]);
+
+  useEffect(() => {
+    // console.log(routine);
+    getRoutine(routine);
+    
+  }, [routine]);
+
+  useEffect(() => {
+    // Perform action when images or index change
+    console.log(images);
+    if (images.length > 0 && index < images.length) {
+      // Do something with images[index]
+      getYogaImage(images[index]);
+    }
+
+    if (index !== 0 && index >= images.length){
+      setX(true);
+    }
+  }, [images, index]);
+
+  useEffect(() => {
+    // Play audio when 'audio' state is updated
+    if (audio) {
+      audioRef.current.src = audio; // Set the audio source
+      audioRef.current.play(); // Play the audio
+    }
+  }, [audio]);
 
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader
         isLoggedIn={isLoggedIn}
         webcamRef={webcamRef}
-        // timer1 = {timer1}
-        // timer2 = {timer2}
+      // timer1 = {timer1}
+      // timer2 = {timer2}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
@@ -353,7 +444,7 @@ const YogaCoach = () => {
             zindex: 9,
           }}
         >
-          <img id="yogaImg" src={yogaImage} style={{ height: "20rem" }}></img>
+          <img id="yogaImg" src={imageUrl} style={{ height: "20rem" }}></img>
         </div>
         <div>
           <div
@@ -366,11 +457,11 @@ const YogaCoach = () => {
               left: "40%",
             }}
           >
-            무희자세
+            <p id="yogaName">{yogaName}</p>
           </div>
-          <p>{message}</p>
           {/* type="audio/mpeg" */}
-          <AudioPlayer {...{ audio }} />
+          {/* <AudioPlayer {...{ audio }} /> */}
+          <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
           {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 
@@ -401,6 +492,25 @@ const YogaCoach = () => {
             }}
           ></canvas>
         </div>
+        <button
+        style={{
+          // opacity: x ? 100 : 0,
+          opacity: 100,
+          position: "absolute",
+          left: "80%",
+          bottom: "10%",
+          backgroundColor: "#FFF2CC",
+          border: "1px solid #FFF2CC",
+          borderRadius: "2rem",
+          width: "150px",
+          height: "50px",
+          color: "#3B2C77",
+          fontSize: "1.6rem",
+        }}
+        onClick={goToEndingPage}
+      >
+        RESULTS
+      </button>
       </div>
     </div>
   );
