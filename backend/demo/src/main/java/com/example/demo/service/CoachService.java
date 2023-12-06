@@ -3,10 +3,20 @@ package com.example.demo.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
 import com.example.demo.dto.JointsDto;
 import com.example.demo.dto.LandmarkDto;
 import com.example.demo.entity.Pose;
 
+import lombok.RequiredArgsConstructor;
+
+
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class CoachService {
 
     public List<LandmarkDto> landmarkArray = new ArrayList<>();

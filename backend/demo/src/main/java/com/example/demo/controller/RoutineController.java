@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Routine;
 import com.example.demo.service.RoutineService;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@RestController
 public class RoutineController {
 
     @Autowired
@@ -25,14 +27,14 @@ public class RoutineController {
     private String userId="";
 
 
-    @GetMapping("/yf/user/routine/")
+    @GetMapping("/yf/routine/")
     public List<String> getRoutine(){
         List<String> routines = routineService.getUserRoutines(userId);
         return routines;
 
     }
 
-    @GetMapping("/yf/user/routine/{routineName}")
+    @GetMapping("/yf/routine/{routineName}")
     public String getRoutine(@PathVariable("routineName") String routineName){
         System.out.println(routineName);        
         Routine routine = routineService.getByRoutineName(routineName);
@@ -41,7 +43,7 @@ public class RoutineController {
 
 
     @ResponseBody
-    @PostMapping("/yf/user/addRoutines")
+    @PostMapping("/yf/routine/addRoutines")
     public void postAddRoutines(@RequestBody String routines){
         
         List<Routine> routine1 = new ArrayList<>();
@@ -55,8 +57,8 @@ public class RoutineController {
     }
 
     @ResponseBody
-    @PostMapping("/yf/user/addRoutine")
-    public void postAddRoutines(@RequestBody Routine routine){
+    @PostMapping("/yf/routine/addRoutine")
+    public void postAddRoutine(@RequestBody Routine routine){
         System.out.println(routine);
         routineService.saveRoutine(routine);
     }

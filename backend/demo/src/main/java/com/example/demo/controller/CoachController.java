@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AngleDto;
 import com.example.demo.dto.JointsDto;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@RestController
 public class CoachController {
 
     @Autowired
@@ -44,7 +46,7 @@ public class CoachController {
 
 
     @ResponseBody
-    @PostMapping("/yf/pose/angle")
+    @PostMapping("/yf/coach/angle")
     public boolean postData(@RequestBody AngleDto angle) throws Exception {
 
         // System.out.println(angle.toString());
@@ -67,7 +69,7 @@ public class CoachController {
     }
     
     @ResponseBody
-    @GetMapping("yf/pose/feedback/{poseName}")
+    @GetMapping("yf/coach/feedback/{poseName}")
     public ResponseEntity getData(@PathVariable("poseName") String poseName) throws Exception {
         boolean sendFeeadback=false;
         ResponseEntity<byte[]> response = ResponseEntity.noContent().build();
@@ -106,7 +108,7 @@ public class CoachController {
         return response ;
     }
 
-    @GetMapping("/yf/pose/pass/{poseName}")
+    @GetMapping("/yf/coach/pass/{poseName}")
     public Double getPass(@PathVariable("poseName") String poseName){
         if(results[0].toString()=="Good job."){ return (Double) results[1];}
         else{ return -1.0;}
