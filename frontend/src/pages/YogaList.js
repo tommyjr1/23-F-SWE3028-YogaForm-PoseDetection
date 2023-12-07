@@ -31,6 +31,7 @@ const YogaList = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [routineName, setRoutineName] = useState("Untitled");
   const [isOn, setIsOn] = useState(false);
+  // const [style, setStyle] = useState({ display: "none" });
 
   const checkedItemHandler = (value, isChecked) => {
     if (isChecked) {
@@ -65,11 +66,10 @@ const YogaList = () => {
   };
 
   const createRoutineName = () => {
-    return (
-      <div>
-
-      </div>
-    )
+    //유저입력받기
+    setRoutineName("something");
+    return <div></div>;
+    //버튼 누르면 poseList -> checkPoseList
   };
 
   const onSubmit = async (e) => {
@@ -175,7 +175,7 @@ const YogaList = () => {
     );
   });
 
-  const checkPoseList = poseName.map((pose, index) => {
+  const selectPose = poseName.map((pose, index) => {
     //console.log(imgUrls);
     return (
       <li
@@ -199,7 +199,6 @@ const YogaList = () => {
           ></img>
         </div>
         <div className="poseTitle">
-          {/* <h6>{pose}</h6> */}
           <input
             type="checkbox"
             id={pose}
@@ -242,13 +241,8 @@ const YogaList = () => {
           Make a routine
         </button>
         <form onSubmit={onSubmit}>
-          <ul style={{ display: "flex", flexWrap: "wrap" }}>
-            {poseList}
-          </ul>
-          <ul style={{ display: "flex", flexWrap: "wrap"}}>
-            {checkPoseList}
-          </ul>
-
+          <ul style={{ display: "flex", flexWrap: "wrap" }}>{poseList}</ul>
+          <ul style={{ display: "flex", flexWrap: "wrap" }}>{selectPose}</ul>
           <button
             style={{
               backgroundColor: "#FFF2CC",
