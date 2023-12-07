@@ -43,7 +43,7 @@ public class PoseController {
     }
 
     @GetMapping("/yf/pose/getImg/{poseName}")
-    public ResponseEntity getMemberById(@PathVariable("poseName") String poseName) throws IOException{
+    public ResponseEntity getImg(@PathVariable("poseName") String poseName) throws IOException{
         // if (poseName=="")
         // Pose currentPose = poseService.getPosebyName(poseName);
         // File image = File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/src/main/resources/static/poses/"+ poseName +".png");

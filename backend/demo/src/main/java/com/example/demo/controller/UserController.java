@@ -3,15 +3,19 @@ package com.example.demo.controller;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.LoginDto;
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.entity.User;
 import com.example.demo.entity.UserRole;
 import com.example.demo.service.JwtTokenProvider;
@@ -26,6 +30,8 @@ public class UserController {
     UserService userService;
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+    // @Autowired
+    // RedisService redisService;
     
     /*
      * 로그인을 요청하면 동시에 JWT 토큰을 만들어서 반환해줘야 하기 때문에, 세션과 다르게 직접 로그인 만들어야함
@@ -35,7 +41,7 @@ public class UserController {
     그리고 User의 이메일과 권한을 추출해 토큰을 만들어주는 작업을 해줍니다.
      */
     @PostMapping("/yf/user/login")
-    public String postLogin(@RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException{
+    public ResponseDto postLogin(@RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException{
 
 
         User user = userService.login(loginDto);
@@ -43,10 +49,26 @@ public class UserController {
         UserRole role = user.getRole();
         System.out.println(email+role);
         String token = jwtTokenProvider.createToken(email, role);
+        String refreshToken = jwtTokenProvider.createRefreshToken(email, role);
+
+        //refreshToken을 Redis에 저장해주기
+        // redisService.setRedisStringValue(email, refreshToken);
+
         response.setHeader("JWT", token);
+        response.setHeader("REFRESH", refreshToken);
+        ResponseDto res = new ResponseDto(token, refreshToken);
 
-        return token;
+        return res;
 
+    }
+
+    @PostMapping("/yf/user/reissue")
+    @ResponseBody
+    public String reissue(HttpServletResponse response, HttpServletRequest request, @RequestHeader("REFRESH") String refreshToken) {
+        String newAccessToken = jwtTokenProvider.reissueAccessToken(refreshToken, request);
+
+        response.setHeader("JWT", newAccessToken);
+        return newAccessToken;
     }
 
     
