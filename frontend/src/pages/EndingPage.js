@@ -1,7 +1,7 @@
 import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import yogaIcon from "../assets/yoga_icon.png";
 
@@ -16,6 +16,12 @@ const EndingPage = () => {
   const [imageFlag, setImageFlag] = useState(true);
   const [average, setAverage] = useState();
   const location = useLocation();  
+
+  const navigate = useNavigate();
+  const goToRoutinePage = () => {
+    // navigate("/RoutinePage");
+    console.log("go to routine");
+  };
 
   const bodyStyle = {
     position: "absolute",
@@ -212,8 +218,8 @@ const EndingPage = () => {
         </div>
         <button
           style={{
-            // opacity: x ? 100 : 0,
-            opacity: 100,
+            opacity: x ? 100 : 0,
+            // opacity: 100,
             position: "absolute",
             left: "80%",
             bottom: "10%",
@@ -227,6 +233,23 @@ const EndingPage = () => {
           onClick={saveResults}
         >
           SAVE
+        </button>
+        <button
+          style={{
+            opacity: 100,
+            position: "absolute",
+            left: "65%",
+            bottom: "10%",
+            backgroundColor: "#FFF2CC",
+            border: "1px solid #FFF2CC",
+            borderRadius: "2rem",
+            width: "140px",
+            color: "#3B2C77",
+            fontSize: "1.6rem",
+          }}
+          onClick={goToRoutinePage}
+        >
+          RESTART
         </button>
       </div>
     </div>
