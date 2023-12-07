@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
+@RequestMapping("/yf/pose")
 public class PoseController {
 
     private List<Pose> pose1 = new ArrayList<>();
@@ -36,13 +38,13 @@ public class PoseController {
     @Autowired
     PoseService poseService;
 
-    @GetMapping("/yf/pose/getName")
+    @GetMapping("/getName")
     public List<String> getPoses(){
         poseNames = poseService.getAll();
         return poseNames;
     }
 
-    @GetMapping("/yf/pose/getImg/{poseName}")
+    @GetMapping("/getImg/{poseName}")
     public ResponseEntity getImg(@PathVariable("poseName") String poseName) throws IOException{
         // if (poseName=="")
         // Pose currentPose = poseService.getPosebyName(poseName);
@@ -58,7 +60,7 @@ public class PoseController {
     }
 
     @ResponseBody
-    @PostMapping("/yf/pose/addPose")
+    @PostMapping("/addPose")
     public void postAddPose(@RequestBody String poses){
 
         pose1 = null;

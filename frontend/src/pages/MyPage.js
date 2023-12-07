@@ -6,6 +6,7 @@ import { Bar } from 'react-chartjs-2';
 import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 
+
 const MyPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
@@ -43,8 +44,12 @@ const MyPage = () => {
     console.log(routine);
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/routine/${routine}`, {
-        responseType: "json"
+      .get(`/routine/${routine}`, {
+        responseType: "json",
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
       })
       .then((response) => {
         setImages(response.data.split(','));
@@ -76,7 +81,7 @@ const MyPage = () => {
   }, [location]);
 
   useEffect(() => {
-    console.log(routine);
+    console.log("routine"+routine);
     getRoutine(routine);
     
   }, [routine]);

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import yogaIcon from "../assets/yoga_icon.png";
 
+
 const EndingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
@@ -63,8 +64,14 @@ const EndingPage = () => {
     console.log(routine);
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/routine/${routine}`, {
+      .get(`/routine/${routine}`, {
         responseType: "json"
+      },
+      {
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
       })
       .then((response) => {
         setImages(response.data.split(','));
@@ -80,7 +87,7 @@ const EndingPage = () => {
     console.log(name);
 
     try {
-      const response = await axios.get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
+      const response = await axios.get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       });

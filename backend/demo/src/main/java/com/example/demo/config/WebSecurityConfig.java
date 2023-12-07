@@ -62,6 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 http.csrf().disable();
 
                 http.authorizeRequests()
+                        .antMatchers("/yf/routine/*", "/yf/coach/*").authenticated()
                         .anyRequest().permitAll();
                 
                  //JwtFilter 추가
