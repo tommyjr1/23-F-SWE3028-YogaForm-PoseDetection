@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import yogaIcon from "../assets/yoga_icon.png";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
@@ -13,6 +14,7 @@ const EndingPage = () => {
   const [x, setX] = useState(false);
   const [imageFlag, setImageFlag] = useState(true);
   const [average, setAverage] = useState();
+  const location = useLocation();
 
   const bodyStyle = {
     position: "absolute",
@@ -28,6 +30,11 @@ const EndingPage = () => {
     border: "1px solid #F2CCFF",
     color: "#3B2C77",
     fontSize: "1.6rem",
+  };
+
+  const navigate = useNavigate();
+  const goToRoutinePage = () => {
+    navigate("/RoutinePage");
   };
 
   const saveResults = async () => {
@@ -105,7 +112,7 @@ const EndingPage = () => {
       if (index > imgUrls.length){
         setTimeout(function() { //Start the timer
           setImgUrls(prevList => [...prevList, imgUrl]);
-        }.bind(this), 100)
+        }.bind(this), 300)
       }else{
         setImgUrls(prevList => [...prevList, imgUrl]);
       }
@@ -121,7 +128,7 @@ const EndingPage = () => {
     if (checkLogin()){
       setX(true);
     }
-    setGrades([98, 79]);
+    setGrades(location.state?.grade || []);
   }, []);
 
   useEffect(() => {
@@ -212,6 +219,22 @@ const EndingPage = () => {
           onClick={saveResults}
         >
           SAVE
+        </button>
+        <button
+          style={{
+            position: "absolute",
+            left: "65%",
+            bottom: "10%",
+            backgroundColor: "#FFF2CC",
+            border: "1px solid #FFF2CC",
+            borderRadius: "2rem",
+            width: "100px",
+            color: "#3B2C77",
+            fontSize: "1.6rem",
+          }}
+          onClick={goToRoutinePage}
+        >
+          RESTART
         </button>
       </div>
     </div>

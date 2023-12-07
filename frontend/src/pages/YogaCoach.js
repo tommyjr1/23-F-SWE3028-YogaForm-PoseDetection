@@ -14,8 +14,8 @@ import checkLogin from "../utils/checkLogin";
 
 
 const YogaCoach = () => {
-  // const [routine, setRoutine] = useState("defaultEasy");
-  const [routine, setRoutine] = useState("");
+  const [routine, setRoutine] = useState("defaultEasy");
+  // const [routine, setRoutine] = useState("");
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -388,13 +388,13 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { userRoutine } = queryObj;
-      setRoutine(userRoutine);
-    } catch {
-    }
+    // try {
+    //   const { search } = location;
+    //   const queryObj = queryString.parse(search);
+    //   const { userRoutine } = queryObj;
+    //   setRoutine(userRoutine);
+    // } catch {
+    // }
     // getRoutine(routine);
 
     // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
