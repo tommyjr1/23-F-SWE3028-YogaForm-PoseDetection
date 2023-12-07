@@ -1,14 +1,12 @@
 import axios from "axios";
 import { Chart as ChartJS, registerables } from "chart.js";
-import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { Line } from 'react-chartjs-2';
-import { useLocation } from "react-router-dom";
+import { Bar } from 'react-chartjs-2';
 import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
 
 
 const MyPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
   const [routines, setRoutines] = useState([]);
   const [images, setImages] = useState([]);
@@ -16,7 +14,6 @@ const MyPage = () => {
   const [data, setData] = useState({ labels: [], datasets: [] });
   const [options, setOptions] = useState({ scales: { y: { beginAtZero: true } } });
   const [x, setX] = useState(false);
-  const location = useLocation();
 
   ChartJS.register(...registerables);
 
@@ -60,26 +57,15 @@ const MyPage = () => {
   
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      setRoutine("defaultEasy");
-      console.log(userRoutine);
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
 
-    if (isLoggedIn){
+    if (checkLogin()){
       setX(true);
     }
 
     getUserRoutine();
     // setGrades(location.state?.grade || []);
     setGrades([98, 79]);
-  }, [location]);
+  }, []);
 
 
   useEffect(() => {
@@ -103,7 +89,7 @@ const MyPage = () => {
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div

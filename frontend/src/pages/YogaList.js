@@ -3,10 +3,11 @@ import queryString from "query-string";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
+
 import { create } from "lodash";
 
 const YogaList = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
