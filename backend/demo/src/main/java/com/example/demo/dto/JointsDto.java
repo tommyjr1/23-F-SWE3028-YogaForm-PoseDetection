@@ -1,4 +1,4 @@
-package com.example.demo.dto.pose;
+package com.example.demo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Joints {
+public class JointsDto {
     private String name;
 
     private Double lelbow;
