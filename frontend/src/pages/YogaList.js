@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import { create } from "lodash";
 
-
 const YogaList = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -25,11 +24,13 @@ const YogaList = () => {
     fontSize: "1.6rem",
   };
 
-  const [x, setX] = useState(false);
+  // const [x, setX] = useState(false);
   const [imgUrls, setImgurl] = useState([]);
   const [poseName, setPoseName] = useState([]);
   const [checkedList, setCheckedList] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
+  const [routineName, setRoutineName] = useState("Untitled");
+  const [isOn, setIsOn] = useState(false);
 
   const checkedItemHandler = (value, isChecked) => {
     if (isChecked) {
@@ -46,8 +47,6 @@ const YogaList = () => {
   const checkHandler = (e, value) => {
     setIsChecked(!isChecked);
     checkedItemHandler(value, e.target.checked);
-
-    console.log(value, e.target.checked);
   };
 
   const getPoseName = async () => {
@@ -65,10 +64,35 @@ const YogaList = () => {
       });
   };
 
-  const onSubmit = (e) => {
-    // console.log("checkedList: ", checkedList);
+  const createRoutineName = () => {
+    return (
+      <div>
+
+      </div>
+    )
+  };
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     console.log("checkedList: ", checkedList);
+
+    await axios
+      .post(
+        "/routine/addRoutine",
+        {
+          routineName: routineName,
+          poses: checkedList,
+        },
+        {
+          headers: {
+            JWT: localStorage.getItem("token"),
+            REFRESH: localStorage.getItem("refreshToken"),
+          },
+        }
+      )
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const getImage = async (name) => {
@@ -174,27 +198,23 @@ const YogaList = () => {
             }}
           ></img>
         </div>
-        <form onSubmit={onSubmit}>
-          <div className="poseTitle">
-            {/* <h6>{pose}</h6> */}
-            <input
-              type="checkbox"
-              id={pose}
-              checked={checkedList.includes(pose)}
-              onChange={(e) => checkHandler(e, pose)}
-            />
-            <label htmlFor={pose}>{pose}</label>
-          </div>
-        </form>
+        <div className="poseTitle">
+          {/* <h6>{pose}</h6> */}
+          <input
+            type="checkbox"
+            id={pose}
+            checked={checkedList.includes(pose)}
+            onChange={(e) => checkHandler(e, pose)}
+          />
+          <label htmlFor={pose}>{pose}</label>
+        </div>
       </li>
     );
   });
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
-      ></ConditionalHeader>
+      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         className="poseDisplay"
@@ -217,30 +237,36 @@ const YogaList = () => {
             flexDirection: "row",
             alignItems: "flex-end",
           }}
+          onClick={createRoutineName}
         >
           Make a routine
         </button>
-        <ul style={{ display: "flex", flexWrap: "wrap" }}>
-          {/* {poseList} */}
-          {checkPoseList}
-        </ul>
-        <button
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "120px",
-            height: "40px",
-            color: "#3B2C77",
-            fontSize: "1rem",
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "flex-end",
-          }}
-          type="submit"
-        >
-          Submit
-        </button>
+        <form onSubmit={onSubmit}>
+          <ul style={{ display: "flex", flexWrap: "wrap" }}>
+            {poseList}
+          </ul>
+          <ul style={{ display: "flex", flexWrap: "wrap"}}>
+            {checkPoseList}
+          </ul>
+
+          <button
+            style={{
+              backgroundColor: "#FFF2CC",
+              border: "1px solid #FFF2CC",
+              borderRadius: "2rem",
+              width: "120px",
+              height: "40px",
+              color: "#3B2C77",
+              fontSize: "1rem",
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "flex-end",
+            }}
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
       </div>
     </div>
   );
