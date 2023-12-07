@@ -128,9 +128,9 @@ const EndingPage = () => {
     if (isLoggedIn){
       setX(true);
     }
-    // setGrades(location.state?.data || []);
+    setGrades(location.state?.data || []);
     // console.log(location.state?.data || []);
-    setGrades([98, 79]);
+    // setGrades([98, 79]);
   }, [location]);
 
   useEffect(() => {

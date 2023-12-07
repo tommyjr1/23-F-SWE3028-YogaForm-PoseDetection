@@ -39,11 +39,12 @@ const LogInPage = () => {
 
   const postLoginToken = async (idToken) => {
     await axios
-      .post("http://3.35.60.125:8080/yf/user/login", {
+      .post("http://3.35.60.125:8083/yf/user/login", {
         credential: JSON.stringify(idToken),
       })
       .then((response) => {
-        console.log(response)
+        console.log(response.headers)
+        console.log(response.data)
         navigate("/?isLogin=true");
       })
       .catch((error) => {
