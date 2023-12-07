@@ -1,10 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import ConditionalHeader from "../components/ConditionalHeader";
-=======
->>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
 import yogaIcon from "../assets/yoga_icon.png";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
@@ -216,10 +213,7 @@ const EndingPage = () => {
         <button
           style={{
             opacity: x ? 100 : 0,
-<<<<<<< HEAD
             // opacity: 100,
-=======
->>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
             position: "absolute",
             left: "80%",
             bottom: "10%",
@@ -236,21 +230,14 @@ const EndingPage = () => {
         </button>
         <button
           style={{
-<<<<<<< HEAD
             opacity: 100,
-=======
->>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
             position: "absolute",
             left: "65%",
             bottom: "10%",
             backgroundColor: "#FFF2CC",
             border: "1px solid #FFF2CC",
             borderRadius: "2rem",
-<<<<<<< HEAD
             width: "140px",
-=======
-            width: "100px",
->>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
