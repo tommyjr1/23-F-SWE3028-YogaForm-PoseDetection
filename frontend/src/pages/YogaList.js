@@ -129,7 +129,6 @@ const YogaList = () => {
         const { search } = location;
         const queryObj = queryString.parse(search);
         const { isLogin } = queryObj;
-        setIsLoggedIn(isLogin === "true");
         const poseNames = await getPoseName();
         console.log(poseName); //왜빈배열???
         const imagePromises = Array.from(poseNames).map((item) =>
@@ -139,7 +138,6 @@ const YogaList = () => {
         //console.log(imgUrls2);
       } catch (e) {
         console.log("Error: ", e);
-        setIsLoggedIn(false);
       }
     };
 
@@ -214,7 +212,7 @@ const YogaList = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader isLoggedIn={checkLogin()}></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         className="poseDisplay"

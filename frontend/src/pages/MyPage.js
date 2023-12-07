@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Chart as ChartJS, registerables } from "chart.js";
 import React, { useEffect, useState } from "react";
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
