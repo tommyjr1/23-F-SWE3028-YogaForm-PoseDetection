@@ -106,7 +106,9 @@ const MyPage = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader 
+        isLoggedIn={isLoggedIn}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         style={{

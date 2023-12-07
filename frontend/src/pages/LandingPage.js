@@ -36,6 +36,13 @@ const LandingPage = () => {
       navigate("/Instruction");
     }
   };
+  const goToEndingPage = () => {
+    if (isLoggedIn) {
+      navigate("/EndingPage?isLogin=true");
+    } else {
+      navigate("/EndingPage");
+    }
+  };
 
   useEffect(() => {
     try {
@@ -51,7 +58,9 @@ const LandingPage = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader 
+        isLoggedIn={isLoggedIn}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         style={{
@@ -91,7 +100,8 @@ const LandingPage = () => {
               fontSize: "1.7rem",
               color: "#3B2C77",
             }}
-            onClick={goToInstrction}
+            // onClick={goToInstrction}
+            onClick={goToEndingPage}
           >
             START
           </Button>

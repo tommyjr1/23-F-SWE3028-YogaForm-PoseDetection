@@ -144,14 +144,6 @@ function Instruction() {
       navigate("/YogaCoach?userRoutine=defaultEasy");
     }
   };
-  const goToYogaList = () => {
-    stopWebCam();
-    navigate("/YogaList");
-  };
-  const goToLandingPage = () => {
-    stopWebCam();
-    navigate("/LandingPage");
-  };
 
   return (
     <div className="Instruction" style={bodyStyle}>
