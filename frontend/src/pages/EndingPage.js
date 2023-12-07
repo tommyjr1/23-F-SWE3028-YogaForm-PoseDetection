@@ -45,29 +45,34 @@ const EndingPage = () => {
 
     console.log(allGrade);
 
-    // await axios
-    //   .post("http://3.35.60.125:8080/yf/user/record/addRecord", {
-    //     routineName: routine,
-    //     eachScore: allGrade,
-    //     score: average
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    await axios
+      .post("/user/addRecord", {
+        routineName: routine,
+        eachScore: allGrade,
+        score: average
+      },
+      {
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);
     console.log(routine);
+    console.log(localStorage.getItem("token"));
 
     await axios
       .get(`/routine/${routine}`, {
-        responseType: "json"
-      },
-      {
+        responseType: "json",
         headers:{
           JWT: localStorage.getItem("token"),
           REFRESH: localStorage.getItem("refreshToken")

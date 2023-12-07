@@ -10,7 +10,7 @@ import YogaCoach from './pages/YogaCoach';
 import YogaList from './pages/YogaList';
 
 
-axios.defaults.baseURL = "http://3.35.60.125:8083/yf";
+axios.defaults.baseURL = "http://3.35.60.125:8080/yf";
 
 
 function App() {
