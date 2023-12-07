@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import useScript from "../hooks/useScript";
 
+// axios.defaults.withCredentials = true;
+
 const LogInPage = () => {
+  
   const isLoggedIn = false;
   const bodyStyle = {
     position: "absolute",
@@ -22,15 +25,6 @@ const LogInPage = () => {
     fontSize: "1.6rem",
   };
   const navigate = useNavigate();
-  const goToYogaList = () => {
-    navigate("/YogaList");
-  };
-  const goToLandingPage = () => {
-    navigate("/LandingPage");
-  };
-  const goToLogInPage = () => {
-    navigate("/LogInPage");
-  };
 
   const onGoogleLogIn = async (res) => {
     console.log(res.credential);
@@ -39,13 +33,28 @@ const LogInPage = () => {
 
   const postLoginToken = async (idToken) => {
     await axios
-      .post("http://3.35.60.125:8080/yf/user/login", {
+      .post("/user/login", {
         credential: JSON.stringify(idToken),
       })
-      .then((response) => {
-        console.log(response)
+      .then(response => {
+        console.log(response.headers)
+        localStorage.clear();
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          console.log(localStorage.getItem('token'));
+        }
+        if (response.data.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+          console.log(localStorage.getItem('refreshToken'));
+        }
         navigate("/?isLogin=true");
-      })
+      }) 
+      // .then(data => {
+      //   console.log(response.headers)
+      //   console.log(data.)
+      //   navigate("/?isLogin=true");
+      // })
+      
       .catch((error) => {
         console.log(error);
       });
@@ -72,7 +81,9 @@ const LogInPage = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader 
+        isLoggedIn={isLoggedIn}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         style={{

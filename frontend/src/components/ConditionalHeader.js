@@ -20,7 +20,12 @@ export default function ConditionalHeader(props) {
   };
   const goToMyPage = () => {
     stopWebCam();
-    navigate("/MyPage");
+    if (isLoggedIn) {
+      navigate("/MyPage?isLogin=true");
+    } else {
+      navigate("/MyPage");
+    }
+    window.location.reload();
   };
   const goToYogaList = () => {
     stopWebCam();

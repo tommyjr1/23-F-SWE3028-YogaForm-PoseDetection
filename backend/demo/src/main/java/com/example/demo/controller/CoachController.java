@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,10 +29,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
+@RequestMapping("/yf/coach")
 public class CoachController {
 
     @Autowired
     CoachService coachService;
+    @Autowired
     PoseService poseService;
 
     private List<LandmarkDto> landmark1 = new ArrayList<>();
@@ -46,7 +49,7 @@ public class CoachController {
 
 
     @ResponseBody
-    @PostMapping("/yf/coach/angle")
+    @PostMapping("/angle")
     public boolean postData(@RequestBody AngleDto angle) throws Exception {
 
         // System.out.println(angle.toString());
@@ -69,7 +72,7 @@ public class CoachController {
     }
     
     @ResponseBody
-    @GetMapping("yf/coach/feedback/{poseName}")
+    @GetMapping("/feedback/{poseName}")
     public ResponseEntity getData(@PathVariable("poseName") String poseName) throws Exception {
         boolean sendFeeadback=false;
         ResponseEntity<byte[]> response = ResponseEntity.noContent().build();
@@ -90,9 +93,8 @@ public class CoachController {
             if (sendFeeadback){
                 currentPose = poseService.getPosebyName(poseName);
                 results = coachService.comparePose(currentPose, currentJoints);
-                System.out.println(results.toString());
-
-                System.out.println(results[0].toString());
+                System.out.println("results: "+results[0].toString());
+                System.out.println(results[1].toString());
 
                 Tts.main(results[0].toString());
                 File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
@@ -108,8 +110,10 @@ public class CoachController {
         return response ;
     }
 
-    @GetMapping("/yf/coach/pass/{poseName}")
+    @GetMapping("/pass/{poseName}")
     public Double getPass(@PathVariable("poseName") String poseName){
+        System.out.println("pass: "+results[0].toString());
+
         if(results[0].toString()=="Good job."){ return (Double) results[1];}
         else{ return -1.0;}
     }

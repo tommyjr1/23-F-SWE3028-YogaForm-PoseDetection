@@ -3,8 +3,10 @@ package com.example.demo.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.RoutineRepository;
@@ -17,7 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoutineService {
 
-    private final RoutineRepository routineRepository;
+    @Autowired
+    RoutineRepository routineRepository;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     public Routine getByRoutineName(String routineName){
         Routine routine = routineRepository.findByRoutineName(routineName);
@@ -30,7 +36,9 @@ public class RoutineService {
         }
     }
 
-    public List<String> getUserRoutines(String userEmail) {
+    public List<String> getUserRoutines(HttpServletRequest request) {
+        String token = request.getHeader("JWT");
+        String userEmail = jwtTokenProvider.getUserEmail(token);
         List<Routine> routines = routineRepository.findByUserEmail(userEmail);
         List<String> routineNames = new ArrayList<>();
 

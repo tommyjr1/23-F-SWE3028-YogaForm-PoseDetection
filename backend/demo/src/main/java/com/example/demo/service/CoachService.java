@@ -39,11 +39,15 @@ public class CoachService {
         // System.out.println("b: "+b.toString());
         // System.out.println(c);
 
+        // // Calculate the dot product and the magnitudes of the vectors
+        // Double dot_product =  ((b.getX() - a.getX())*(b.getX() - c.getX()) + (b.getY() - a.getY())*(b.getY() - c.getY()) + (b.getZ() - a.getZ())*(b.getZ() - c.getZ()));
+        // Double point_1_2_mag =  (Math.sqrt(Math.pow((b.getX() - a.getX()),2) + Math.pow((b.getY() - a.getY()),2)));
+        // Double point_2_3_mag =  (Math.sqrt(Math.pow((b.getX() - c.getX()),2) + Math.pow((b.getY() - c.getY()),2)));
 
         // Calculate the dot product and the magnitudes of the vectors
-        Double dot_product =  ((b.getX() - a.getX())*(b.getX() - c.getX()) + (b.getY() - a.getY())*(b.getY() - c.getY()));
-        Double point_1_2_mag =  (Math.sqrt(Math.pow((b.getX() - a.getX()),2) + Math.pow((b.getY() - a.getY()),2)));
-        Double point_2_3_mag =  (Math.sqrt(Math.pow((b.getX() - c.getX()),2) + Math.pow((b.getY() - c.getY()),2)));
+        Double dot_product =  ((b.getX() - a.getX())*(b.getX() - c.getX()) + (b.getY() - a.getY())*(b.getY() - c.getY()) + (b.getZ() - a.getZ())*(b.getZ() - c.getZ()));
+        Double point_1_2_mag =  (Math.sqrt(Math.pow((b.getX() - a.getX()),2) + Math.pow((b.getY() - a.getY()),2)+ Math.pow((b.getZ() - a.getZ()),2)));
+        Double point_2_3_mag =  (Math.sqrt(Math.pow((b.getX() - c.getX()),2) + Math.pow((b.getY() - c.getY()),2)+ Math.pow((b.getZ() - c.getZ()),2)));
 
         // Calculate the angle between the left hand, elbow, and shoulder landmarks in degrees
         Double aangle = (Math.acos(dot_product / (point_1_2_mag * point_2_3_mag))* (180 / Math.PI));
@@ -63,10 +67,10 @@ public class CoachService {
         Double relbow = calculateEach(12, 14, 16);
 
         //왼어깨 12 11 13
-        Double lshoulder = calculateEach(12, 11, 13);
+        Double lshoulder = calculateEach(13, 11, 23);
 
         //오른어깨 11 12 14
-        Double rshoulder = calculateEach(11, 12, 14);
+        Double rshoulder = calculateEach(14, 12, 24);
 
 
         //왼무릎 23 25 27
@@ -97,14 +101,14 @@ public class CoachService {
     public Double compareEach(String name, Double pose, Double joint){
         Double error = (pose-joint)/pose*100;
         System.out.println("Compare with correct val");
-        System.out.println(name);
+        System.out.println(name+joint);
         System.out.println(error);
         // Double minval = pose*0.95;
         // Double maxval = pose*1.05;
-        if (error < -5){
+        if (error < -30){
             tooStraight.add(name);
         }
-        else if(error>5){
+        else if(error>30){
             tooCurved.add(name);
         }
         return Math.abs(error);
@@ -117,12 +121,12 @@ public class CoachService {
 
         Double error = 0.0;
 
-        error+=compareEach("left elbow", pose.getLelbow(), joints.getLelbow());
-        error+=compareEach("right elbow", pose.getRelbow(), joints.getRelbow());
-        error+=compareEach("left shoulder", pose.getLshoulder(), joints.getLshoulder());
-        error+=compareEach("right shoulder", pose.getRshoulder(), joints.getRshoulder());
-        error+=compareEach("left knee", pose.getLknee(), joints.getLknee());
-        error+=compareEach("right knee", pose.getRknee(), joints.getRknee());
+        error+=compareEach("right elbow", pose.getLelbow(), joints.getLelbow());
+        error+=compareEach("left elbow", pose.getRelbow(), joints.getRelbow());
+        error+=compareEach("right shoulder", pose.getLshoulder(), joints.getLshoulder());
+        error+=compareEach("left shoulder", pose.getRshoulder(), joints.getRshoulder());
+        error+=compareEach("right knee", pose.getLknee(), joints.getLknee());
+        error+=compareEach("left knee", pose.getRknee(), joints.getRknee());
         error = 100 - (error/6);
 
         // boolean curved = tooCurved.isEmpty();
@@ -145,7 +149,7 @@ public class CoachService {
         if(feedback==""){
             feedback="Good job.";
         }
-        Object[] returnVal = new Object[] {feedback, error};
+        Object[] returnVal = new Object[] {feedback, String.format("%.2f", error)};
         System.out.println(returnVal.toString());
         return returnVal;
     }
@@ -167,12 +171,12 @@ public class CoachService {
     public boolean compareAngles(JointsDto currentJoints, JointsDto newJoints) {
         stop=true;
 
-        compareAngle("left elbow", currentJoints.getLelbow(), newJoints.getLelbow());
-        compareAngle("right elbow", currentJoints.getRelbow(), newJoints.getRelbow());
-        compareAngle("left shoulder", currentJoints.getLshoulder(), newJoints.getLshoulder());
-        compareAngle("right shoulder", currentJoints.getRshoulder(), newJoints.getRshoulder());
-        compareAngle("left knee", currentJoints.getLknee(), newJoints.getLknee());
-        compareAngle("right knee", currentJoints.getRknee(), newJoints.getRknee());
+        compareAngle("right elbow", currentJoints.getLelbow(), newJoints.getLelbow());
+        compareAngle("left elbow", currentJoints.getRelbow(), newJoints.getRelbow());
+        compareAngle("right shoulder", currentJoints.getLshoulder(), newJoints.getLshoulder());
+        compareAngle("left shoulder", currentJoints.getRshoulder(), newJoints.getRshoulder());
+        compareAngle("right knee", currentJoints.getLknee(), newJoints.getLknee());
+        compareAngle("left knee", currentJoints.getRknee(), newJoints.getRknee());
 
         return stop;
     }
