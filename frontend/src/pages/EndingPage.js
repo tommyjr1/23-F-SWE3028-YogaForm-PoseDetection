@@ -38,11 +38,6 @@ const EndingPage = () => {
     fontSize: "1.6rem",
   };
 
-  const navigate = useNavigate();
-  const goToRoutinePage = () => {
-    navigate("/RoutinePage");
-  };
-
   const saveResults = async () => {
     console.log("save");
     let allGrade = "";
