@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 
+
 const YogaList = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -30,7 +31,7 @@ const YogaList = () => {
 
   const getPoseName = async () => {
     await axios
-      .get("http://3.35.60.125:8080/yf/pose/getName")
+      .get("/pose/getName")
       .then((res) => {
         //poseNames = res.data;
         // res.data.forEach(item => {
@@ -51,7 +52,7 @@ const YogaList = () => {
 
   const getImage = async (name) => {
     await axios
-      .get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
+      .get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       })

@@ -11,6 +11,7 @@ import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
 
+
 const YogaCoach = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [routine, setRoutine] = useState("defaultEasy");
@@ -152,8 +153,14 @@ const YogaCoach = () => {
     console.log(currentImages);
 
     await axios
-      .post("http://3.35.60.125:8080/yf/coach/angle", {
+      .post("/coach/angle", {
         value: JSON.stringify(currentLandmarks),
+      },
+      {
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
       })
       .then((response) => {
         // console.log(response.data);
@@ -175,9 +182,14 @@ const YogaCoach = () => {
     const flagAudio = false;
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/coach/feedback/${name}`, {
+      .get(`/coach/feedback/${name}`, {
         responseType: "arraybuffer",
-        headers: { Accept: "*/*", "Content-Type": "audio/wav" },
+        headers: { 
+          Accept: "*/*", 
+          "Content-Type": "audio/wav",
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        },
       })
       .then((response) => {
         console.log(response.data);
@@ -236,8 +248,14 @@ const YogaCoach = () => {
     console.log(routine);
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/routine/${routine}`, {
+      .get(`/routine/${routine}`, {
         responseType: "json"
+      },
+      {
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
       })
       .then((response) => {
         // console.log(response.data);
@@ -255,9 +273,14 @@ const YogaCoach = () => {
     console.log("getYogaImage function");
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
+      .get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
-        headers: { Accept: "*/*", "Content-Type": "image/png" },
+        headers: { 
+          Accept: "*/*", 
+          "Content-Type": "image/png",
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        },
       })
       .then((response) => {
         console.log('get image');
@@ -281,7 +304,13 @@ const YogaCoach = () => {
 
     const name = currentImages[currentIndex];
     await axios
-      .get(`http://3.35.60.125:8080/yf/coach/pass/${name}`)
+      .get(`/coach/pass/${name}`,
+      {
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
+      })
       .then((response) => {
         console.log(response.data);
         // if (response.data >= 0){

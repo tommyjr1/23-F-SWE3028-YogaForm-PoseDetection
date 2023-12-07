@@ -7,15 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.LoginDto;
+import com.example.demo.dto.RecordDto;
 import com.example.demo.dto.ResponseDto;
+import com.example.demo.entity.Record;
 import com.example.demo.entity.User;
 import com.example.demo.entity.UserRole;
 import com.example.demo.service.JwtTokenProvider;
@@ -23,8 +25,11 @@ import com.example.demo.service.UserService;
 
 
 @RestController
-@ConfigurationProperties("ggl")
+@RequestMapping("/yf/user")
+
 public class UserController {
+
+    private String userEmail;
 
     @Autowired
     UserService userService;
@@ -40,7 +45,7 @@ public class UserController {
 
     그리고 User의 이메일과 권한을 추출해 토큰을 만들어주는 작업을 해줍니다.
      */
-    @PostMapping("/yf/user/login")
+    @PostMapping("/login")
     public ResponseDto postLogin(@RequestBody LoginDto loginDto, HttpServletResponse response) throws GeneralSecurityException, IOException{
 
 
@@ -62,7 +67,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/yf/user/reissue")
+    @PostMapping("/reissue")
     @ResponseBody
     public String reissue(HttpServletResponse response, HttpServletRequest request, @RequestHeader("REFRESH") String refreshToken) {
         String newAccessToken = jwtTokenProvider.reissueAccessToken(refreshToken, request);
@@ -71,7 +76,13 @@ public class UserController {
         return newAccessToken;
     }
 
-    
+    @PostMapping("/addRecord")
+    @ResponseBody
+    public void addRecord(@RequestBody RecordDto recordDto, HttpServletRequest request){
+        Record record = userService.addRecord(recordDto, request);
+        return ;
+    }
+
 
 
 
