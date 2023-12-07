@@ -22,15 +22,6 @@ const LogInPage = () => {
     fontSize: "1.6rem",
   };
   const navigate = useNavigate();
-  const goToYogaList = () => {
-    navigate("/YogaList");
-  };
-  const goToLandingPage = () => {
-    navigate("/LandingPage");
-  };
-  const goToLogInPage = () => {
-    navigate("/LogInPage");
-  };
 
   const onGoogleLogIn = async (res) => {
     console.log(res.credential);
@@ -39,7 +30,7 @@ const LogInPage = () => {
 
   const postLoginToken = async (idToken) => {
     await axios
-      .post("http://3.35.60.125:8083/yf/user/login", {
+      .post("http://3.35.60.125:8080/yf/user/login", {
         credential: JSON.stringify(idToken),
       })
       .then((response) => {
@@ -73,7 +64,9 @@ const LogInPage = () => {
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader 
+        isLoggedIn={isLoggedIn}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         style={{

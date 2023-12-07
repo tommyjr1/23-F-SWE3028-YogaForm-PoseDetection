@@ -61,15 +61,6 @@ const YogaCoach = () => {
     stopWebCam();
     navigate("/YogaList");
   };
-  const goToEndingPage = () => {
-    stopWebCam();
-
-    if (isLoggedIn) {
-      navigate(`/EndingPage?isLogin=true&userRoutine=${routine}`, { state: { data: grades } });
-    } else {
-      navigate(`/EndingPage?isLogin=false&userRoutine=${routine}`, { state: { data: grades } });
-    }
-  };
 
   async function onResults(results) {
     // let landmarks = results.poseLandmarks; // * all the landmarks in the pose
@@ -243,7 +234,7 @@ const YogaCoach = () => {
         // console.log(response.data);
         // images = response.data.split(',');
         setImages(response.data.split(','));
-        setGrades([Array(response.data.split(',').length).fill(0)])
+        // setGrades(Array(response.data.split(',').length).fill(0))
       })
       .catch((error) => {
         console.log(error);
@@ -273,7 +264,7 @@ const YogaCoach = () => {
         console.log(error);
       });
 
-      setX(true);
+      // setX(true);
   };
 
   const checkPass = async (currentImages, currentIndex) => {
@@ -284,12 +275,13 @@ const YogaCoach = () => {
       .get(`http://3.35.60.125:8080/yf/coach/pass/${name}`)
       .then((response) => {
         console.log(response.data);
-        // if (response.data >= 0){
-        //   const updatedGrades = [...grades]; // Create a copy of the grades array
-        //   updatedGrades[currentIndex] = response.data; // Update the value at index 0 to 96
-        //   setGrades(updatedGrades);
-        //   setIndex(currentIndex + 1);
-        // }
+        if (response.data >= 0){
+          // const updatedGrades = [...grades]; // Create a copy of the grades array
+          // const updatedGrades = grades.concat(response.data); // Update the value at index 0 to 96
+          // setGrades(updatedGrades);
+          setGrades(prevList => [...prevList, parseFloat(response.data)]);
+          setIndex(currentIndex + 1);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -396,6 +388,38 @@ const YogaCoach = () => {
   }, [routine]);
 
   useEffect(() => {
+    console.log("grade : ", grades);
+    let gradeFlag = 1;
+    if (grades.length !== 0 && grades.length == images.length){
+      for (let i=0; i< grades.length; i++){
+        console.log(grades[i]);
+        if (grades[i] === 0){
+          // console.log(grades[i]);
+          gradeFlag = 0;
+          break;
+        }
+      }
+    }else{
+      gradeFlag = 0;
+      console.log("length zero");
+    }
+    if (gradeFlag === 1){
+      console.log("stop webcam");
+      stopWebCam();
+      if (isLoggedIn) {
+        setTimeout(function() { //Start the timer
+          navigate(`/EndingPage?isLogin=true&userRoutine=${routine}`, { state: { grade: grades } }); //After 1 second, set render to true
+        }.bind(this), 2000)
+      } else {
+        setTimeout(function() { //Start the timer
+          navigate(`/EndingPage?isLogin=false&userRoutine=${routine}`, { state: { grade: grades } }); //After 1 second, set render to true
+        }.bind(this), 2000)
+      }
+    }
+    
+  }, [grades]);
+
+  useEffect(() => {
     // Perform action when images or index change
     console.log(images);
     if (images.length > 0 && index < images.length) {
@@ -410,19 +434,27 @@ const YogaCoach = () => {
 
   useEffect(() => {
     // Play audio when 'audio' state is updated
-    if (audio) {
-      audioRef.current.src = audio; // Set the audio source
-      audioRef.current.play(); // Play the audio
+    if (audio && audioRef.current) {
+      if (index < images.length){
+        audioRef.current.src = audio; // Set the audio source
+
+        const isAudioInDOM = document.body.contains(audioRef.current);
+        if (isAudioInDOM) {
+          audioRef.current.play(); // Play the audio
+        } else {
+          console.log('Audio element is not in the DOM');
+          // Handle the case where the audio element is not in the DOM
+        }
+        // audioRef.current.play(); // Play the audio
+      }
     }
-  }, [audio]);
+  }, [audio, audioRef]);
 
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader
         isLoggedIn={isLoggedIn}
         webcamRef={webcamRef}
-      // timer1 = {timer1}
-      // timer2 = {timer2}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
@@ -492,10 +524,10 @@ const YogaCoach = () => {
             }}
           ></canvas>
         </div>
-        <button
+        {/* <button
         style={{
-          // opacity: x ? 100 : 0,
-          opacity: 100,
+          opacity: x ? 100 : 0,
+          // opacity: 100,
           position: "absolute",
           left: "80%",
           bottom: "10%",
@@ -510,7 +542,7 @@ const YogaCoach = () => {
         onClick={goToEndingPage}
       >
         RESULTS
-      </button>
+      </button> */}
       </div>
     </div>
   );
