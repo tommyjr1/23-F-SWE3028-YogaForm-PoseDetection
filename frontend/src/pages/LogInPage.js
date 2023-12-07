@@ -3,12 +3,12 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import useScript from "../hooks/useScript";
+import checkLogin from "../utils/checkLogin";
 
 // axios.defaults.withCredentials = true;
 
 const LogInPage = () => {
   
-  const isLoggedIn = false;
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -47,14 +47,8 @@ const LogInPage = () => {
           localStorage.setItem('refreshToken', response.data.refreshToken);
           console.log(localStorage.getItem('refreshToken'));
         }
-        navigate("/?isLogin=true");
+        navigate("/");
       }) 
-      // .then(data => {
-      //   console.log(response.headers)
-      //   console.log(data.)
-      //   navigate("/?isLogin=true");
-      // })
-      
       .catch((error) => {
         console.log(error);
       });
@@ -82,7 +76,7 @@ const LogInPage = () => {
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div

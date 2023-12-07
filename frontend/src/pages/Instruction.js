@@ -1,18 +1,13 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import Webcam from "react-webcam";
-import { useRef, useEffect, useLayoutEffect } from "react";
-import * as mediapipePose from "@mediapipe/pose";
 import * as cam from "@mediapipe/camera_utils";
+import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
-import { useNavigate, useLocation } from "react-router-dom";
-import YogaCoach from "./YogaCoach";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Webcam from "react-webcam";
 import ConditionalHeader from "../components/ConditionalHeader";
-import queryString from "query-string";
+import checkLogin from "../utils/checkLogin";
 
 function Instruction() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation();
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -111,16 +106,7 @@ function Instruction() {
       });
       camera.start();
     }
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
-  }, [location]);
+  }, []);
 
   const checkVisibility = (a, b, c) => {
     if (
@@ -138,17 +124,13 @@ function Instruction() {
   const navigate = useNavigate();
   const goToYogaCoach = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/YogaCoach?isLogin=true&userRoutine=defaultEasy");
-    } else {
-      navigate("/YogaCoach?userRoutine=defaultEasy");
-    }
+    navigate("/YogaCoach?userRoutine=defaultEasy");
   };
 
   return (
     <div className="Instruction" style={bodyStyle}>
       <ConditionalHeader
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
         webcamRef={webcamRef}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />

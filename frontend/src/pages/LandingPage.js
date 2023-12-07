@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from "react";
-import yogaIcon from "../assets/yoga_icon.png";
+import React from "react";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import yogaImages from "../assets/yoga_images.png";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
-import YogaCoach from "./YogaCoach";
-import Instruction from "./Instruction";
-import LogInPage from "./LogInPage";
-import MyPage from "./MyPage";
 import ConditionalHeader from "../components/ConditionalHeader";
-import queryString from "query-string";
+import checkLogin from "../utils/checkLogin";
 
 const LandingPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation();
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -30,36 +23,21 @@ const LandingPage = () => {
   };
   const navigate = useNavigate();
   const goToInstrction = () => {
-    if (isLoggedIn) {
-      navigate("/Instruction?isLogin=true");
-    } else {
-      navigate("/Instruction");
-    }
+
+    navigate("/Instruction");
+
   };
   const goToEndingPage = () => {
-    if (isLoggedIn) {
-      navigate("/EndingPage?isLogin=true");
-    } else {
-      navigate("/EndingPage");
-    }
+
+    navigate("/EndingPage");
+
   };
 
-  useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
-  }, [location]);
 
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
@@ -100,8 +78,8 @@ const LandingPage = () => {
               fontSize: "1.7rem",
               color: "#3B2C77",
             }}
-            // onClick={goToInstrction}
-            onClick={goToEndingPage}
+            onClick={goToInstrction}
+            // onClick={goToEndingPage}
           >
             START
           </Button>

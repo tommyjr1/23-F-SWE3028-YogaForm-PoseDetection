@@ -1,13 +1,11 @@
 import axios from "axios";
-import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import ConditionalHeader from "../components/ConditionalHeader";
 import yogaIcon from "../assets/yoga_icon.png";
+import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
 
 
 const EndingPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -15,7 +13,6 @@ const EndingPage = () => {
   const [x, setX] = useState(false);
   const [imageFlag, setImageFlag] = useState(true);
   const [average, setAverage] = useState();
-  const location = useLocation();  
 
   const bodyStyle = {
     position: "absolute",
@@ -92,7 +89,8 @@ const EndingPage = () => {
     console.log(name);
 
     try {
-      const response = await axios.get(`/pose/getImg/${name}`, {
+      const response = 
+      await axios.get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       });
@@ -118,25 +116,13 @@ const EndingPage = () => {
   };
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      // setRoutine(userRoutine);
-      setRoutine("defaultEasy");
-      console.log(userRoutine);
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
+    setRoutine("defaultEasy");
 
-    if (isLoggedIn){
+    if (checkLogin()){
       setX(true);
     }
-    // setGrades(location.state?.grade || []);
     setGrades([98, 79]);
-  }, [location]);
+  }, []);
 
   useEffect(() => {
     // console.log(routine);
@@ -165,7 +151,7 @@ const EndingPage = () => {
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
@@ -212,8 +198,7 @@ const EndingPage = () => {
         </div>
         <button
           style={{
-            // opacity: x ? 100 : 0,
-            opacity: 100,
+            opacity: x ? 100 : 0,
             position: "absolute",
             left: "80%",
             bottom: "10%",

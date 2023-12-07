@@ -60,9 +60,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //프론트엔드가 별도로 존재하여 rest Api로 구성
                 http.csrf().disable();
+                http.cors().disable();
 
                 http.authorizeRequests()
-                        .antMatchers("/yf/routine/*", "/yf/coach/*").authenticated()
+                        .antMatchers("/routine/**", "/coach/**").authenticated()
                         .anyRequest().permitAll();
                 
                  //JwtFilter 추가
