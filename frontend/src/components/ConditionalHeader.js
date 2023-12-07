@@ -17,11 +17,14 @@ export default function ConditionalHeader(props) {
   const goToLogInPage = () => {
     stopWebCam();
     navigate("/LogInPage");
-    window.location.reload();
   };
   const goToMyPage = () => {
     stopWebCam();
-    navigate("/MyPage");
+    if (isLoggedIn) {
+      navigate("/MyPage?isLogin=true");
+    } else {
+      navigate("/MyPage");
+    }
     window.location.reload();
   };
   const goToYogaList = () => {
@@ -31,7 +34,6 @@ export default function ConditionalHeader(props) {
     } else {
       navigate("/YogaList");
     }
-    window.location.reload();
   };
   const goToLandingPage = () => {
     stopWebCam();
@@ -40,7 +42,6 @@ export default function ConditionalHeader(props) {
     } else {
       navigate("/");
     }
-    window.location.reload();
   };
 
   const stopWebCam = () => {
@@ -85,7 +86,7 @@ export default function ConditionalHeader(props) {
           ABOUT
         </Button>
         <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
-          YOGA
+          POSES
         </Button>
         <Button
           variany="secondary"

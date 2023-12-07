@@ -2,14 +2,23 @@ package com.example.demo.service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.dao.RecordRepository;
+import com.example.demo.dao.RoutineRepository;
 import com.example.demo.dao.UserRepository;
 import com.example.demo.dto.LoginDto;
+import com.example.demo.dto.RecordDto;
+import com.example.demo.entity.Record;
 import com.example.demo.entity.User;
 import com.example.demo.entity.UserRole;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -24,6 +33,14 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RecordRepository recordRepository;
+
+    @Autowired
+    RoutineRepository routineRepository;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
     
     public static String client_id = "1022110957362-ncqd7ish7v0gabqmqah3a8dieikmeu6k.apps.googleusercontent.com";
     // private final BCryptPasswordEncoder encoder;
@@ -86,6 +103,28 @@ public class UserService {
         User user = userRepository.findByEmail(email);
         
         return user;
+    }
+
+    //기록 저장
+    public Record addRecord(RecordDto recordDto, HttpServletRequest request){
+        Timestamp date = Timestamp.valueOf(LocalDateTime.now());
+        String token = request.getHeader("JWT");
+        String userEmail = jwtTokenProvider.getUserEmail(token);
+        String routine = routineRepository.findByRoutineName(recordDto.getRoutineName()).getPoses();
+        Record record = new Record(userEmail, recordDto.getRoutineName(), date, routine, recordDto.getEachScore(), recordDto.getScore());
+        
+        Record ret = recordRepository.save(record);
+
+        return ret;
+    }
+
+    public void getRecord(HttpServletRequest request){
+        String token = request.getHeader("JWT");
+        String userEmail = jwtTokenProvider.getUserEmail(token);
+        List<Record> records = recordRepository.findByUserEmail(userEmail);
+
+        return ;
+        
     }
 
  

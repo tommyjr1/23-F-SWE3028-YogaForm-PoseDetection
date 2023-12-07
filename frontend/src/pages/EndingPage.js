@@ -1,26 +1,20 @@
 import axios from "axios";
-import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import yogaIcon from "../assets/yoga_icon.png";
 import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
+
 
 const EndingPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
   const [imgUrls, setImgUrls] = useState([]);
   const [x, setX] = useState(false);
-  const [columnData, setColumnData] = useState();
-  const [columns, setColumns] = useState();
-  const [bodyData, setBodyData] = useState();
-  const [data, setData] = useState();
+  const [imageFlag, setImageFlag] = useState(true);
+  const [average, setAverage] = useState();
   const location = useLocation();
-  const [getTableProps, setGetTableProps] = useState();
-  const [getTableBodyProps, setGetTableBodyProps] = useState();
-  const [headerGroups, setHeaderGroups] = useState();
-  const [rows, setRows] = useState();
-  
 
   const bodyStyle = {
     position: "absolute",
@@ -38,17 +32,55 @@ const EndingPage = () => {
     fontSize: "1.6rem",
   };
 
-  const saveResults = () => {
+  const navigate = useNavigate();
+  const goToRoutinePage = () => {
+    navigate("/RoutinePage");
+  };
+
+  const saveResults = async () => {
     console.log("save");
+    let allGrade = "";
+    for (let i = 0; i< grades.length; i++){
+      if (i > 0){
+        allGrade += ","
+      }
+      allGrade = allGrade + grades[i];
+    }
+
+    console.log(allGrade);
+
+    await axios
+      .post("/user/addRecord", {
+        routineName: routine,
+        eachScore: allGrade,
+        score: average
+      },
+      {
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);
     console.log(routine);
+    console.log(localStorage.getItem("token"));
 
     await axios
-      .get(`http://3.35.60.125:8080/yf/routine/${routine}`, {
-        responseType: "json"
+      .get(`/routine/${routine}`, {
+        responseType: "json",
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
       })
       .then((response) => {
         setImages(response.data.split(','));
@@ -58,29 +90,14 @@ const EndingPage = () => {
       });
   };
 
-  const getYogaImage = async (name) => {
+  const getYogaImage = async (name, index) => {
 
     console.log("getYogaImage function");
-
-    // await axios
-    //   .get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
-    //     responseType: "arraybuffer",
-    //     headers: { Accept: "*/*", "Content-Type": "image/png" },
-    //   })
-    //   .then((response) => {
-    //     console.log('get image');
-    //     const blob = new Blob([response.data], {
-    //       type: "image/png",
-    //     });
-    //     const imgUrl = URL.createObjectURL(blob);
-    //     return (imgUrl);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    console.log(name);
 
     try {
-      const response = await axios.get(`http://3.35.60.125:8080/yf/pose/getImg/${name}`, {
+      const response = 
+      await axios.get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       });
@@ -89,166 +106,99 @@ const EndingPage = () => {
         type: "image/png",
       });
       const imgUrl = URL.createObjectURL(blob);
-      console.log(name);
-      let copy = imgUrls;
-      copy.push(imgUrl);
-      setImgUrls(copy);
+      // let copy = imgUrls;
+      // copy.push(imgUrl);
+      // setImgUrls(copy);
+      if (index > imgUrls.length){
+        setTimeout(function() { //Start the timer
+          setImgUrls(prevList => [...prevList, imgUrl]);
+        }.bind(this), 300)
+      }else{
+        setImgUrls(prevList => [...prevList, imgUrl]);
+      }
     } catch (error) {
       console.log(error);
       // return null; // Or handle error as needed
     }
   };
-  
-  // const {
-  //   a, //table props
-  //   b, //table body props
-  //   c, //header
-  //   d, //row
-  //   prepareRow } =
-  // useTable({ columns, data });
-
-  // setGetTableProps(a);
-  // setGetTableBodyProps(b);
-  // setHeaderGroups(c);
-  // setRows(d);
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      setRoutine(userRoutine);
-      console.log(userRoutine);
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
+    setRoutine("defaultEasy");
 
-    if (isLoggedIn){
+    if (checkLogin()){
       setX(true);
     }
-    // setGrades(location.state?.data || []);
-    // console.log(location.state?.data || []);
-    setGrades([98, 79]);
-  }, [location]);
+    setGrades(location.state?.grade || []);
+  }, []);
 
   useEffect(() => {
     // console.log(routine);
     getRoutine(routine);
-    
+
   }, [routine]);
 
   useEffect(() => {
+    let sum = 0;
+    grades && grades.map((grade) => {
+      console.log(typeof(grade));
+      sum += grade;
+    });
+    setAverage(sum / grades.length);    
+    
+  }, [grades]);
+
+  useEffect(() => {
     // console.log(routine);
-    images && images.map((img) => {
-      getYogaImage(img);
+    images && images.map((img, index) => {
+      getYogaImage(img, index);
     })
     
   }, [images]);
 
-  // useEffect(() => {
-  //   if (images.length !== 0 && grades.length !== 0){
-  //     const headerColumns = images.map((image) => ({
-  //       accessor: image,
-  //       Header: image, // Set the header name as the image name
-  //     }));
-
-  //     setColumnData([...headerColumns]);    
-
-  //   }
-    
-  // }, [images, grades]);
-
-  // useMemo(() => {
-  //   if (columnData) {
-  //     setColumns(columnData);
-  //   }
-  // }, [columnData]);
-
-  // useEffect(() => {
-  //   if (images.length !== 0 && grades.length !== 0) {
-  //     const imageData = images.map((image) => ({
-  //       image: getYogaImage(image) || 0,
-  //     }));
-  
-  //     const gradeData = images.map((image, index) => ({
-  //       image: grades[index] || 0,
-  //     }));
-  
-  //     setBodyData([imageData, gradeData]);
-  //   }
-  // }, [images, grades]);
-
-  // useMemo(() => {
-  //   if (bodyData) {
-  //     setData(bodyData);
-  //   }
-  // }, [bodyData]);
-
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader isLoggedIn={isLoggedIn}></ConditionalHeader>
+      <ConditionalHeader 
+        isLoggedIn={checkLogin()}
+      ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
+          fontSize: "1.4rem",
+          alignItems: "center"
         }}
       >
         <div>
-          <h1 style={{ paddingLeft: "40px" }}>Results</h1>
-          <p style={{ fontSize: "1.4rem", paddingLeft: "40px" }}>
+          <h1>Results</h1>
+          <p>
             Routine : {`${routine}`}
           </p>
         </div>
-        <div style={{ fontSize: "1.4rem", paddingRight: "180px" }}>
-          {/* <table {...getTableProps}>
-            <thead>
-              {headerGroups && headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers && headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows && rows.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()}>
-                    {row.cells && row.cells.map((cell) => {
-                      return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table> */}
+        <div style={{ fontSize: "1.4rem", textAlign: "center"}}>
           <table>
             <thead>
               <tr>
                 {images && images.map((image, index) => (
-                  <th key={image}>{image}</th>
+                  <th key={index} style={{paddingLeft: "0.5rem", paddingRight: "0.5rem"}}>{image}</th>
                 ))}
+                <th style={{paddingLeft: "0.5rem", paddingRight: "0.5rem"}}>Average</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                {/* {images && images.map((image, index) => (
-                  <td key={index}><img src={getYogaImage(image)}/></td>
-                ))} */}
                 {imgUrls && imgUrls.map((imgUrl, index) => (
-                  <td key={index}><img src={imgUrl} style={{width: "100px"}}/></td>
-                  // <td key={index}>{imgUrl}</td>
+                  <td key={index}><img src={imgUrl} style={{width: "150px"}}/></td>
                 ))}
+                <td><img src={yogaIcon} style={{width: "150px"}}/></td>
               </tr>
               <tr>
-                {grades && grades.map((grade, index) => (
+              {/* (grades.length == images.length) && */}
+                {grades &&  grades.map((grade, index) => (
                   <td key={index}>{grade}</td>
                 ))}
+                <td>{`${average}`}</td>
               </tr>
             </tbody>
           </table>
@@ -269,6 +219,22 @@ const EndingPage = () => {
           onClick={saveResults}
         >
           SAVE
+        </button>
+        <button
+          style={{
+            position: "absolute",
+            left: "65%",
+            bottom: "10%",
+            backgroundColor: "#FFF2CC",
+            border: "1px solid #FFF2CC",
+            borderRadius: "2rem",
+            width: "100px",
+            color: "#3B2C77",
+            fontSize: "1.6rem",
+          }}
+          onClick={goToRoutinePage}
+        >
+          RESTART
         </button>
       </div>
     </div>

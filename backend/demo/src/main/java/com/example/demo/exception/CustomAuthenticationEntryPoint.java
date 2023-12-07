@@ -15,6 +15,12 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.sendRedirect("/exception/entrypoint");
+        ErrorCode exception = (ErrorCode) request.getAttribute("exception");
+        System.out.println("exception = " + exception);
+        if (exception == null) {
+            response.sendRedirect("/exception/entrypoint");
+        }else if (exception.equals(ErrorCode.TOKEN_EXPIRED)) {
+            response.sendRedirect("/exception/tokenexpire");
+        }
     }
 }

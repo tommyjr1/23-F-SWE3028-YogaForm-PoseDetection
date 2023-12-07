@@ -4,20 +4,19 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.demo.service.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /*
     JWT 방식은 세션방식과 다르게 Filter 하나를 추가해줘야합니다.
@@ -33,19 +32,37 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // 1. 헤더에서 JWT 를 받아옵니다.
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        // 헤더에서 JWT 를 받아옵니다.
+        String accessToken = jwtTokenProvider.resolveToken(request);
+        String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 
-        // 2. 유효한 토큰인지 확인합니다. 유효성검사
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 3. 토큰 인증과정을 거친 결과를 authentication이라는 이름으로 저장해줌.
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            // 4. SecurityContext 에 Authentication 객체를 저장합니다.
-            // token이 인증된 상태를 유지하도록 context(맥락)을 유지해줌
+        // accessToken이 있는지
+        if (accessToken != null && jwtTokenProvider.validateToken(accessToken, request)) {
+            // 토큰 인증과정을 거친 결과를 authentication이라는 이름으로 저장해줌.
+            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+            // SecurityContext 에 Authentication 객체를 저장합니다.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        //5. UsernamePasswordAuthenticationFilter로 이동
+        //UsernamePasswordAuthenticationFilter로 이동
         chain.doFilter(request, response);
     }
+
+    // @Override
+    // protected void doFilterInternal(HttpServletRequest request, HttpServletRequest response, FilterChain chain) throws IOException, ServletException {
+    //     // 1. 헤더에서 JWT 를 받아옵니다.
+    //     String accessToken = jwtTokenProvider.resolveToken(request);
+    //     String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+
+    //     // 2. 유효한 토큰인지 확인합니다. 유효성검사
+    //     if (accessToken != null && jwtTokenProvider.validateToken(accessToken, request)) {
+    //         // 3. 토큰 인증과정을 거친 결과를 authentication이라는 이름으로 저장해줌.
+    //         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+    //         // 4. SecurityContext 에 Authentication 객체를 저장합니다.
+    //         // token이 인증된 상태를 유지하도록 context(맥락)을 유지해줌
+    //         SecurityContextHolder.getContext().setAuthentication(authentication);
+    //     }
+    //     //5. UsernamePasswordAuthenticationFilter로 이동
+    //     chain.doFilter(request, response);
+    // }
 }
