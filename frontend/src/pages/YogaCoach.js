@@ -249,14 +249,13 @@ const YogaCoach = () => {
 
     await axios
       .get(`/routine/${routine}`, {
-        responseType: "json"
-      },
-      {
+        responseType: "json",
         headers:{
           JWT: localStorage.getItem("token"),
           REFRESH: localStorage.getItem("refreshToken")
         }
-      })
+      }
+      )
       .then((response) => {
         // console.log(response.data);
         // images = response.data.split(',');
