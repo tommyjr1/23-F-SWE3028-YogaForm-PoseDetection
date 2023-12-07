@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.RoutineDto;
 import com.example.demo.entity.Routine;
 import com.example.demo.service.JwtTokenProvider;
 import com.example.demo.service.RoutineService;
@@ -35,14 +36,14 @@ public class RoutineController {
 
 
     @GetMapping("")
-    public List<String> getRoutine(HttpServletRequest request){
+    public List<String> getRoutineName(HttpServletRequest request){
         List<String> routines = routineService.getUserRoutines(request);
         return routines;
 
     }
 
     @GetMapping("/{routineName}")
-    public String getRoutine(@PathVariable("routineName") String routineName){
+    public String getRoutinePoses(@PathVariable("routineName") String routineName){
         System.out.println(routineName);        
         Routine routine = routineService.getByRoutineName(routineName);
         return routine.getPoses();
@@ -65,9 +66,9 @@ public class RoutineController {
 
     @ResponseBody
     @PostMapping("/addRoutine")
-    public void postAddRoutine(@RequestBody Routine routine){
-        System.out.println(routine);
-        routineService.saveRoutine(routine);
+    public void postAddRoutine(@RequestBody RoutineDto routineDto, HttpServletRequest request){
+        routineService.addRoutine(routineDto, request);
+        return;
     }
     
 }
