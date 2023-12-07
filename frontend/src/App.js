@@ -8,6 +8,8 @@ import LogInPage from './pages/LogInPage';
 import MyPage from './pages/MyPage';
 import YogaCoach from './pages/YogaCoach';
 import YogaList from './pages/YogaList';
+import YogaList from './pages/RoutinePage';
+import RoutinePage from "./pages/RoutinePage";
 
 
 axios.defaults.baseURL = "http://3.35.60.125:8080/yf";
@@ -33,6 +35,8 @@ function App() {
         <Route path="/MyPage" element={<MyPage />} />
         {/* <MyPage /> */}
         <Route path="/EndingPage" element={<EndingPage />} />
+        {/* <MyPage /> */}
+        <Route path="/RoutinePage" element={<RoutinePage />} />
       </Routes>
     </BrowserRouter> 
   );

@@ -306,7 +306,7 @@ const YogaCoach = () => {
           // const updatedGrades = [...grades]; // Create a copy of the grades array
           // const updatedGrades = grades.concat(response.data); // Update the value at index 0 to 96
           // setGrades(updatedGrades);
-          setGrades(prevList => [...prevList, parseFloat(response.data)]);
+          setGrades(prevList => [...prevList, response.data]);
           setIndex(currentIndex + 1);
         }
       })

@@ -6,7 +6,7 @@ import ConditionalHeader from "../components/ConditionalHeader";
 import yogaIcon from "../assets/yoga_icon.png";
 
 
-const EndingPage = () => {
+const RoutinePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
   const [images, setImages] = useState([]);
@@ -18,9 +18,8 @@ const EndingPage = () => {
   const location = useLocation();  
 
   const navigate = useNavigate();
-  const goToRoutinePage = () => {
-    navigate("/RoutinePage");
-    // console.log("go to routine");
+  const goToYogaCoach = () => {
+    navigate("/YogaCoach");
   };
 
   const bodyStyle = {
@@ -39,134 +38,7 @@ const EndingPage = () => {
     fontSize: "1.6rem",
   };
 
-  const saveResults = async () => {
-    console.log("save");
-    let allGrade = "";
-    for (let i = 0; i< grades.length; i++){
-      if (i > 0){
-        allGrade += ","
-      }
-      allGrade = allGrade + grades[i];
-    }
-
-    console.log(allGrade);
-
-    await axios
-      .post("/user/addRecord", {
-        routineName: routine,
-        eachScore: allGrade,
-        score: average
-      },
-      {
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const getRoutine = async (routine) => {
-    // console.log(typeof userPoseAngle);
-    console.log(routine);
-    console.log(localStorage.getItem("token"));
-
-    await axios
-      .get(`/routine/${routine}`, {
-        responseType: "json",
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
-      })
-      .then((response) => {
-        setImages(response.data.split(','));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const getYogaImage = async (name, index) => {
-
-    console.log("getYogaImage function");
-    console.log(name);
-
-    try {
-      const response = await axios.get(`/pose/getImg/${name}`, {
-        responseType: "arraybuffer",
-        headers: { Accept: "*/*", "Content-Type": "image/png" },
-      });
   
-      const blob = new Blob([response.data], {
-        type: "image/png",
-      });
-      const imgUrl = URL.createObjectURL(blob);
-      // let copy = imgUrls;
-      // copy.push(imgUrl);
-      // setImgUrls(copy);
-      if (index > imgUrls.length){
-        setTimeout(function() { //Start the timer
-          setImgUrls(prevList => [...prevList, imgUrl]);
-        }.bind(this), 100)
-      }else{
-        setImgUrls(prevList => [...prevList, imgUrl]);
-      }
-    } catch (error) {
-      console.log(error);
-      // return null; // Or handle error as needed
-    }
-  };
-
-  useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      // setRoutine(userRoutine);
-      setRoutine("defaultEasy");
-      console.log(userRoutine);
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
-
-    if (isLoggedIn){
-      setX(true);
-    }
-    // setGrades(location.state?.grade || []);
-    setGrades([98, 79]);
-  }, [location]);
-
-  useEffect(() => {
-    // console.log(routine);
-    getRoutine(routine);
-
-  }, [routine]);
-
-  useEffect(() => {
-    let sum = 0;
-    grades && grades.map((grade) => {
-      console.log(typeof(grade));
-      sum += grade;
-    });
-    setAverage(sum / grades.length);    
-    
-  }, [grades]);
-
-  useEffect(() => {
-    // console.log(routine);
-    images && images.map((img, index) => {
-      getYogaImage(img, index);
-    })
-    
-  }, [images]);
 
   return (
     <div className="App" style={bodyStyle}>
@@ -256,4 +128,4 @@ const EndingPage = () => {
   );
 };
 
-export default EndingPage;
+export default RoutinePage;
