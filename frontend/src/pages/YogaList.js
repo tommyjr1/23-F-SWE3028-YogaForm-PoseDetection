@@ -1,12 +1,11 @@
 import axios from "axios";
-import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
 
 
 const YogaList = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const bodyStyle = {
     position: "absolute",
@@ -76,22 +75,13 @@ const YogaList = () => {
   };
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      getPoseName();
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
+    getPoseName();
   }, []);
 
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div

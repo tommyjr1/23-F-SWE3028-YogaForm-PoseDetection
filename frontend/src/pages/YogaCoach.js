@@ -10,13 +10,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
 
 
 const YogaCoach = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [routine, setRoutine] = useState("defaultEasy");
-  const [routine, setRoutine] = useState("");
-  const location = useLocation();
+  const [routine, setRoutine] = useState("defaultEasy");
+  // const [routine, setRoutine] = useState("");
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -52,6 +51,7 @@ const YogaCoach = () => {
   const [timer1, setTimer1] = useState();
   const [timer2, setTimer2] = useState();
   const [lastExecution, setLastExecution] = useState(0);
+  const location = useLocation();
 
   const navigate = useNavigate();
   const goToLogInPage = () => {
@@ -245,7 +245,8 @@ const YogaCoach = () => {
           JWT: localStorage.getItem("token"),
           REFRESH: localStorage.getItem("refreshToken")
         }
-      })
+      }
+      )
       .then((response) => {
         // console.log(response.data);
         // images = response.data.split(',');
@@ -387,15 +388,13 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      setRoutine(userRoutine);
-    } catch {
-      setIsLoggedIn(false);
-    }
+    // try {
+    //   const { search } = location;
+    //   const queryObj = queryString.parse(search);
+    //   const { userRoutine } = queryObj;
+    //   setRoutine(userRoutine);
+    // } catch {
+    // }
     // getRoutine(routine);
 
     // const timer = setInterval(() => throttleSubmitLandmarkData(landmarks), 1000);
@@ -433,15 +432,9 @@ const YogaCoach = () => {
     if (gradeFlag === 1){
       console.log("stop webcam");
       stopWebCam();
-      if (isLoggedIn) {
-        setTimeout(function() { //Start the timer
-          navigate(`/EndingPage?isLogin=true&userRoutine=${routine}`, { state: { grade: grades } }); //After 1 second, set render to true
-        }.bind(this), 2000)
-      } else {
-        setTimeout(function() { //Start the timer
-          navigate(`/EndingPage?isLogin=false&userRoutine=${routine}`, { state: { grade: grades } }); //After 1 second, set render to true
-        }.bind(this), 2000)
-      }
+      setTimeout(function() { //Start the timer
+        navigate(`/EndingPage?userRoutine=${routine}`, { state: { grade: grades } }); //After 1 second, set render to true
+      }.bind(this), 2000)
     }
     
   }, [grades]);
@@ -480,7 +473,7 @@ const YogaCoach = () => {
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
         webcamRef={webcamRef}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />

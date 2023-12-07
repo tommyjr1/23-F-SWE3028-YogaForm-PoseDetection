@@ -1,13 +1,16 @@
 import axios from "axios";
-import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import ConditionalHeader from "../components/ConditionalHeader";
+=======
+>>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
 import yogaIcon from "../assets/yoga_icon.png";
+import ConditionalHeader from "../components/ConditionalHeader";
+import checkLogin from "../utils/checkLogin";
 
 
 const EndingPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [routine, setRoutine] = useState('');
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -15,7 +18,7 @@ const EndingPage = () => {
   const [x, setX] = useState(false);
   const [imageFlag, setImageFlag] = useState(true);
   const [average, setAverage] = useState();
-  const location = useLocation();  
+  const location = useLocation();
 
   const navigate = useNavigate();
   const goToRoutinePage = () => {
@@ -37,6 +40,11 @@ const EndingPage = () => {
     border: "1px solid #F2CCFF",
     color: "#3B2C77",
     fontSize: "1.6rem",
+  };
+
+  const navigate = useNavigate();
+  const goToRoutinePage = () => {
+    navigate("/RoutinePage");
   };
 
   const saveResults = async () => {
@@ -98,7 +106,8 @@ const EndingPage = () => {
     console.log(name);
 
     try {
-      const response = await axios.get(`/pose/getImg/${name}`, {
+      const response = 
+      await axios.get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       });
@@ -113,7 +122,7 @@ const EndingPage = () => {
       if (index > imgUrls.length){
         setTimeout(function() { //Start the timer
           setImgUrls(prevList => [...prevList, imgUrl]);
-        }.bind(this), 100)
+        }.bind(this), 300)
       }else{
         setImgUrls(prevList => [...prevList, imgUrl]);
       }
@@ -124,25 +133,13 @@ const EndingPage = () => {
   };
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin, userRoutine } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      // setRoutine(userRoutine);
-      setRoutine("defaultEasy");
-      console.log(userRoutine);
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
+    setRoutine("defaultEasy");
 
-    if (isLoggedIn){
+    if (checkLogin()){
       setX(true);
     }
-    // setGrades(location.state?.grade || []);
-    setGrades([98, 79]);
-  }, [location]);
+    setGrades(location.state?.grade || []);
+  }, []);
 
   useEffect(() => {
     // console.log(routine);
@@ -171,7 +168,7 @@ const EndingPage = () => {
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader 
-        isLoggedIn={isLoggedIn}
+        isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
@@ -219,7 +216,10 @@ const EndingPage = () => {
         <button
           style={{
             opacity: x ? 100 : 0,
+<<<<<<< HEAD
             // opacity: 100,
+=======
+>>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
             position: "absolute",
             left: "80%",
             bottom: "10%",
@@ -236,14 +236,21 @@ const EndingPage = () => {
         </button>
         <button
           style={{
+<<<<<<< HEAD
             opacity: 100,
+=======
+>>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
             position: "absolute",
             left: "65%",
             bottom: "10%",
             backgroundColor: "#FFF2CC",
             border: "1px solid #FFF2CC",
             borderRadius: "2rem",
+<<<<<<< HEAD
             width: "140px",
+=======
+            width: "100px",
+>>>>>>> 57a3c1b99f8547286b9e898107007cbf75680667
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
