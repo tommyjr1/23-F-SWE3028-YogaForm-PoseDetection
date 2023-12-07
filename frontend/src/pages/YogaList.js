@@ -1,8 +1,10 @@
 import axios from "axios";
 import queryString from "query-string";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Children } from "react";
 import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
+import { create } from "lodash";
+import { setLabels } from "react-chartjs-2/dist/utils";
 
 const YogaList = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,32 +23,28 @@ const YogaList = () => {
     color: "#3B2C77",
     fontSize: "1.6rem",
   };
-  const [index, setIndex] = useState(0);
-  const [images, setImages] = useState([]);
-  const [yogaName, setYogaName] = useState("무희자세");
   const [x, setX] = useState(false);
   const [imgUrls, setImgurl] = useState([]);
+  // let imgUrls2 = [];
   const [poseName, setPoseName] = useState([]);
 
   const getPoseName = async () => {
     await axios
       .get("http://3.35.60.125:8080/yf/pose/getName")
       .then((res) => {
-        //poseNames = res.data;
-        // res.data.forEach(item => {
-        //   poseNames.push(item);
-        // });
         setPoseName(res.data);
-        poseName.forEach((item) => {
-          getImage(item);
-        });
+        //setPoseName(prevList => [prevList, res.data]);
+        // const data = res.data;
+        // setPoseName(data);
+        // return data;
       })
       .catch((err) => {
         console.log(err);
+        // return [];
       });
-    //setInterval(()=>console.log(imgUrls), 3000);
-    console.log(imgUrls.length);
-    console.log(imgUrls);
+    // poseName.forEach((item) => {
+    //   getImage(item);
+    // });
   };
 
   const getImage = async (name) => {
@@ -60,14 +58,14 @@ const YogaList = () => {
           type: "image/png",
         });
         const imgUrl = URL.createObjectURL(blob);
-        //imgUrls.push(imgUrl);
-        // setImgurl(imgUrls.concat([imgUrl]));
-        let copy = imgUrls;
-        console.log(copy);
-        //console.log(copy.length);
-        //let input = copy.push(imgUrl);
-        //console.log(input);
-        setImgurl(copy);
+        // let copy = Array.from(imgUrls);
+        // copy.push(imgUrl);
+        // console.log(imgUrl);
+        // setImgurl(copy);
+        // console.log(copy.length);
+        // imgUrls2.push(imgUrl);
+        setImgurl(prevList => [prevList, imgUrl]);
+        console.log(imgUrls);
       })
       .catch((error) => {
         console.log(error);
@@ -75,17 +73,55 @@ const YogaList = () => {
   };
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-      const { isLogin } = queryObj;
-      setIsLoggedIn(isLogin === "true");
-      getPoseName();
-    } catch {
-      console.log("no");
-      setIsLoggedIn(false);
-    }
+    const fetch = async () => {
+      try {
+        const { search } = location;
+        const queryObj = queryString.parse(search);
+        const { isLogin } = queryObj;
+        setIsLoggedIn(isLogin === "true");
+        const poseNames = await getPoseName();
+        console.log(poseName); //이거왜빈배열???
+        const imagePromises = Array.from(poseNames).map((item) => getImage(item));
+        await Promise.all(imagePromises);
+        //console.log(imgUrls2);
+      } catch(error) {
+        console.log("Error: ", error);
+        setIsLoggedIn(false);
+      }
+      
+    };
+    fetch();
   }, []);
+
+  const poseList= poseName.map((pose, index) => {
+    // console.log(pose);
+    return (
+      <li
+        style={{
+          textAlign: "match-parent",
+          listStyle: "none",
+          margin: "10px",
+        }}
+        key={pose}
+      >
+        <div>
+          <img
+            id={pose}
+            src={imgUrls[index]}
+            style={{
+              overflowClipMargin: "content-box",
+              overflow: "clip",
+              objectFit: "cover",
+              width: "150px",
+            }}
+          ></img>
+        </div>
+        <div className="poseTitle">
+          <h6>{pose}</h6>
+        </div>
+      </li>
+    );
+  });
 
   return (
     <div className="App" style={bodyStyle}>
@@ -99,36 +135,22 @@ const YogaList = () => {
         }}
       >
         <h1 style={{ paddingLeft: "40px" }}>Standing</h1>
+        <button style={{
+            backgroundColor: "#FFF2CC",
+            border: "1px solid #FFF2CC",
+            borderRadius: "2rem",
+            width: "120px",
+            height: "40px",
+            color: "#3B2C77",
+            fontSize: "1rem",
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "flex-end"
+          }}
+          
+          >Make a routine</button>
         <ul style={{ display: "flex", flexWrap: "wrap" }}>
-          {poseName.map((pose, index) => {
-            //console.log(imgUrls);
-            return (
-              <li
-                style={{
-                  textAlign: "match-parent",
-                  listStyle: "none",
-                  margin: "10px",
-                }}
-                key={pose}
-              >
-                <div>
-                  <img
-                    id={pose}
-                    src={imgUrls[index]}
-                    style={{
-                      overflowClipMargin: "content-box",
-                      overflow: "clip",
-                      objectFit: "cover",
-                      width: "150px",
-                    }}
-                  ></img>
-                </div>
-                <div className="poseTitle">
-                  <h6>{pose}</h6>
-                </div>
-              </li>
-            );
-          })}
+          {poseList}
         </ul>
       </div>
     </div>
