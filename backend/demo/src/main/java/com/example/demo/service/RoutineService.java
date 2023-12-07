@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.RoutineRepository;
+import com.example.demo.dto.RoutineDto;
 import com.example.demo.entity.Routine;
 
 import lombok.RequiredArgsConstructor;
@@ -58,9 +59,12 @@ public class RoutineService {
         return routineNames;
     }
 
-    public void saveRoutine(Routine routine) {
+    public Routine addRoutine(RoutineDto routineDto, HttpServletRequest request) {
+        String token = request.getHeader("JWT");
+        String userEmail = jwtTokenProvider.getUserEmail(token);
+        Routine routine = new Routine(userEmail, routineDto.getRoutineName(), String.join(",", routineDto.getPoses()));
         Routine rou = routineRepository.save(routine);
-        System.out.println(rou);
+        return rou;
     }
     
 }

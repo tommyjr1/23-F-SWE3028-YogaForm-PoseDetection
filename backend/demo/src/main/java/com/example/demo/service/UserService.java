@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -115,6 +116,15 @@ public class UserService {
         Record ret = recordRepository.save(record);
 
         return ret;
+    }
+
+    public void getRecord(HttpServletRequest request){
+        String token = request.getHeader("JWT");
+        String userEmail = jwtTokenProvider.getUserEmail(token);
+        List<Record> records = recordRepository.findByUserEmail(userEmail);
+
+        return ;
+        
     }
 
  

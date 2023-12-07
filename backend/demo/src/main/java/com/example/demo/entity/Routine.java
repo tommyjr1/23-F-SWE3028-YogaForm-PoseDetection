@@ -22,4 +22,10 @@ public class Routine {
     private String routineName;
     private String poses;
 
+    public Routine(String userEmail, String routineName, String poses){
+        this.userEmail = userEmail;
+        this.routineName = routineName;
+        this.poses = poses;
+    }
+
 }
