@@ -16,6 +16,12 @@ const EndingPage = () => {
   const [average, setAverage] = useState();
   const location = useLocation();
 
+  const navigate = useNavigate();
+  const goToRoutinePage = () => {
+    navigate("/RoutinePage");
+    // console.log("go to routine");
+  };
+
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -30,11 +36,6 @@ const EndingPage = () => {
     border: "1px solid #F2CCFF",
     color: "#3B2C77",
     fontSize: "1.6rem",
-  };
-
-  const navigate = useNavigate();
-  const goToRoutinePage = () => {
-    navigate("/RoutinePage");
   };
 
   const saveResults = async () => {
@@ -205,25 +206,8 @@ const EndingPage = () => {
         </div>
         <button
           style={{
-            opacity: x ? 100 : 0,
             position: "absolute",
             left: "80%",
-            bottom: "10%",
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "100px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
-          onClick={saveResults}
-        >
-          SAVE
-        </button>
-        <button
-          style={{
-            position: "absolute",
-            left: "65%",
             bottom: "10%",
             backgroundColor: "#FFF2CC",
             border: "1px solid #FFF2CC",
@@ -235,6 +219,23 @@ const EndingPage = () => {
           onClick={goToRoutinePage}
         >
           RESTART
+        </button>
+        <button
+          style={{
+            opacity: x ? 100 : 0,
+            position: "absolute",
+            left: "65%",
+            bottom: "10%",
+            backgroundColor: "#FFF2CC",
+            border: "1px solid #FFF2CC",
+            borderRadius: "2rem",
+            width: "140px",
+            color: "#3B2C77",
+            fontSize: "1.6rem",
+          }}
+          onClick={saveResults}
+        >
+          SAVE
         </button>
       </div>
     </div>

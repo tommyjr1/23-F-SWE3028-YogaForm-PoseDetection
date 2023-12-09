@@ -2,6 +2,7 @@ import axios from "axios";
 import { Chart as ChartJS, registerables } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from 'react-chartjs-2';
+import { useLocation, useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
@@ -14,6 +15,7 @@ const MyPage = () => {
   const [data, setData] = useState({ labels: [], datasets: [] });
   const [options, setOptions] = useState({ scales: { y: { beginAtZero: true } } });
   const [x, setX] = useState(false);
+  const navigate = useNavigate();
 
   ChartJS.register(...registerables);
 
@@ -27,20 +29,27 @@ const MyPage = () => {
     color: "#3B2C77",
   };
   const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
+    position: "absolute",
+    left: "80%",
+    bottom: "10%",
+    backgroundColor: "#FFF2CC",
+    border: "1px solid #FFF2CC",
+    borderRadius: "2rem",
+    width: "100px",
     color: "#3B2C77",
     fontSize: "1.6rem",
   };
 
-  const saveResults = () => {
-    console.log("save");
+  const LogOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    navigate("/");
   };
 
-  const getUserRoutine = async () => {
+  const getRecord = async () => {
 
     await axios
-      .get("/routine", {
+      .get("/secure/getRecord", {
         responseType: "json",
         headers:{
           JWT: localStorage.getItem("token"),
@@ -62,7 +71,7 @@ const MyPage = () => {
       setX(true);
     }
 
-    getUserRoutine();
+    getRecord();
     // setGrades(location.state?.grade || []);
     setGrades([98, 79]);
   }, []);
@@ -109,6 +118,12 @@ const MyPage = () => {
           <Line data={data} options={options} />
         </div>
       </div>
+      <button
+          style={buttonStyle}
+          onClick={LogOut}
+        >
+          LogOut
+        </button>
     </div>
   );
 };
