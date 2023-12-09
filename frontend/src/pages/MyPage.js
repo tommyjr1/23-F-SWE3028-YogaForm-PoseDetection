@@ -9,12 +9,14 @@ import checkLogin from "../utils/checkLogin";
 
 const MyPage = () => {
   const [routine, setRoutine] = useState('');
-  const [routines, setRoutines] = useState([]);
+  const [records, setRecords] = useState();
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
   const [data, setData] = useState({ labels: [], datasets: [] });
-  const [options, setOptions] = useState({ scales: { y: { beginAtZero: true } } });
-  const [x, setX] = useState(false);
+  const [options, setOptions] = useState({ scales: { y: { beginAtZero: true } }, responsive: true,
+    maintainAspectRatio: false,
+    height: "400px", 
+    width: "500px" });
   const navigate = useNavigate();
 
   ChartJS.register(...registerables);
@@ -29,9 +31,9 @@ const MyPage = () => {
     color: "#3B2C77",
   };
   const buttonStyle = {
-    position: "absolute",
-    left: "80%",
-    bottom: "10%",
+    position: "relative",
+    left: "40%",
+    top: "10%",
     backgroundColor: "#FFF2CC",
     border: "1px solid #FFF2CC",
     borderRadius: "2rem",
@@ -58,7 +60,7 @@ const MyPage = () => {
       })
       .then((response) => {
         console.log(response.data);
-        // setRoutines(response.data.split(','));
+        setRecords(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -67,34 +69,10 @@ const MyPage = () => {
   
 
   useEffect(() => {
-
-    if (checkLogin()){
-      setX(true);
-    }
-
     getRecord();
     // setGrades(location.state?.grade || []);
     setGrades([98, 79]);
   }, []);
-
-
-  useEffect(() => {
-    if (images.length !== 0 && grades.length !== 0){
-      setData({
-        labels: images,
-        datasets: [
-          {
-            label: 'Grades',
-            data: grades,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)', // Bar color
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-          },
-        ],
-      });
-    }
-    
-  }, [images, grades]);
 
   return (
     <div className="App" style={bodyStyle}>
@@ -102,23 +80,38 @@ const MyPage = () => {
         isLoggedIn={checkLogin()}
       ></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <h1 style={{ paddingLeft: "40px" }}>Results</h1><br/>
-          <p style={{ fontSize: "1.4rem", paddingLeft: "40px" }}>
-            Routine : {`${routine}`}
-          </p>
-        </div>
-        <div style={{ fontSize: "1.4rem", paddingRight: "180px" }}>
-          <Line data={data} options={options} />
-        </div>
+      <h1>Results</h1><br/>
+      
+      <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        {checkLogin() && records && (
+          <>
+            {records.map((record, index) => {
+              console.log(record);
+              const lineData = {
+                labels: record.dates,
+                datasets: [
+                  {
+                    label: 'Scores',
+                    data: record.scores,
+                    backgroundColor: '#FFF2CC', // Bar color
+                    borderColor: '#FFF2CC',
+                    borderWidth: 1,
+                  },
+                ],
+              };
+              return (
+                <div style={{width: "1000px", height: "300px"}}>
+                  <p style={{ fontSize: "1.4rem"}}>
+                    Routine : {`${record.routineName}`}
+                  </p>
+                  <Line data={lineData} options={options} />
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
+      <br/>
       <button
           style={buttonStyle}
           onClick={LogOut}

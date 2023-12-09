@@ -35,28 +35,6 @@ const RoutinePage = () => {
     navigate("/Instruction");
   };
 
-  function RoutineButtons() {
-    if (checkLogin()){
-      console.log("buttons");
-      console.log(routines);
-      return (
-        routines && routines.map((routine, index) => {
-          if (index > 1){
-            return(
-            <button key={index} style={buttonStyle} onClick={() => selectRoutine(routine)}>
-              {`${routine}`}
-            </button>
-            );
-          }else{
-            return null;
-          }
-        })
-      );
-    }else{
-      return null;
-    }
-  }
-
   const getRoutines = async () => {
     // console.log(typeof userPoseAngle);
 
