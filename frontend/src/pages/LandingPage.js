@@ -52,8 +52,18 @@ const LandingPage = () => {
           <Button
             variany="secondary"
             className="startBtn"
-            onClick={goToInstrction}
-            // onClick={goToRoutinePage}
+            style={{
+              position: "relative",
+              bottom: "70px",
+              width: "130px",
+              height: "50px",
+              backgroundColor: "#FFF2CC",
+              border: "1px solid #FFF2CC",
+              borderRadius: "2rem",
+              fontSize: "1.7rem",
+              color: "#3B2C77",
+            }}
+            onClick={goToRoutinePage}
           >
             START
           </Button>
