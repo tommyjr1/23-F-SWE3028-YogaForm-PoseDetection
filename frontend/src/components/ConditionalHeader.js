@@ -31,6 +31,10 @@ export default function ConditionalHeader(props) {
     stopWebCam();
     navigate("/");
   };
+  const goToAboutPage = () => {
+    stopWebCam();
+    navigate("/AboutPage");
+  };
 
   const stopWebCam = () => {
     try {
@@ -70,7 +74,7 @@ export default function ConditionalHeader(props) {
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" style={buttonStyle} onClick={goToAboutPage}>
           ABOUT
         </Button>
         <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
@@ -118,7 +122,7 @@ export default function ConditionalHeader(props) {
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" style={buttonStyle} onClick={goToAboutPage}>
           ABOUT
         </Button>
         <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>

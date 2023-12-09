@@ -385,8 +385,8 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-    const routine = localStorage.getItem('routine');
-    getRoutine(routine);
+    setRoutine(localStorage.getItem('routine'));
+    // getRoutine(localStorage.getItem('routine'));
     // try {
     //   const { search } = location;
     //   const queryObj = queryString.parse(search);
@@ -406,11 +406,11 @@ const YogaCoach = () => {
 
   }, [location.pathname]);
 
-  // useEffect(() => {
-  //   // console.log(routine);
-  //   getRoutine(routine);
+  useEffect(() => {
+    // console.log(routine);
+    getRoutine(routine);
     
-  // }, [routine]);
+  }, [routine]);
 
   useEffect(() => {
     console.log("grade : ", grades);
@@ -512,7 +512,7 @@ const YogaCoach = () => {
           </div>
           {/* type="audio/mpeg" */}
           {/* <AudioPlayer {...{ audio }} /> */}
-          <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
+          <audio id="tts" controls ref={audioRef} src={audio} preload="auto" style={{opacity: 0}}/>
           {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 

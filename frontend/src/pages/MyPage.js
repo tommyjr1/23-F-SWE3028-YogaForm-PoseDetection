@@ -8,8 +8,8 @@ import checkLogin from "../utils/checkLogin";
 
 
 const MyPage = () => {
-  const [routine, setRoutine] = useState('');
-  const [records, setRecords] = useState();
+  const [routines, setRoutines] = useState();
+  const [record, setRecord] = useState();
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
   const [data, setData] = useState({ labels: [], datasets: [] });
@@ -33,7 +33,7 @@ const MyPage = () => {
   const buttonStyle = {
     position: "relative",
     left: "40%",
-    top: "10%",
+    top: "6%",
     backgroundColor: "#FFF2CC",
     border: "1px solid #FFF2CC",
     borderRadius: "2rem",
@@ -42,16 +42,45 @@ const MyPage = () => {
     fontSize: "1.6rem",
   };
 
+  const [selected, setSelected] = useState("defaultEasy");
+
+  const selectRoutine = (e) => {
+    setSelected(e.target.value);
+  };
+
   const LogOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     navigate("/");
   };
 
-  const getRecord = async () => {
+  const getRoutines = async () => {
+    // console.log(typeof userPoseAngle);
+
+    if (checkLogin()){
+      await axios
+      .get(`/routine/`, {
+        responseType: "json",
+        headers:{
+          JWT: localStorage.getItem("token"),
+          REFRESH: localStorage.getItem("refreshToken")
+        }
+      }
+      )
+      .then((response) => {
+        console.log(response.data);
+        setRoutines(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+  };
+
+  const getRecord = async (routine) => {
 
     await axios
-      .get("/user/secure/getRecord", {
+      .get(`/user/secure/getRecord/${routine}`, {
         responseType: "json",
         headers:{
           JWT: localStorage.getItem("token"),
@@ -60,7 +89,7 @@ const MyPage = () => {
       })
       .then((response) => {
         console.log(response.data);
-        setRecords(response.data);
+        setRecord(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -69,10 +98,34 @@ const MyPage = () => {
   
 
   useEffect(() => {
-    getRecord();
-    // setGrades(location.state?.grade || []);
-    setGrades([98, 79]);
+    getRoutines();
+
   }, []);
+
+  useEffect(() => {
+    if (record){
+      setData(
+        {
+          labels: record.dates,
+          datasets: [
+            {
+              label: 'Scores',
+              data: record.scores,
+              backgroundColor: '#FFF2CC', // Bar color
+              borderColor: '#FFF2CC',
+              borderWidth: 1,
+            },
+          ],
+        }
+      )
+    }
+
+  }, [record]);
+
+  useEffect(() => {
+    getRecord(selected);
+
+  }, [selected]);
 
   return (
     <div className="App" style={bodyStyle}>
@@ -83,7 +136,7 @@ const MyPage = () => {
       <h1>Results</h1><br/>
       
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        {checkLogin() && records && (
+        {/* {checkLogin() && records && (
           <>
             {records.map((record, index) => {
               console.log(record);
@@ -109,7 +162,26 @@ const MyPage = () => {
               );
             })}
           </>
+        )} */}
+        <select onChange={selectRoutine} value={selected} style={{width: "150px"}}>
+          {routines && routines.map((routine) => {
+            return(
+            <option value={routine} key={routine}>
+              {routine}
+            </option>
+            );
+          })}
+        </select>
+        <div style={{width: "1000px", height: "300px"}}>
+        {record && (
+          <>
+            <p style={{ fontSize: "1.4rem" }}>
+              Routine : {`${selected}`}
+            </p>
+            <Line data={data} options={options} />
+          </>
         )}
+        </div>
       </div>
       <br/>
       <button
