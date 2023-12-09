@@ -47,7 +47,9 @@ export default function ConditionalHeader(props) {
           justifyContent: "space-around",
         }}
       >
-        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>YOGA FORM</div>
+        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>
+          <a onClick={goToLandingPage}>YOGA FORM</a>
+        </div>
         <div></div>
         <div></div>
         <div></div>
@@ -60,14 +62,14 @@ export default function ConditionalHeader(props) {
         >
           HOME
         </Button>
-        <Button variany="secondary" className="headerBtn" onClick={goToYogaList}>
-          POSES
-        </Button>
         <Button
           variany="secondary"
-          className="loginBtn"
-          onClick={goToMyPage}
+          className="headerBtn"
+          onClick={goToYogaList}
         >
+          POSES
+        </Button>
+        <Button variany="secondary" className="loginBtn" onClick={goToMyPage}>
           My page
         </Button>
       </header>
@@ -101,7 +103,11 @@ export default function ConditionalHeader(props) {
         <Button variany="secondary" className="headerBtn">
           ABOUT
         </Button>
-        <Button variany="secondary" className="headerBtn" onClick={goToYogaList}>
+        <Button
+          variany="secondary"
+          className="headerBtn"
+          onClick={goToYogaList}
+        >
           YOGA
         </Button>
         <Button

@@ -91,7 +91,15 @@ const RoutinePage = () => {
           }}
         >
           {checkLogin() && routines && (
-          <>
+          <ul
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            paddingInlineStart: "0px",
+            marginLeft: "40px",
+            marginRight: "40px",
+          }}>
             {routines.map((routine, index) => {
               if (index > 1) {
                 return (
@@ -107,7 +115,7 @@ const RoutinePage = () => {
                 return null;
               }
             })}
-          </>
+          </ul>
         )}
         </div>
       </div>
