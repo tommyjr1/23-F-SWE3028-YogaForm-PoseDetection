@@ -83,6 +83,13 @@ public class UserController {
         return ;
     }
 
+    @PostMapping("/getRecord")
+    @ResponseBody
+    public void getRecord(HttpServletRequest request){
+        userService.getRecord(request);
+        return ;
+    }
+
 
 
 

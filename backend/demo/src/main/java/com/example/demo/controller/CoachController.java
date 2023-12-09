@@ -93,8 +93,7 @@ public class CoachController {
             if (sendFeeadback){
                 currentPose = poseService.getPosebyName(poseName);
                 results = coachService.comparePose(currentPose, currentJoints);
-                System.out.println("results: "+results[0].toString());
-                System.out.println(results[1].toString());
+                System.out.println("results: "+results[0].toString()+results[1].toString());
 
                 Tts.main(results[0].toString());
                 File f = new File("/home/ubuntu/yogaform/23-F-SWE3028-YogaForm/backend/demo/output.mp3");
@@ -114,7 +113,7 @@ public class CoachController {
     public Double getPass(@PathVariable("poseName") String poseName){
         System.out.println("pass: "+results[0].toString());
 
-        if(results[0].toString()=="Good job."){ return (Double) results[1];}
+        if(results[0].toString()=="Good job."){ return Double.parseDouble(results[1].toString());}
         else{ return -1.0;}
     }
 
