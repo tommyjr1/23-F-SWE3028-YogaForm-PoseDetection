@@ -203,7 +203,7 @@ const YogaList = () => {
   const onChange = (e) => {
     setRoutineName(e.target.value);
     console.log(routineName);
-  }
+  };
 
   return (
     <div className="App" style={bodyStyle}>
@@ -216,34 +216,50 @@ const YogaList = () => {
           justifyContent: "space-between",
         }}
       >
-        <h1 style={{ paddingLeft: "40px" }}>Standing</h1>
+        <div style={{marginTop: "30px"}}>
         {isOn ? (
-          <input
-          placeholder="Routine Name"
-          onChange={onChange}
-          ></input>
-        ): (
+          <input placeholder="Routine Name" onChange={onChange}></input>
+        ) : (
           <button
             style={{
               backgroundColor: "#FFF2CC",
               border: "1px solid #FFF2CC",
               borderRadius: "2rem",
-              width: "120px",
-              height: "40px",
+              width: "200px",
+              height: "50px",
               color: "#3B2C77",
-              fontSize: "1rem",
+              fontSize: "1.5rem",
               flex: 1,
               flexDirection: "row",
               alignItems: "flex-end",
             }}
-            onClick={()=>setIsOn(true)}
+            onClick={() => setIsOn(true)}
           >
             Make a routine
           </button>
         )}
+        </div>
 
         <form onSubmit={onSubmit}>
-          <ul style={{ display: "flex", flexWrap: "wrap" }}>
+          <h1
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              marginLeft: "100px",
+            }}
+          >
+            Standing
+          </h1>
+          <ul
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              paddingInlineStart: "0px",
+              marginLeft: "30px",
+              marginRight: "30px",
+            }}
+          >
             {isOn ? SelectPose : PoseList}
           </ul>
           {isOn ? (

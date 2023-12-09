@@ -12,7 +12,6 @@ import yogaImage from "../assets/yoga_image.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
-
 const YogaCoach = () => {
   const [routine, setRoutine] = useState("defaultEasy");
   // const [routine, setRoutine] = useState("");
@@ -46,7 +45,7 @@ const YogaCoach = () => {
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
   const [imageUrl, setImageUrl] = useState(yogaImage);
-  const [yogaName, setYogaName] = useState('무희자세');
+  const [yogaName, setYogaName] = useState("무희자세");
   const [x, setX] = useState(false);
   const [timer1, setTimer1] = useState();
   const [timer2, setTimer2] = useState();
@@ -138,7 +137,11 @@ const YogaCoach = () => {
     }
   };
 
-  const submitLandmarkData = async (currentLandmarks, currentImages, currentIndex) => {
+  const submitLandmarkData = async (
+    currentLandmarks,
+    currentImages,
+    currentIndex
+  ) => {
     // console.log(typeof userPoseAngle);
     console.log("submit landmark");
     console.log(currentImages);
@@ -149,7 +152,7 @@ const YogaCoach = () => {
       })
       .then((response) => {
         // console.log(response.data);
-        if (response.data){
+        if (response.data) {
           // console.log(images);
           requestAudioFile(currentImages, currentIndex);
         }
@@ -159,21 +162,19 @@ const YogaCoach = () => {
       });
   };
 
-
   const requestAudioFile = async (currentImages, currentIndex) => {
-
     console.log("request audio");
     const name = currentImages[currentIndex];
     const flagAudio = false;
 
     await axios
       .get(`/coach/feedback/${name}`, {
-        responseType: "arraybuffer"
+        responseType: "arraybuffer",
       })
       .then((response) => {
         console.log(response.data);
         // const currentTime = Date.now();
-        if (response.data && response.data.byteLength !== 0){
+        if (response.data && response.data.byteLength !== 0) {
           console.log("yes audio");
           // console.log("current:",currentTime);
           // console.log("last",lastExecution);
@@ -199,7 +200,6 @@ const YogaCoach = () => {
         console.log(error);
       });
 
-    
     // if (flagAudio){
     //   var audio_bell = document.getElementById("tts");
 
@@ -226,38 +226,36 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
     console.log(routine);
 
-    if (checkLogin()){
+    if (checkLogin()) {
       await axios
-      .get(`/routine/${routine}`, {
-        responseType: "json",
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
-      }
-      )
-      .then((response) => {
-        setImages(response.data.split(','));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }else{
+        .get(`/routine/${routine}`, {
+          responseType: "json",
+          headers: {
+            JWT: localStorage.getItem("token"),
+            REFRESH: localStorage.getItem("refreshToken"),
+          },
+        })
+        .then((response) => {
+          setImages(response.data.split(","));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
       await axios
-      .get(`/routine/${routine}`, {
-        responseType: "json",
-        headers:{
-          JWT: "",
-          REFRESH: ""
-        }
-      }
-      )
-      .then((response) => {
-        setImages(response.data.split(','));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get(`/routine/${routine}`, {
+          responseType: "json",
+          headers: {
+            JWT: "",
+            REFRESH: "",
+          },
+        })
+        .then((response) => {
+          setImages(response.data.split(","));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -268,13 +266,13 @@ const YogaCoach = () => {
     await axios
       .get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
-        headers: { 
-          Accept: "*/*", 
-          "Content-Type": "image/png"
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "image/png",
         },
       })
       .then((response) => {
-        console.log('get image');
+        console.log("get image");
         const blob = new Blob([response.data], {
           type: "image/png",
         });
@@ -287,7 +285,7 @@ const YogaCoach = () => {
         console.log(error);
       });
 
-      // setX(true);
+    // setX(true);
   };
 
   const checkPass = async (currentImages, currentIndex) => {
@@ -295,16 +293,14 @@ const YogaCoach = () => {
 
     const name = currentImages[currentIndex];
     await axios
-      .get(`/coach/pass/${name}`,
-      {
-      })
+      .get(`/coach/pass/${name}`, {})
       .then((response) => {
         console.log(response.data);
-        if (response.data >= 0){
+        if (response.data >= 0) {
           // const updatedGrades = [...grades]; // Create a copy of the grades array
           // const updatedGrades = grades.concat(response.data); // Update the value at index 0 to 96
           // setGrades(updatedGrades);
-          setGrades(prevList => [...prevList, response.data]);
+          setGrades((prevList) => [...prevList, response.data]);
           setIndex(currentIndex + 1);
         }
       })
@@ -312,7 +308,6 @@ const YogaCoach = () => {
         console.log(error);
       });
   };
-
 
   // function AudioPlayer({ audio }) {
   //   return (
@@ -343,11 +338,9 @@ const YogaCoach = () => {
   );
 
   useEffect(() => {
-
     // setTimer1(setInterval(() => throttleSubmitLandmarkData(landmarks, images, index), 1000));
     // setTimer2(setInterval(() => throttleRequestAudio(images, index), 1000));
     throttleSubmitLandmarkData(landmarks, images, index);
-
   }, [images, landmarks, index]);
 
   useEffect(() => {
@@ -385,8 +378,8 @@ const YogaCoach = () => {
       });
       camera.start();
     }
-    const routine = localStorage.getItem('routine');
-    getRoutine(routine);
+    setRoutine(localStorage.getItem("routine"));
+    // getRoutine(routine);
     // try {
     //   const { search } = location;
     //   const queryObj = queryString.parse(search);
@@ -403,39 +396,40 @@ const YogaCoach = () => {
     //   clearInterval(timer1);
     //   // clearInterval(timer2);
     // };
-
   }, [location.pathname]);
 
-  // useEffect(() => {
-  //   // console.log(routine);
-  //   getRoutine(routine);
-    
-  // }, [routine]);
+  useEffect(() => {
+    // console.log(routine);
+    getRoutine(routine);
+  }, [routine]);
 
   useEffect(() => {
     console.log("grade : ", grades);
     let gradeFlag = 1;
-    if (grades.length !== 0 && grades.length == images.length){
-      for (let i=0; i< grades.length; i++){
+    if (grades.length !== 0 && grades.length == images.length) {
+      for (let i = 0; i < grades.length; i++) {
         console.log(grades[i]);
-        if (grades[i] === 0){
+        if (grades[i] === 0) {
           // console.log(grades[i]);
           gradeFlag = 0;
           break;
         }
       }
-    }else{
+    } else {
       gradeFlag = 0;
       console.log("length zero");
     }
-    if (gradeFlag === 1){
+    if (gradeFlag === 1) {
       console.log("stop webcam");
       stopWebCam();
-      setTimeout(function() { //Start the timer
-        navigate("/EndingPage", { state: { grade: grades } }); //After 1 second, set render to true
-      }.bind(this), 2000)
+      setTimeout(
+        function () {
+          //Start the timer
+          navigate("/EndingPage", { state: { grade: grades } }); //After 1 second, set render to true
+        }.bind(this),
+        2000
+      );
     }
-    
   }, [grades]);
 
   useEffect(() => {
@@ -446,7 +440,7 @@ const YogaCoach = () => {
       getYogaImage(images[index]);
     }
 
-    if (index !== 0 && index >= images.length){
+    if (index !== 0 && index >= images.length) {
       setX(true);
     }
   }, [images, index]);
@@ -454,14 +448,14 @@ const YogaCoach = () => {
   useEffect(() => {
     // Play audio when 'audio' state is updated
     if (audio && audioRef.current) {
-      if (index < images.length){
+      if (index < images.length) {
         audioRef.current.src = audio; // Set the audio source
 
         const isAudioInDOM = document.body.contains(audioRef.current);
         if (isAudioInDOM) {
           audioRef.current.play(); // Play the audio
         } else {
-          console.log('Audio element is not in the DOM');
+          console.log("Audio element is not in the DOM");
           // Handle the case where the audio element is not in the DOM
         }
         // audioRef.current.play(); // Play the audio
@@ -512,7 +506,14 @@ const YogaCoach = () => {
           </div>
           {/* type="audio/mpeg" */}
           {/* <AudioPlayer {...{ audio }} /> */}
-          <audio id="tts" controls ref={audioRef} src={audio} preload="auto" />
+          <audio
+            id="tts"
+            controls
+            ref={audioRef}
+            src={audio}
+            preload="auto"
+            style={{ opacity: "0" }}
+          />
           {/* <audio id="tts" controls ref={audioRef} src={audio} />; */}
           {/* <AudioPlayer src={audio} ref={audioRef} autoPlay={true}/> */}
 

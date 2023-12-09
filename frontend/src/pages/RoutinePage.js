@@ -9,7 +9,7 @@ import checkLogin from "../utils/checkLogin";
 const RoutinePage = () => {
   const [routines, setRoutines] = useState();
   const navigate = useNavigate();
-  
+
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -26,98 +26,113 @@ const RoutinePage = () => {
     color: "#3B2C77",
     fontSize: "1.6rem",
     width: "150px",
-    height: "60px"
+    height: "60px",
+    margin: "10px",
   };
 
   const selectRoutine = (routine) => {
     console.log("selected routine", routine);
-    localStorage.setItem('routine', routine);
+    localStorage.setItem("routine", routine);
     navigate("/Instruction");
   };
 
   const getRoutines = async () => {
     // console.log(typeof userPoseAngle);
 
-    if (checkLogin()){
+    if (checkLogin()) {
       await axios
-      .get(`/routine/`, {
-        responseType: "json",
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
-      }
-      )
-      .then((response) => {
-        console.log(response.data);
-        setRoutines(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get(`/routine/`, {
+          responseType: "json",
+          headers: {
+            JWT: localStorage.getItem("token"),
+            REFRESH: localStorage.getItem("refreshToken"),
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          setRoutines(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
   useEffect(() => {
-    getRoutines();    
+    getRoutines();
   }, []);
-  
 
   return (
     <div className="App" style={bodyStyle}>
-      <ConditionalHeader 
-        isLoggedIn={checkLogin()}
-      ></ConditionalHeader>
+      <ConditionalHeader isLoggedIn={checkLogin()}></ConditionalHeader>
       <hr style={{ borderColor: "#3B2C77" }} />
       <div
-        // style={{
-        //   display: "flex",
-        //   flexDirection: "column",
-        //   justifyContent: "center",
-        //   alignItems: "center",
-        // }}
+      // style={{
+      //   display: "flex",
+      //   flexDirection: "column",
+      //   justifyContent: "center",
+      //   alignItems: "center",
+      // }}
       >
         <h1>Select Routine</h1>
         <br />
-        <div style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: "20px"
-          }}>
-          <button style={buttonStyle} onClick={() => selectRoutine("defaultEasy")}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: "20px",
+          }}
+        >
+          <button
+            style={buttonStyle}
+            onClick={() => selectRoutine("defaultEasy")}
+          >
             Easy
           </button>
-          <button style={buttonStyle} onClick={() => selectRoutine("defaultHard")}>
+          <button
+            style={buttonStyle}
+            onClick={() => selectRoutine("defaultHard")}
+          >
             Hard
           </button>
         </div>
-        <br/>
-        <div style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: "20px"
-          }}>
+        <br />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: "20px",
+          }}
+        >
           {checkLogin() && routines && (
-          <>
-            {routines.map((routine, index) => {
-              if (index > 1) {
-                return (
-                  <button
-                    key={index}
-                    style={buttonStyle}
-                    onClick={() => selectRoutine(routine)}
-                  >
-                    {`${routine}`}
-                  </button>
-                );
-              } else {
-                return null;
-              }
-            })}
-          </>
-        )}
+            <ul
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                paddingInlineStart: "0px",
+                width: "1000px",
+              }}
+            >
+              {routines.map((routine, index) => {
+                if (index > 1) {
+                  return (
+                    <button
+                      key={index}
+                      style={buttonStyle}
+                      onClick={() => selectRoutine(routine)}
+                    >
+                      {`${routine}`}
+                    </button>
+                  );
+                } else {
+                  return null;
+                }
+              })}
+            </ul>
+          )}
         </div>
       </div>
     </div>
