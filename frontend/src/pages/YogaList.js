@@ -29,7 +29,7 @@ const YogaList = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [routineName, setRoutineName] = useState("Untitled");
   const [isOn, setIsOn] = useState(false);
-  const [loadedImages, setLoadedImages] = useState([]);
+  const [x, setX] = useState(false);
 
   const checkedItemHandler = (value, isChecked) => {
     if (isChecked) {
@@ -58,14 +58,14 @@ const YogaList = () => {
         console.log(err);
       });
   };
-  const onImageLoad = (index) =>{
-    setLoadedImages((prev)=>[...prev, index]);
-  }
 
   const onSubmit = async (e) => {
     // e.preventDefault();
     if (checkedList.length == 0) {
       alert("Choose poses.");
+      e.preventDefault();
+    } else if (routineName === "Untitled") {
+      alert("Input a routine name");
       e.preventDefault();
     } else {
       console.log("checkedList: ", checkedList);
@@ -103,8 +103,6 @@ const YogaList = () => {
           type: "image/png",
         });
         const imgUrl = URL.createObjectURL(blob);
-        // let copy = imgUrls;
-        // console.log(copy);
 
         // setImgurl((prevList) => [prevList, imgUrl]);
         // console.log(imgUrls);
@@ -126,52 +124,23 @@ const YogaList = () => {
   };
 
   useEffect(() => {
-    try {
-      const { search } = location;
-      const queryObj = queryString.parse(search);
-    } catch (e) {
-      console.log("Error: ", e);
-    }
-  }, []);
-
-  useEffect(()=>{
-    getPoseName();
-    console.log(poseName);
-  }, []);
-
-  useEffect(() => {
-    imgUrls &&
-      imgUrls.map((img, index) => {
+    const fetch = async () => {
+      try {
+        const { search } = location;
+        const queryObj = queryString.parse(search);
+        await getPoseName();
+      } catch (e) {
+        console.log("Error: ", e);
+      }
+    };
+    fetch();
+    // console.log(poseName);
+    poseName &&
+      poseName.map((img, index) => {
         getImage(img, index);
       });
-  }, [imgUrls]);
-
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     try {
-  //       const { search } = location;
-  //       const queryObj = queryString.parse(search);
-  //       await getPoseName();
-  //       console.log(poseName);
-  //       // const imagePromises = Array.from(poseNames).map((item) =>
-  //       //   getImage(item)
-  //       // );
-  //       // const imagePromises = () => {
-  //       //     imgUrls&&imgUrls.map((img, index)=>{
-  //       //       getImage(img, index);
-  //       //     })
-  //       // };
-  //       imgUrls&&imgUrls.map((img, index)=>{
-  //         getImage(img, index);
-  //       })
-  //       //await Promise.all(imagePromises);
-  //     } catch (e) {
-  //       console.log("Error: ", e);
-  //     }
-  //   };
-
-  //   fetch();
-  // }, [imgUrls]);
+  }, []);
+  
 
   const PoseList = poseName.map((pose, index) => {
     return (
@@ -193,7 +162,6 @@ const YogaList = () => {
               objectFit: "cover",
               width: "150px",
             }}
-            onLoad={onImageLoad}
           ></img>
         </div>
         <div className="poseTitle">
@@ -223,7 +191,6 @@ const YogaList = () => {
               objectFit: "cover",
               width: "150px",
             }}
-            onLoad={()=>onImageLoad(index)}
           ></img>
         </div>
         <div className="poseTitle">
@@ -233,7 +200,10 @@ const YogaList = () => {
             checked={checkedList.includes(pose)}
             onChange={(e) => checkHandler(e, pose)}
           />
-          <label htmlFor={pose}>{pose}</label>
+
+          <label htmlFor={pose} style={{ fontSize: "0.6em" }}>
+            {pose}
+          </label>
         </div>
       </li>
     );
@@ -241,7 +211,6 @@ const YogaList = () => {
 
   const onChange = (e) => {
     setRoutineName(e.target.value);
-    console.log(routineName);
   };
 
   return (
@@ -255,8 +224,8 @@ const YogaList = () => {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ marginTop: "30px" }}>  
-          {checkLogin()&&!isOn ? (
+        <div style={{ marginTop: "30px" }}>
+          {checkLogin() && !isOn ? (
             <button
               style={{
                 backgroundColor: "#FFF2CC",
@@ -274,10 +243,14 @@ const YogaList = () => {
             >
               Make a routine
             </button>
-          ):<></>}
+          ) : (
+            <></>
+          )}
           {isOn ? (
             <input placeholder="Routine Name" onChange={onChange}></input>
-          ) : <></>}
+          ) : (
+            <></>
+          )}
         </div>
 
         <form onSubmit={onSubmit}>
@@ -294,10 +267,10 @@ const YogaList = () => {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              justifyContent: "flex-start",
+              justifyContent: "center",
               paddingInlineStart: "0px",
-              marginLeft: "30px",
-              marginRight: "30px",
+              marginLeft: "40px",
+              marginRight: "40px",
             }}
           >
             {isOn ? SelectPose : PoseList}
