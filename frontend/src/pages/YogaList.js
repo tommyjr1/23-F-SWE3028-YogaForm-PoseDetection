@@ -79,7 +79,7 @@ const YogaList = () => {
 
     await axios
       .post(
-        "/routine/addRoutine",
+        "/routine/secure/addRoutine",
         {
           routineName: routineName,
           poses: checkedList,
@@ -241,7 +241,7 @@ const YogaList = () => {
         </button>
         <form onSubmit={onSubmit}>
           <ul style={{ display: "flex", flexWrap: "wrap" }}>{poseList}</ul>
-          <ul style={{ display: "flex", flexWrap: "wrap" }}>{selectPose}</ul>
+          <ul style={{ display: "none", flexWrap: "wrap" }}>{selectPose}</ul>
           <button
             style={{
               backgroundColor: "#FFF2CC",
