@@ -38,24 +38,25 @@ public class RoutineService {
     }
 
     public List<String> getUserRoutines(HttpServletRequest request) {
-        String token = request.getHeader("JWT");
-        String userEmail = jwtTokenProvider.getUserEmail(token);
-        List<Routine> routines = routineRepository.findByUserEmail(userEmail);
+        List<Routine> routines = routineRepository.findByUserEmail("");
         List<String> routineNames = new ArrayList<>();
+            for(Routine  rou : routines){
+                String name = rou.getRoutineName();
+                routineNames.add(name);
+            }
 
-        for(Routine  rou : routines){
-            String name = rou.getRoutineName();
-            routineNames.add(name);
-        }
+        String token = request.getHeader("JWT");
+        Boolean isLogin = jwtTokenProvider.validateToken(token, request);
+        if(isLogin==true){
+            String userEmail = jwtTokenProvider.getUserEmail(token);
+            routines = routineRepository.findByUserEmail(userEmail);
 
-        if(userEmail!=""){
-            routines = routineRepository.findByUserEmail("");
             for(Routine  rou : routines){
                 String name = rou.getRoutineName();
                 routineNames.add(name);
             }
         }
-
+        
         return routineNames;
     }
 

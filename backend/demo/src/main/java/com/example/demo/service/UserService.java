@@ -3,19 +3,23 @@ package com.example.demo.service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.RecordRepository;
 import com.example.demo.dao.RoutineRepository;
 import com.example.demo.dao.UserRepository;
+import com.example.demo.dto.GetRecordDto;
 import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.RecordDto;
 import com.example.demo.entity.Record;
@@ -118,12 +122,36 @@ public class UserService {
         return ret;
     }
 
-    public void getRecord(HttpServletRequest request){
+    public List<GetRecordDto> getRecord(HttpServletRequest request){
         String token = request.getHeader("JWT");
         String userEmail = jwtTokenProvider.getUserEmail(token);
-        List<Record> records = recordRepository.findByUserEmail(userEmail);
+        List<Record> records = recordRepository.findByUserEmail(userEmail, Sort.by(Sort.Direction.DESC, "routineName"));
 
-        return ;
+        String prev = "";
+        List<String> scores = new ArrayList<>();
+        List<String> dates = new ArrayList<>();
+        SimpleDateFormat TimestampToString = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        List<GetRecordDto> returns = new ArrayList<>();
+
+        for (Record record: records){
+            //저장
+            if(prev!=""){
+                prev=record.getRoutineName();
+            }
+            if(record.getRoutineName()!=prev){
+                GetRecordDto recordDto = new GetRecordDto(prev, String.join(",", scores), String.join(",", dates));
+                returns.add(recordDto);
+                scores.clear();
+                dates.clear();;
+                prev=record.getRoutineName();
+            }
+            scores.add(record.getScore().toString());
+            dates.add(TimestampToString.format(record.getDate()));
+        }
+        GetRecordDto recordDto = new GetRecordDto(prev, String.join(",", scores), String.join(",", dates));
+        returns.add(recordDto);
+
+        return returns;
         
     }
 

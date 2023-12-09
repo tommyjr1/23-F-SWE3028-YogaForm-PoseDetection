@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.GetRecordDto;
 import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.RecordDto;
 import com.example.demo.dto.ResponseDto;
@@ -76,18 +78,18 @@ public class UserController {
         return newAccessToken;
     }
 
-    @PostMapping("/addRecord")
+    @PostMapping("/secure/addRecord")
     @ResponseBody
     public void addRecord(@RequestBody RecordDto recordDto, HttpServletRequest request){
         Record record = userService.addRecord(recordDto, request);
         return ;
     }
 
-    @PostMapping("/getRecord")
+    @PostMapping("/secure/getRecord")
     @ResponseBody
-    public void getRecord(HttpServletRequest request){
-        userService.getRecord(request);
-        return ;
+    public List<GetRecordDto> getRecord(HttpServletRequest request){
+        List<GetRecordDto> returns = userService.getRecord(request);
+        return returns;
     }
 
 
