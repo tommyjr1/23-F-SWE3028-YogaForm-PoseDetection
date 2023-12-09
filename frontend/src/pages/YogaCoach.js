@@ -385,6 +385,8 @@ const YogaCoach = () => {
       });
       camera.start();
     }
+    const routine = localStorage.getItem('routine');
+    getRoutine(routine);
     // try {
     //   const { search } = location;
     //   const queryObj = queryString.parse(search);
@@ -404,11 +406,11 @@ const YogaCoach = () => {
 
   }, [location.pathname]);
 
-  useEffect(() => {
-    // console.log(routine);
-    getRoutine(routine);
+  // useEffect(() => {
+  //   // console.log(routine);
+  //   getRoutine(routine);
     
-  }, [routine]);
+  // }, [routine]);
 
   useEffect(() => {
     console.log("grade : ", grades);
@@ -430,7 +432,7 @@ const YogaCoach = () => {
       console.log("stop webcam");
       stopWebCam();
       setTimeout(function() { //Start the timer
-        navigate(`/EndingPage?userRoutine=${routine}`, { state: { grade: grades } }); //After 1 second, set render to true
+        navigate("/EndingPage", { state: { grade: grades } }); //After 1 second, set render to true
       }.bind(this), 2000)
     }
     

@@ -75,20 +75,37 @@ const EndingPage = () => {
     console.log(routine);
     console.log(localStorage.getItem("token"));
 
-    await axios
-      .get(`/routine/${routine}`, {
-        responseType: "json",
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
-      })
-      .then((response) => {
-        setImages(response.data.split(','));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (checkLogin()){
+      await axios
+        .get(`/routine/${routine}`, {
+          responseType: "json",
+          headers:{
+            JWT: localStorage.getItem("token"),
+            REFRESH: localStorage.getItem("refreshToken")
+          }
+        })
+        .then((response) => {
+          setImages(response.data.split(','));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }else{
+      await axios
+        .get(`/routine/${routine}`, {
+          responseType: "json",
+          headers:{
+            JWT: "",
+            REFRESH: ""
+          }
+        })
+        .then((response) => {
+          setImages(response.data.split(','));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const getYogaImage = async (name, index) => {
@@ -124,7 +141,7 @@ const EndingPage = () => {
   };
 
   useEffect(() => {
-    setRoutine("defaultEasy");
+    setRoutine(localStorage.getItem('routine'));
 
     if (checkLogin()){
       setX(true);
