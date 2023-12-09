@@ -5,9 +5,8 @@ import yogaIcon from "../assets/yoga_icon.png";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
-
 const EndingPage = () => {
-  const [routine, setRoutine] = useState('');
+  const [routine, setRoutine] = useState("");
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
   const [imgUrls, setImgUrls] = useState([]);
@@ -24,9 +23,9 @@ const EndingPage = () => {
   const saveResults = async () => {
     console.log("save");
     let allGrade = "";
-    for (let i = 0; i< grades.length; i++){
-      if (i > 0){
-        allGrade += ","
+    for (let i = 0; i < grades.length; i++) {
+      if (i > 0) {
+        allGrade += ",";
       }
       allGrade = allGrade + grades[i];
     }
@@ -34,17 +33,20 @@ const EndingPage = () => {
     console.log(allGrade);
 
     await axios
-      .post("/user/addRecord", {
-        routineName: routine,
-        eachScore: allGrade,
-        score: average
-      },
-      {
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
+      .post(
+        "/user/addRecord",
+        {
+          routineName: routine,
+          eachScore: allGrade,
+          score: average,
+        },
+        {
+          headers: {
+            JWT: localStorage.getItem("token"),
+            REFRESH: localStorage.getItem("refreshToken"),
+          },
         }
-      })
+      )
       .then((response) => {
         console.log(response.data);
       })
@@ -58,34 +60,50 @@ const EndingPage = () => {
     console.log(routine);
     console.log(localStorage.getItem("token"));
 
-    await axios
-      .get(`/routine/${routine}`, {
-        responseType: "json",
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
-      })
-      .then((response) => {
-        setImages(response.data.split(','));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (checkLogin()) {
+      await axios
+        .get(`/routine/${routine}`, {
+          responseType: "json",
+          headers: {
+            JWT: localStorage.getItem("token"),
+            REFRESH: localStorage.getItem("refreshToken"),
+          },
+        })
+        .then((response) => {
+          setImages(response.data.split(","));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      await axios
+        .get(`/routine/${routine}`, {
+          responseType: "json",
+          headers: {
+            JWT: "",
+            REFRESH: "",
+          },
+        })
+        .then((response) => {
+          setImages(response.data.split(","));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const getYogaImage = async (name, index) => {
-
     console.log("getYogaImage function");
     console.log(name);
 
     try {
-      const response = 
-      await axios.get(`/pose/getImg/${name}`, {
+      const response = await axios
+      .get(`/pose/getImg/${name}`, {
         responseType: "arraybuffer",
         headers: { Accept: "*/*", "Content-Type": "image/png" },
       });
-  
+
       const blob = new Blob([response.data], {
         type: "image/png",
       });
@@ -93,12 +111,16 @@ const EndingPage = () => {
       // let copy = imgUrls;
       // copy.push(imgUrl);
       // setImgUrls(copy);
-      if (index > imgUrls.length){
-        setTimeout(function() { //Start the timer
-          setImgUrls(prevList => [...prevList, imgUrl]);
-        }.bind(this), 300)
-      }else{
-        setImgUrls(prevList => [...prevList, imgUrl]);
+      if (index > imgUrls.length) {
+        setTimeout(
+          function () {
+            //Start the timer
+            setImgUrls((prevList) => [...prevList, imgUrl]);
+          }.bind(this),
+          300
+        );
+      } else {
+        setImgUrls((prevList) => [...prevList, imgUrl]);
       }
     } catch (error) {
       console.log(error);
@@ -107,9 +129,9 @@ const EndingPage = () => {
   };
 
   useEffect(() => {
-    setRoutine("defaultEasy");
+    setRoutine(localStorage.getItem("routine"));
 
-    if (checkLogin()){
+    if (checkLogin()) {
       setX(true);
     }
     setGrades(location.state?.grade || []);
@@ -118,25 +140,24 @@ const EndingPage = () => {
   useEffect(() => {
     // console.log(routine);
     getRoutine(routine);
-
   }, [routine]);
 
   useEffect(() => {
     let sum = 0;
-    grades && grades.map((grade) => {
-      console.log(typeof(grade));
-      sum += grade;
-    });
-    setAverage(sum / grades.length);    
-    
+    grades &&
+      grades.map((grade) => {
+        console.log(typeof grade);
+        sum += grade;
+      });
+    setAverage(sum / grades.length);
   }, [grades]);
 
   useEffect(() => {
     // console.log(routine);
-    images && images.map((img, index) => {
-      getYogaImage(img, index);
-    })
-    
+    images &&
+      images.map((img, index) => {
+        getYogaImage(img, index);
+      });
   }, [images]);
 
   return (
@@ -151,37 +172,47 @@ const EndingPage = () => {
           flexDirection: "column",
           justifyContent: "space-between",
           fontSize: "1.4rem",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <div>
           <h1>Results</h1>
-          <p>
-            Routine : {`${routine}`}
-          </p>
+          <p>Routine : {`${routine}`}</p>
         </div>
-        <div style={{ fontSize: "1.4rem", textAlign: "center"}}>
+        <div style={{ fontSize: "1.4rem", textAlign: "center" }}>
           <table>
             <thead>
               <tr>
-                {images && images.map((image, index) => (
-                  <th key={index} style={{paddingLeft: "0.5rem", paddingRight: "0.5rem"}}>{image}</th>
-                ))}
-                <th style={{paddingLeft: "0.5rem", paddingRight: "0.5rem"}}>Average</th>
+                {images &&
+                  images.map((image, index) => (
+                    <th
+                      key={index}
+                      style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
+                    >
+                      {image}
+                    </th>
+                  ))}
+                <th style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}>
+                  Average
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                {imgUrls && imgUrls.map((imgUrl, index) => (
-                  <td key={index}><img src={imgUrl} style={{width: "150px"}}/></td>
-                ))}
-                <td><img src={yogaIcon} style={{width: "150px"}}/></td>
+                {imgUrls &&
+                  imgUrls.map((imgUrl, index) => (
+                    <td key={index}>
+                      <img src={imgUrl} style={{ width: "150px" }} />
+                    </td>
+                  ))}
+                <td>
+                  <img src={yogaIcon} style={{ width: "150px" }} />
+                </td>
               </tr>
               <tr>
-              {/* (grades.length == images.length) && */}
-                {grades &&  grades.map((grade, index) => (
-                  <td key={index}>{grade}</td>
-                ))}
+                {/* (grades.length == images.length) && */}
+                {grades &&
+                  grades.map((grade, index) => <td key={index}>{grade}</td>)}
                 <td>{`${average}`}</td>
               </tr>
             </tbody>
