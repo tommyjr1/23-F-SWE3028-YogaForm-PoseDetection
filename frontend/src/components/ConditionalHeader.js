@@ -20,28 +20,16 @@ export default function ConditionalHeader(props) {
   };
   const goToMyPage = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/MyPage?isLogin=true");
-    } else {
-      navigate("/MyPage");
-    }
+    navigate("/MyPage");
     window.location.reload();
   };
   const goToYogaList = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/YogaList?isLogin=true");
-    } else {
-      navigate("/YogaList");
-    }
+    navigate("/YogaList");
   };
   const goToLandingPage = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/?isLogin=true");
-    } else {
-      navigate("/");
-    }
+    navigate("/");
   };
 
   const stopWebCam = () => {

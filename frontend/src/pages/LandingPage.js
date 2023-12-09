@@ -77,8 +77,7 @@ const LandingPage = () => {
               fontSize: "1.7rem",
               color: "#3B2C77",
             }}
-            onClick={goToInstrction}
-            // onClick={goToRoutinePage}
+            onClick={goToRoutinePage}
           >
             START
           </Button>

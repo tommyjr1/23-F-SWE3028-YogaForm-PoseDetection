@@ -35,25 +35,6 @@ const RoutinePage = () => {
     navigate("/Instruction");
   };
 
-  function RoutineButtons() {
-    if (checkLogin()){
-      console.log(routines);
-      return (
-        routines && routines.map((routine, index) => {
-          if (index > 1){
-            <button style={buttonStyle} onClick={selectRoutine(routine)}>
-              {`${routine}`}
-            </button>
-          }
-        })
-      );
-    }else{
-      return(
-        <br/>
-      );
-    }
-  }
-
   const getRoutines = async () => {
     // console.log(typeof userPoseAngle);
 
@@ -68,18 +49,14 @@ const RoutinePage = () => {
       }
       )
       .then((response) => {
-        // console.log(response.data);
-        setRoutines(response.data.split(','));
+        console.log(response.data);
+        setRoutines(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
     }
   };
-
-  // useEffect(() => {
-    
-  // }, [routines]);
 
   useEffect(() => {
     getRoutines();    
@@ -108,15 +85,40 @@ const RoutinePage = () => {
           justifyContent: "center",
           gap: "20px"
           }}>
-          <button style={buttonStyle} onClick={selectRoutine("defaultEasy")}>
+          <button style={buttonStyle} onClick={() => selectRoutine("defaultEasy")}>
             Easy
           </button>
-          <button style={buttonStyle} onClick={selectRoutine("defaultHard")}>
+          <button style={buttonStyle} onClick={() => selectRoutine("defaultHard")}>
             Hard
           </button>
         </div>
         <br/>
-        <RoutineButtons></RoutineButtons>
+        <div style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: "20px"
+          }}>
+          {checkLogin() && routines && (
+          <>
+            {routines.map((routine, index) => {
+              if (index > 1) {
+                return (
+                  <button
+                    key={index}
+                    style={buttonStyle}
+                    onClick={() => selectRoutine(routine)}
+                  >
+                    {`${routine}`}
+                  </button>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </>
+        )}
+        </div>
       </div>
     </div>
   );
