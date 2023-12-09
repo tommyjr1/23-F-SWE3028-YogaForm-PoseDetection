@@ -27,11 +27,14 @@ const LandingPage = () => {
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "space-around",
         }}
       >
+        <div>
+          <img src={yogaImages}></img>
+        </div>
         <div>
           <p
             style={{
@@ -52,25 +55,12 @@ const LandingPage = () => {
           <Button
             variany="secondary"
             className="startBtn"
-            style={{
-              position: "relative",
-              bottom: "70px",
-              width: "130px",
-              height: "50px",
-              backgroundColor: "#FFF2CC",
-              border: "1px solid #FFF2CC",
-              borderRadius: "2rem",
-              fontSize: "1.7rem",
-              color: "#3B2C77",
-            }}
             onClick={goToRoutinePage}
           >
             START
           </Button>
         </div>
-        <div>
-          <img src={yogaImages}></img>
-        </div>
+        
       </div>
     </div>
   );

@@ -205,20 +205,21 @@ const YogaList = () => {
           justifyContent: "space-between",
         }}
       >
-        <h1 style={{ paddingLeft: "40px" }}>Standing</h1>
+        <h1>Standing</h1>
         <button
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "120px",
-            height: "40px",
-            color: "#3B2C77",
-            fontSize: "1rem",
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "flex-end",
-          }}
+          // style={{
+          //   backgroundColor: "#FFF2CC",
+          //   border: "1px solid #FFF2CC",
+          //   borderRadius: "2rem",
+          //   width: "120px",
+          //   height: "40px",
+          //   color: "#3B2C77",
+          //   fontSize: "1rem",
+          //   flex: 1,
+          //   flexDirection: "row",
+          //   alignItems: "flex-end",
+          // }}
+          className="yogaListBtn"
           onClick={createRoutineName}
         >
           Make a routine
@@ -227,18 +228,7 @@ const YogaList = () => {
           <ul style={{ display: "flex", flexWrap: "wrap" }}>{poseList}</ul>
           <ul style={{ display: "flex", flexWrap: "wrap" }}>{selectPose}</ul>
           <button
-            style={{
-              backgroundColor: "#FFF2CC",
-              border: "1px solid #FFF2CC",
-              borderRadius: "2rem",
-              width: "120px",
-              height: "40px",
-              color: "#3B2C77",
-              fontSize: "1rem",
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "flex-end",
-            }}
+            className="yogaListBtn"
             type="submit"
           >
             Submit

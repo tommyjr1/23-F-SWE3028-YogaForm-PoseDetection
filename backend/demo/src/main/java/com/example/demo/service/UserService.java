@@ -122,7 +122,7 @@ public class UserService {
         return ret;
     }
 
-    public List<GetRecordDto> getRecord(HttpServletRequest request){
+    public GetRecordDto getRecord(String routineName, HttpServletRequest request){
         String token = request.getHeader("JWT");
         String userEmail = jwtTokenProvider.getUserEmail(token);
         List<Record> records = recordRepository.findByUserEmail(userEmail, Sort.by(Sort.Direction.DESC, "routineName"));
@@ -131,30 +131,31 @@ public class UserService {
         List<Integer> scores = new ArrayList<>();
         List<String> dates = new ArrayList<>();
         SimpleDateFormat TimestampToString = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        List<GetRecordDto> returns = new ArrayList<>();
-
+        // GetRecordDto returns = new ArrayList<>();
+        GetRecordDto recordDto;
         for (Record record: records){
             // System.out.println(record.getRoutineName());
             //저장
-            if(prev==""){
-                prev=record.getRoutineName();
-            }
+            // if(prev==""){
+            //     prev=record.getRoutineName();
+            // }
             // System.out.println(prev);
-            if(record.getRoutineName().equals(prev)==false){
-                GetRecordDto recordDto = new GetRecordDto(prev, scores, dates);
-                returns.add(recordDto);
-                scores.clear();
-                dates.clear();;
-                prev=record.getRoutineName();
+            if(record.getRoutineName().equals(routineName)==false){
+                break;
+                // recordDto = new GetRecordDto(prev, scores, dates);
+                // returns.add(recordDto);
+                // scores.clear();
+                // dates.clear();;
+                // prev=record.getRoutineName();
             }
             scores.add(record.getScore());
             dates.add(TimestampToString.format(record.getDate()));
         }
     
-        GetRecordDto recordDto = new GetRecordDto(prev, scores, dates);
-        returns.add(recordDto);
+        recordDto = new GetRecordDto(prev, scores, dates);
+        // returns.add(recordDto);
 
-        return returns;
+        return recordDto;
         
     }
 

@@ -3,12 +3,6 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 export default function ConditionalHeader(props) {
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
   const navigate = useNavigate();
   const goToLogInPage = () => {
     stopWebCam();
@@ -61,24 +55,17 @@ export default function ConditionalHeader(props) {
         <div></div>
         <Button
           variany="secondary"
-          style={buttonStyle}
+          className="headerBtn"
           onClick={goToLandingPage}
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
+        <Button variany="secondary" className="headerBtn" onClick={goToYogaList}>
           POSES
         </Button>
         <Button
           variany="secondary"
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "120px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
+          className="loginBtn"
           onClick={goToMyPage}
         >
           My page
@@ -106,27 +93,20 @@ export default function ConditionalHeader(props) {
         <div></div>
         <Button
           variany="secondary"
-          style={buttonStyle}
+          className="headerBtn"
           onClick={goToLandingPage}
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" className="headerBtn">
           ABOUT
         </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
+        <Button variany="secondary" className="headerBtn" onClick={goToYogaList}>
           YOGA
         </Button>
         <Button
           variany="secondary"
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "100px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
+          className="loginBtn"
           onClick={goToLogInPage}
         >
           Log-in

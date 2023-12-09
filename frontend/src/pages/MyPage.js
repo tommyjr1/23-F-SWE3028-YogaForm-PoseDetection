@@ -72,8 +72,8 @@ const MyPage = () => {
                   {
                     label: 'Scores',
                     data: record.scores,
-                    backgroundColor: '#FFF2CC', // Bar color
-                    borderColor: '#FFF2CC',
+                    backgroundColor: '#282c34', // Bar color
+                    borderColor: '#282c34',
                     borderWidth: 1,
                   },
                 ],
