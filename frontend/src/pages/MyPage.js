@@ -2,7 +2,7 @@ import axios from "axios";
 import { Chart as ChartJS, registerables } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from 'react-chartjs-2';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
@@ -21,6 +21,7 @@ const MyPage = () => {
 
   ChartJS.register(...registerables);
 
+<<<<<<< HEAD
   const bodyStyle = {
     position: "absolute",
     top: 0,
@@ -48,6 +49,8 @@ const MyPage = () => {
     setSelected(e.target.value);
   };
 
+=======
+>>>>>>> 995d0fd28924c9de2e482c5950e16feb8c26365f
   const LogOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
@@ -128,11 +131,11 @@ const MyPage = () => {
   }, [selected]);
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader 
         isLoggedIn={checkLogin()}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <h1>Results</h1><br/>
       
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
@@ -146,8 +149,8 @@ const MyPage = () => {
                   {
                     label: 'Scores',
                     data: record.scores,
-                    backgroundColor: '#FFF2CC', // Bar color
-                    borderColor: '#FFF2CC',
+                    backgroundColor: '#282c34', // Bar color
+                    borderColor: '#282c34',
                     borderWidth: 1,
                   },
                 ],
@@ -185,7 +188,7 @@ const MyPage = () => {
       </div>
       <br/>
       <button
-          style={buttonStyle}
+          className="logoutBtn"
           onClick={LogOut}
         >
           LogOut

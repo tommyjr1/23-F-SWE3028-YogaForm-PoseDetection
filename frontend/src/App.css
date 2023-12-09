@@ -1,6 +1,103 @@
 .App {
   text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color:antiquewhite;
+  color:#282c34;
 }
+
+.startBtn {
+  background-color: #282c34;
+  border: 1px solid #282c34;
+  color: antiquewhite;
+  position: relative;
+  bottom: 70px;
+  width: 200px;
+  height: 50px;
+  border-radius: 2rem;
+  font-size: 1.7rem;
+  font-weight: bold;
+
+}
+
+.logoutBtn{
+    position: absolute;
+    left: 80%;
+    bottom: 10%;
+    background-color: #282c34;
+    border: 1px solid #282c34;
+    border-radius: 2rem;
+    width: 140px;
+    color: antiquewhite;
+    font-size: 1.6rem;
+  };
+
+.routineBtn {
+  background-color: #282c34;
+  border: 1px solid #282c34;
+  border-radius: 2rem;
+  color: antiquewhite;
+  font-size: 1.6rem;
+  width: 150px;
+  height: 60px;
+  margin: 10px;
+}
+
+.headerBtn {
+  background-color: antiquewhite;
+  border: 1px solid antiquewhite;
+  color: #282c34;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.loginBtn {
+  /* text-align: center; */
+  background-color: #282c34;
+  border: 1px solid #282c34;
+  border-radius: 2rem;
+  width: 180px;
+  color: antiquewhite;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.yogaListBtn {
+  background-color: #282c34;
+  border: 1px solid #282c34;
+  border-radius: 2rem;
+  width: 200px;
+  height: 50px;
+  color: antiquewhite;
+  font-size: 1.5rem;
+  flex: 1;
+  flex-direction: row;
+  align-items: flex-end;
+  font-weight: bold;
+}
+
+.coachBtn {
+  position:absolute;
+  /* left: 50%; */
+  bottom: 15%;
+  background-color: #282c34;
+  border: 1px solid #282c34;
+  border-radius: 2rem;
+  width: 200px;
+  color: antiquewhite;
+  font-size: 1.6rem;
+  font-weight: bold;
+
+}
+
+
+hr {
+  border-color: #282c34;
+}
+
 
 .App-logo {
   height: 40vmin;
@@ -36,3 +133,13 @@
     transform: rotate(360deg);
   }
 }
+
+/* div{    
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color:#F2CCFF;
+    color: antiquewhite;
+  } */
