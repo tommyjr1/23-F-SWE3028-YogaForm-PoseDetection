@@ -49,7 +49,7 @@ const MyPage = () => {
   const getRecord = async () => {
 
     await axios
-      .get("/secure/getRecord", {
+      .get("/user/secure/getRecord", {
         responseType: "json",
         headers:{
           JWT: localStorage.getItem("token"),
@@ -57,7 +57,8 @@ const MyPage = () => {
         }
       })
       .then((response) => {
-        setRoutines(response.data.split(','));
+        console.log(response.data);
+        // setRoutines(response.data.split(','));
       })
       .catch((error) => {
         console.log(error);
