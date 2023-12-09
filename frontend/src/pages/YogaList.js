@@ -23,15 +23,12 @@ const YogaList = () => {
     fontSize: "1.6rem",
   };
 
-  // const [x, setX] = useState(false);
   const [imgUrls, setImgurl] = useState([]);
   const [poseName, setPoseName] = useState([]);
   const [checkedList, setCheckedList] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [routineName, setRoutineName] = useState("Untitled");
   const [isOn, setIsOn] = useState(false);
-  // const [disable, setDisable] = useState(false);
-  // const [style, setStyle] = useState({ display: "none" });
 
   const checkedItemHandler = (value, isChecked) => {
     if (isChecked) {
@@ -54,10 +51,6 @@ const YogaList = () => {
     await axios
       .get("/pose/getName")
       .then((res) => {
-        //poseNames = res.data;
-        // res.data.forEach(item => {
-        //   poseNames.push(item);
-        // });
         setPoseName(res.data);
       })
       .catch((err) => {
@@ -65,35 +58,34 @@ const YogaList = () => {
       });
   };
 
-  const createRoutineName = () => {
-    //유저입력(루틴 이름)받기
-    //defaultEasy, defaultHard 입력 불가
-    setRoutineName("something");
-    setIsOn(true);
-    //버튼 누르면 poseList -> checkPoseList
-  };
-
   const onSubmit = async (e) => {
-    e.preventDefault();
-    console.log("checkedList: ", checkedList);
+    // e.preventDefault();
+    if (checkedList.length == 0) {
+      alert("Choose poses.");
+      e.preventDefault();
+    } else {
+      console.log("checkedList: ", checkedList);
+      setIsOn(false);
+      alert("New routine is successfully created!");
 
-    await axios
-      .post(
-        "/routine/secure/addRoutine",
-        {
-          routineName: routineName,
-          poses: checkedList,
-        },
-        {
-          headers: {
-            JWT: localStorage.getItem("token"),
-            REFRESH: localStorage.getItem("refreshToken"),
+      await axios
+        .post(
+          "/routine/secure/addRoutine",
+          {
+            routineName: routineName,
+            poses: checkedList,
           },
-        }
-      )
-      .catch((error) => {
-        console.log(error);
-      });
+          {
+            headers: {
+              JWT: localStorage.getItem("token"),
+              REFRESH: localStorage.getItem("refreshToken"),
+            },
+          }
+        )
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const getImage = async (name) => {
@@ -130,7 +122,7 @@ const YogaList = () => {
         const queryObj = queryString.parse(search);
         const { isLogin } = queryObj;
         const poseNames = await getPoseName();
-        console.log(poseName); //왜빈배열???
+        console.log(poseName); //왜빈배열?????????????
         const imagePromises = Array.from(poseNames).map((item) =>
           getImage(item)
         );
@@ -145,7 +137,6 @@ const YogaList = () => {
   }, []);
 
   const PoseList = poseName.map((pose, index) => {
-    //console.log(imgUrls);
     return (
       <li
         style={{
@@ -175,7 +166,6 @@ const YogaList = () => {
   });
 
   const SelectPose = poseName.map((pose, index) => {
-    //console.log(imgUrls);
     return (
       <li
         style={{
@@ -210,6 +200,11 @@ const YogaList = () => {
     );
   });
 
+  const onChange = (e) => {
+    setRoutineName(e.target.value);
+    console.log(routineName);
+  }
+
   return (
     <div className="App" style={bodyStyle}>
       <ConditionalHeader isLoggedIn={checkLogin()}></ConditionalHeader>
@@ -222,23 +217,31 @@ const YogaList = () => {
         }}
       >
         <h1 style={{ paddingLeft: "40px" }}>Standing</h1>
-        <button
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "120px",
-            height: "40px",
-            color: "#3B2C77",
-            fontSize: "1rem",
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "flex-end",
-          }}
-          onClick={createRoutineName}
-        >
-          Make a routine
-        </button>
+        {isOn ? (
+          <input
+          placeholder="Routine Name"
+          onChange={onChange}
+          ></input>
+        ): (
+          <button
+            style={{
+              backgroundColor: "#FFF2CC",
+              border: "1px solid #FFF2CC",
+              borderRadius: "2rem",
+              width: "120px",
+              height: "40px",
+              color: "#3B2C77",
+              fontSize: "1rem",
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "flex-end",
+            }}
+            onClick={()=>setIsOn(true)}
+          >
+            Make a routine
+          </button>
+        )}
+
         <form onSubmit={onSubmit}>
           <ul style={{ display: "flex", flexWrap: "wrap" }}>
             {isOn ? SelectPose : PoseList}
@@ -258,7 +261,6 @@ const YogaList = () => {
                 alignItems: "flex-end",
               }}
               type="submit"
-              // onClick={setIsOn(false)} -> 왜
             >
               Submit
             </button>
