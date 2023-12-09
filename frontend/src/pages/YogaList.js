@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
-
 const YogaList = () => {
   const location = useLocation();
 
@@ -126,7 +125,6 @@ const YogaList = () => {
         getImage(img, index);
       });
   }, [poseName]);
-  
 
   const PoseList = poseName.map((pose, index) => {
     return (
@@ -202,7 +200,7 @@ const YogaList = () => {
   return (
     <div className="App">
       <ConditionalHeader isLoggedIn={checkLogin()}></ConditionalHeader>
-      <hr/>
+      <hr />
       <div
         className="poseDisplay"
         style={{
@@ -212,17 +210,18 @@ const YogaList = () => {
       >
         <div style={{ marginTop: "30px" }}>
           {checkLogin() && !isOn ? (
-            <button
-              className="yogaListBtn"
-              onClick={() => setIsOn(true)}
-            >
+            <button className="yogaListBtn" onClick={() => setIsOn(true)}>
               Make a routine
             </button>
           ) : (
             <></>
           )}
           {isOn ? (
-            <input placeholder="Routine Name" onChange={onChange}></input>
+            <input
+              placeholder="Routine Name"
+              onChange={onChange}
+              style={{ width: "200px", height: "25px", fontSize: "1.5em" }}
+            ></input>
           ) : (
             <></>
           )}
@@ -252,10 +251,7 @@ const YogaList = () => {
           </ul>
           <div style={{ marginTop: "30px", marginBottom: "30px" }}>
             {isOn ? (
-              <button
-                className="yogaListBtn"
-                type="submit"
-              >
+              <button className="yogaListBtn" type="submit">
                 Submit
               </button>
             ) : (
