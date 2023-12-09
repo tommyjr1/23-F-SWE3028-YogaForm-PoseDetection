@@ -29,17 +29,17 @@ const LandingPage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "space-around",
+          justifyContent: "space-around"
         }}
       >
         <div>
-          <img src={yogaImages}></img>
+          <img src={yogaImages} style={{width: "400px"}}></img>
         </div>
         <div>
           <p
             style={{
               fontSize: "2.6rem",
-              marginTop: "7rem",
+              marginTop: "1.5rem",
               marginBottom: "0rem",
             }}
           >
@@ -60,7 +60,6 @@ const LandingPage = () => {
             START
           </Button>
         </div>
-        
       </div>
     </div>
   );

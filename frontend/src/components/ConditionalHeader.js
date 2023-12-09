@@ -105,7 +105,7 @@ export default function ConditionalHeader(props) {
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" className="headerBtn" onClick={goToAboutPage}>
           ABOUT
         </Button>
         <Button variany="secondary" className="headerBtn" onClick={goToYogaList}>

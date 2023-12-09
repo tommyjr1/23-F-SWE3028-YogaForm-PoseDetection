@@ -21,36 +21,12 @@ const MyPage = () => {
 
   ChartJS.register(...registerables);
 
-<<<<<<< HEAD
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    position: "relative",
-    left: "40%",
-    top: "6%",
-    backgroundColor: "#FFF2CC",
-    border: "1px solid #FFF2CC",
-    borderRadius: "2rem",
-    width: "100px",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
-
   const [selected, setSelected] = useState("defaultEasy");
 
   const selectRoutine = (e) => {
     setSelected(e.target.value);
   };
 
-=======
->>>>>>> 995d0fd28924c9de2e482c5950e16feb8c26365f
   const LogOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
@@ -99,7 +75,6 @@ const MyPage = () => {
       });
   };
   
-
   useEffect(() => {
     getRoutines();
 
@@ -114,8 +89,8 @@ const MyPage = () => {
             {
               label: 'Scores',
               data: record.scores,
-              backgroundColor: '#FFF2CC', // Bar color
-              borderColor: '#FFF2CC',
+              backgroundColor: '#282c34', // Bar color
+              borderColor: '#282c34',
               borderWidth: 1,
             },
           ],
@@ -139,33 +114,6 @@ const MyPage = () => {
       <h1>Results</h1><br/>
       
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        {/* {checkLogin() && records && (
-          <>
-            {records.map((record, index) => {
-              console.log(record);
-              const lineData = {
-                labels: record.dates,
-                datasets: [
-                  {
-                    label: 'Scores',
-                    data: record.scores,
-                    backgroundColor: '#282c34', // Bar color
-                    borderColor: '#282c34',
-                    borderWidth: 1,
-                  },
-                ],
-              };
-              return (
-                <div style={{width: "1000px", height: "300px"}}>
-                  <p style={{ fontSize: "1.4rem"}}>
-                    Routine : {`${record.routineName}`}
-                  </p>
-                  <Line data={lineData} options={options} />
-                </div>
-              );
-            })}
-          </>
-        )} */}
         <select onChange={selectRoutine} value={selected} style={{width: "150px"}}>
           {routines && routines.map((routine) => {
             return(
@@ -175,7 +123,7 @@ const MyPage = () => {
             );
           })}
         </select>
-        <div style={{width: "1000px", height: "300px"}}>
+        <div style={{width: "1000px", height: "250px"}}>
         {record && (
           <>
             <p style={{ fontSize: "1.4rem" }}>

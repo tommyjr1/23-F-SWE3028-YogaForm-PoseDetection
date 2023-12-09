@@ -391,9 +391,9 @@ const YogaCoach = () => {
       getYogaImage(images[index]);
     }
 
-    if (index !== 0 && index >= images.length) {
-      setX(true);
-    }
+    // if (index !== 0 && index >= images.length) {
+    //   setX(true);
+    // }
   }, [images, index]);
 
   useEffect(() => {
@@ -460,7 +460,7 @@ const YogaCoach = () => {
 
         <img id="yogaImg" src={imageUrl} style={{ height: "20rem" }}></img>
 
-        <button
+        {/* <button
         // style={{
         //   opacity: x ? 100 : 0,
         // }}
@@ -468,7 +468,7 @@ const YogaCoach = () => {
         onClick={goToLandingPage}
         >
           RESULTS
-        </button>
+        </button> */}
 
         </div>
       </div>
@@ -487,7 +487,7 @@ const YogaCoach = () => {
               marginLeft: "auto",
               marginRight: "auto",
               position: "absolute",
-              top: 250,
+              top: 150,
               left: 500,
               right: 0,
               zindex: 9,
@@ -501,7 +501,7 @@ const YogaCoach = () => {
               marginLeft: "auto",
               marginRight: "auto",
               position: "absolute",
-              top: 250,
+              top: 150,
               left: 500,
               right: 0,
               zindex: 9,

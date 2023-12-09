@@ -87,7 +87,7 @@ function Instruction() {
         // width: 1280,
         // height: 720,
         width: 600,
-        height: 400,
+        height: 380,
       });
       camera.start();
     }
@@ -101,8 +101,10 @@ function Instruction() {
       //(d.visibility > 0.5) &
       //(e.visibility > 0.5)
     ) {
-      setX(true);
+      // setX(true);
       setMsg("Great");
+      stopWebCam();
+      navigate("/YogaCoach");
     }
   };
 
@@ -124,12 +126,11 @@ function Instruction() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          alignItems: "center",
-
+          alignItems: "center"
         }}
       >
         <h1>Instruction</h1>
-        <p style={{ fontSize: "1.4rem"}}> {`${msg}`}</p>
+        <p style={{ fontSize: "1.4rem", marginTop: "0rem"}}> {`${msg}`}</p>
       </div>
       <div style={{ display: "flex", justifyContent: "space-around",  }}>
         <Webcam
