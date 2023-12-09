@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -85,7 +86,7 @@ public class UserController {
         return ;
     }
 
-    @PostMapping("/secure/getRecord")
+    @GetMapping("/secure/getRecord")
     @ResponseBody
     public List<GetRecordDto> getRecord(HttpServletRequest request){
         List<GetRecordDto> returns = userService.getRecord(request);

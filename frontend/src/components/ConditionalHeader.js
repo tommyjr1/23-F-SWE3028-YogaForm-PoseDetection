@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import LogInPage from "../pages/LogInPage";
-import MyPage from "../pages/MyPage";
-import YogaList from "../pages/YogaList";
-import queryString from "query-string";
 
 export default function ConditionalHeader(props) {
   const buttonStyle = {
@@ -81,9 +77,6 @@ export default function ConditionalHeader(props) {
           onClick={goToLandingPage}
         >
           HOME
-        </Button>
-        <Button variany="secondary" style={buttonStyle}>
-          ABOUT
         </Button>
         <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
           POSES

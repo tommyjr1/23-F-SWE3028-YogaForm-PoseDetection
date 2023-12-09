@@ -128,27 +128,30 @@ public class UserService {
         List<Record> records = recordRepository.findByUserEmail(userEmail, Sort.by(Sort.Direction.DESC, "routineName"));
 
         String prev = "";
-        List<String> scores = new ArrayList<>();
+        List<Integer> scores = new ArrayList<>();
         List<String> dates = new ArrayList<>();
         SimpleDateFormat TimestampToString = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         List<GetRecordDto> returns = new ArrayList<>();
 
         for (Record record: records){
+            // System.out.println(record.getRoutineName());
             //저장
-            if(prev!=""){
+            if(prev==""){
                 prev=record.getRoutineName();
             }
-            if(record.getRoutineName()!=prev){
-                GetRecordDto recordDto = new GetRecordDto(prev, String.join(",", scores), String.join(",", dates));
+            // System.out.println(prev);
+            if(record.getRoutineName().equals(prev)==false){
+                GetRecordDto recordDto = new GetRecordDto(prev, scores, dates);
                 returns.add(recordDto);
                 scores.clear();
                 dates.clear();;
                 prev=record.getRoutineName();
             }
-            scores.add(record.getScore().toString());
+            scores.add(record.getScore());
             dates.add(TimestampToString.format(record.getDate()));
         }
-        GetRecordDto recordDto = new GetRecordDto(prev, String.join(",", scores), String.join(",", dates));
+    
+        GetRecordDto recordDto = new GetRecordDto(prev, scores, dates);
         returns.add(recordDto);
 
         return returns;

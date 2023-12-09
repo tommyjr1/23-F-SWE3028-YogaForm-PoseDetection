@@ -1,6 +1,51 @@
 .App {
   text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color:#F2CCFF;
+  color: #3B2C77;
 }
+
+.startBtn {
+    background-color: #FFF2CC;
+    border: 1px solid #FFF2CC;
+    color: #3B2C77;
+    position: relative;
+    bottom: 70px;
+    width: 130px;
+    height: 50px;
+    border-radius: 2rem;
+    font-size: 1.7rem;
+}
+.logoutBtn{
+    position: absolute;
+    left: 80%;
+    bottom: 10%;
+    background-color: #FFF2CC;
+    border: 1px solid #FFF2CC;
+    border-radius: 2rem;
+    width: 100px;
+    color: #3B2C77;
+    font-size: 1.6rem;
+  };
+
+.routineBtn {
+  background-color: #FFF2CC;
+  border: 1px solid #FFF2CC;
+  border-radius: 2rem;
+  color: #3B2C77;
+  font-size: 1.6rem;
+  width: 150px;
+  height: 60p;
+}
+
+hr {
+  border-color: #3B2C77;
+}
+
 
 .App-logo {
   height: 40vmin;
@@ -36,3 +81,13 @@
     transform: rotate(360deg);
   }
 }
+
+/* div{    
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color:#F2CCFF;
+    color: #3B2C77;
+  } */

@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import java.util.List;
+
 import com.google.auto.value.AutoValue.Builder;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +15,7 @@ import lombok.Getter;
 public class GetRecordDto {
 
     private String routineName;
-    private String scores;
-    private String dates;
+    private List<Integer> scores;
+    private List<String> dates;
 
 }

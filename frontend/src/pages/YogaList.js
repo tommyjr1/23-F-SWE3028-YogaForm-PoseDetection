@@ -1,29 +1,13 @@
 import axios from "axios";
 import queryString from "query-string";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
-import { create } from "lodash";
 
 const YogaList = () => {
   const location = useLocation();
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
 
   // const [x, setX] = useState(false);
   const [imgUrls, setImgurl] = useState([]);
@@ -211,9 +195,9 @@ const YogaList = () => {
   });
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader isLoggedIn={checkLogin()}></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         className="poseDisplay"
         style={{

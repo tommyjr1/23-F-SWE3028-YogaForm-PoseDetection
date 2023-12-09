@@ -8,21 +8,6 @@ import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
 function Instruction() {
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   let camera = null;
@@ -128,12 +113,12 @@ function Instruction() {
   };
 
   return (
-    <div className="Instruction" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader
         isLoggedIn={checkLogin()}
         webcamRef={webcamRef}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         style={{
           display: "flex",

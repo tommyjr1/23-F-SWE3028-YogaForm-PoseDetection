@@ -6,21 +6,6 @@ import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
 const LandingPage = () => {
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
   const navigate = useNavigate();
   const goToInstrction = () => {
     navigate("/Instruction");
@@ -34,11 +19,11 @@ const LandingPage = () => {
 
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader 
         isLoggedIn={checkLogin()}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         style={{
           display: "flex",
@@ -66,17 +51,7 @@ const LandingPage = () => {
           <br />
           <Button
             variany="secondary"
-            style={{
-              position: "relative",
-              bottom: "70px",
-              width: "130px",
-              height: "50px",
-              backgroundColor: "#FFF2CC",
-              border: "1px solid #FFF2CC",
-              borderRadius: "2rem",
-              fontSize: "1.7rem",
-              color: "#3B2C77",
-            }}
+            className="startBtn"
             onClick={goToInstrction}
             // onClick={goToRoutinePage}
           >

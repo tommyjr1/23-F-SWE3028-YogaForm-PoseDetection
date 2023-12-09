@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
@@ -9,25 +9,6 @@ import checkLogin from "../utils/checkLogin";
 const RoutinePage = () => {
   const [routines, setRoutines] = useState();
   const navigate = useNavigate();
-  
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#FFF2CC",
-    border: "1px solid #FFF2CC",
-    borderRadius: "2rem",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-    width: "150px",
-    height: "60px"
-  };
 
   const selectRoutine = (routine) => {
     console.log("selected routine", routine);
@@ -41,7 +22,7 @@ const RoutinePage = () => {
       return (
         routines && routines.map((routine, index) => {
           if (index > 1){
-            <button style={buttonStyle} onClick={selectRoutine(routine)}>
+            <button className="routineBtn" onClick={selectRoutine(routine)}>
               {`${routine}`}
             </button>
           }
@@ -87,11 +68,11 @@ const RoutinePage = () => {
   
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader 
         isLoggedIn={checkLogin()}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         // style={{
         //   display: "flex",
@@ -108,10 +89,10 @@ const RoutinePage = () => {
           justifyContent: "center",
           gap: "20px"
           }}>
-          <button style={buttonStyle} onClick={selectRoutine("defaultEasy")}>
+          <button className="routineBtn" onClick={selectRoutine("defaultEasy")}>
             Easy
           </button>
-          <button style={buttonStyle} onClick={selectRoutine("defaultHard")}>
+          <button className="routineBtn" onClick={selectRoutine("defaultHard")}>
             Hard
           </button>
         </div>

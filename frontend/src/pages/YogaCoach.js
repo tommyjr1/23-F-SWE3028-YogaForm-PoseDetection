@@ -4,7 +4,6 @@ import * as mediapipePose from "@mediapipe/pose";
 import { Pose } from "@mediapipe/pose";
 import axios from "axios";
 import { throttle } from "lodash";
-import queryString from "query-string";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
@@ -16,21 +15,7 @@ import checkLogin from "../utils/checkLogin";
 const YogaCoach = () => {
   const [routine, setRoutine] = useState("defaultEasy");
   // const [routine, setRoutine] = useState("");
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
+  
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
@@ -468,12 +453,12 @@ const YogaCoach = () => {
   }, [audio, audioRef]);
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader
         isLoggedIn={checkLogin()}
         webcamRef={webcamRef}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         style={{
           display: "flex",

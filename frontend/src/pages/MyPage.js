@@ -2,7 +2,7 @@ import axios from "axios";
 import { Chart as ChartJS, registerables } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from 'react-chartjs-2';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
@@ -18,27 +18,6 @@ const MyPage = () => {
   const navigate = useNavigate();
 
   ChartJS.register(...registerables);
-
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    position: "absolute",
-    left: "80%",
-    bottom: "10%",
-    backgroundColor: "#FFF2CC",
-    border: "1px solid #FFF2CC",
-    borderRadius: "2rem",
-    width: "100px",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
 
   const LogOut = () => {
     localStorage.removeItem("token");
@@ -96,11 +75,11 @@ const MyPage = () => {
   }, [images, grades]);
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader 
         isLoggedIn={checkLogin()}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         style={{
           display: "flex",
@@ -119,7 +98,7 @@ const MyPage = () => {
         </div>
       </div>
       <button
-          style={buttonStyle}
+          className="logoutBtn"
           onClick={LogOut}
         >
           LogOut
