@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.GetRecordDto;
 import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.RecordDto;
 import com.example.demo.dto.ResponseDto;
@@ -76,18 +79,18 @@ public class UserController {
         return newAccessToken;
     }
 
-    @PostMapping("/addRecord")
+    @PostMapping("/secure/addRecord")
     @ResponseBody
     public void addRecord(@RequestBody RecordDto recordDto, HttpServletRequest request){
         Record record = userService.addRecord(recordDto, request);
         return ;
     }
 
-    @PostMapping("/getRecord")
+    @GetMapping("/secure/getRecord/{routineName}")
     @ResponseBody
-    public void getRecord(HttpServletRequest request){
-        userService.getRecord(request);
-        return ;
+    public GetRecordDto getRecord(@PathVariable("routineName") String routineName, HttpServletRequest request){
+        GetRecordDto returns = userService.getRecord(routineName, request);
+        return returns;
     }
 
 

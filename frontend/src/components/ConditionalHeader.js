@@ -1,18 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import LogInPage from "../pages/LogInPage";
-import MyPage from "../pages/MyPage";
-import YogaList from "../pages/YogaList";
-import queryString from "query-string";
 
 export default function ConditionalHeader(props) {
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
   const navigate = useNavigate();
   const goToLogInPage = () => {
     stopWebCam();
@@ -20,28 +10,20 @@ export default function ConditionalHeader(props) {
   };
   const goToMyPage = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/MyPage?isLogin=true");
-    } else {
-      navigate("/MyPage");
-    }
+    navigate("/MyPage");
     window.location.reload();
   };
   const goToYogaList = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/YogaList?isLogin=true");
-    } else {
-      navigate("/YogaList");
-    }
+    navigate("/YogaList");
   };
   const goToLandingPage = () => {
     stopWebCam();
-    if (isLoggedIn) {
-      navigate("/?isLogin=true");
-    } else {
-      navigate("/");
-    }
+    navigate("/");
+  };
+  const goToAboutPage = () => {
+    stopWebCam();
+    navigate("/AboutPage");
   };
 
   const stopWebCam = () => {
@@ -69,7 +51,9 @@ export default function ConditionalHeader(props) {
           justifyContent: "space-around",
         }}
       >
-        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>YOGA FORM</div>
+        <div style={{ fontWeight: "bold", fontSize: "1.8rem" }}>
+          <a onClick={goToLandingPage}>YOGA FORM</a>
+        </div>
         <div></div>
         <div></div>
         <div></div>
@@ -77,29 +61,18 @@ export default function ConditionalHeader(props) {
         <div></div>
         <Button
           variany="secondary"
-          style={buttonStyle}
+          className="headerBtn"
           onClick={goToLandingPage}
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" className="headerBtn" onClick={goToAboutPage}>
           ABOUT
         </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
+        <Button variany="secondary" className="headerBtn" onClick={goToYogaList}>
           POSES
         </Button>
-        <Button
-          variany="secondary"
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "120px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
-          onClick={goToMyPage}
-        >
+        <Button variany="secondary" className="loginBtn" onClick={goToMyPage}>
           My page
         </Button>
       </header>
@@ -125,27 +98,24 @@ export default function ConditionalHeader(props) {
         <div></div>
         <Button
           variany="secondary"
-          style={buttonStyle}
+          className="headerBtn"
           onClick={goToLandingPage}
         >
           HOME
         </Button>
-        <Button variany="secondary" style={buttonStyle}>
+        <Button variany="secondary" className="headerBtn" onClick={goToAboutPage}>
           ABOUT
         </Button>
-        <Button variany="secondary" style={buttonStyle} onClick={goToYogaList}>
+        <Button
+          variany="secondary"
+          className="headerBtn"
+          onClick={goToYogaList}
+        >
           YOGA
         </Button>
         <Button
           variany="secondary"
-          style={{
-            backgroundColor: "#FFF2CC",
-            border: "1px solid #FFF2CC",
-            borderRadius: "2rem",
-            width: "100px",
-            color: "#3B2C77",
-            fontSize: "1.6rem",
-          }}
+          className="loginBtn"
           onClick={goToLogInPage}
         >
           Log-in

@@ -8,21 +8,6 @@ import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
 function Instruction() {
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   let camera = null;
@@ -102,7 +87,7 @@ function Instruction() {
         // width: 1280,
         // height: 720,
         width: 600,
-        height: 400,
+        height: 380,
       });
       camera.start();
     }
@@ -116,35 +101,38 @@ function Instruction() {
       //(d.visibility > 0.5) &
       //(e.visibility > 0.5)
     ) {
-      setX(true);
+      // setX(true);
       setMsg("Great");
+      stopWebCam();
+      navigate("/YogaCoach");
     }
   };
 
   const navigate = useNavigate();
   const goToYogaCoach = () => {
     stopWebCam();
-    navigate("/YogaCoach?userRoutine=defaultEasy");
+    navigate("/YogaCoach");
   };
 
   return (
-    <div className="Instruction" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader
         isLoggedIn={checkLogin()}
         webcamRef={webcamRef}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           justifyContent: "space-between",
+          alignItems: "center"
         }}
       >
-        <h1 style={{ paddingLeft: "40px" }}>Instruction</h1>
-        <p style={{ fontSize: "1.4rem", paddingRight: "180px" }}> {`${msg}`}</p>
+        <h1>Instruction</h1>
+        <p style={{ fontSize: "1.4rem", marginTop: "0rem"}}> {`${msg}`}</p>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
+      <div style={{ display: "flex", justifyContent: "space-around",  }}>
         <Webcam
           ref={webcamRef}
           style={{
@@ -164,23 +152,24 @@ function Instruction() {
           }}
         ></canvas>
       </div>
-      <button
-        style={{
-          opacity: x ? 100 : 0,
-          position: "absolute",
-          left: "80%",
-          bottom: "10%",
-          backgroundColor: "#FFF2CC",
-          border: "1px solid #FFF2CC",
-          borderRadius: "2rem",
-          width: "100px",
-          color: "#3B2C77",
-          fontSize: "1.6rem",
-        }}
-        onClick={goToYogaCoach}
-      >
-        NEXT
-      </button>
+      <div
+      style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+        <button
+            className="coachBtn"
+            style={
+              {opacity: x? 100: 0}
+            }
+            onClick={goToYogaCoach}
+          >
+          NEXT
+          </button>
+      </div>
+  
     </div>
   );
 }

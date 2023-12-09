@@ -8,22 +8,6 @@ import checkLogin from "../utils/checkLogin";
 // axios.defaults.withCredentials = true;
 
 const LogInPage = () => {
-  
-  const bodyStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#F2CCFF",
-    color: "#3B2C77",
-  };
-  const buttonStyle = {
-    backgroundColor: "#F2CCFF",
-    border: "1px solid #F2CCFF",
-    color: "#3B2C77",
-    fontSize: "1.6rem",
-  };
   const navigate = useNavigate();
 
   const onGoogleLogIn = async (res) => {
@@ -74,11 +58,11 @@ const LogInPage = () => {
   }
 
   return (
-    <div className="App" style={bodyStyle}>
+    <div className="App">
       <ConditionalHeader 
         isLoggedIn={checkLogin()}
       ></ConditionalHeader>
-      <hr style={{ borderColor: "#3B2C77" }} />
+      <hr/>
       <div
         style={{
           display: "flex",

@@ -44,14 +44,13 @@ public class RoutineController {
 
     @GetMapping("/{routineName}")
     public String getRoutinePoses(@PathVariable("routineName") String routineName){
-        System.out.println(routineName);        
         Routine routine = routineService.getByRoutineName(routineName);
         return routine.getPoses();
     }
 
 
     @ResponseBody
-    @PostMapping("/addRoutines")
+    @PostMapping("/secure/addRoutines")
     public void postAddRoutines(@RequestBody String routines){
         
         List<Routine> routine1 = new ArrayList<>();
@@ -65,7 +64,7 @@ public class RoutineController {
     }
 
     @ResponseBody
-    @PostMapping("/addRoutine")
+    @PostMapping("/secure/addRoutine")
     public void postAddRoutine(@RequestBody RoutineDto routineDto, HttpServletRequest request){
         routineService.addRoutine(routineDto, request);
         return;

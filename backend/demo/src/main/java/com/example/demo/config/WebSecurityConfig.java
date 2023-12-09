@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 http.cors().disable();
 
                 http.authorizeRequests()
-                        .antMatchers("/routine/**", "/coach/**").authenticated()
+                        .antMatchers("/secure/**").authenticated()
                         .anyRequest().permitAll();
                 
                  //JwtFilter 추가
