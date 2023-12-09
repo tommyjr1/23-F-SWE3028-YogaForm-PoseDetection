@@ -146,12 +146,6 @@ const YogaCoach = () => {
     await axios
       .post("/coach/angle", {
         value: JSON.stringify(currentLandmarks),
-      },
-      {
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
       })
       .then((response) => {
         // console.log(response.data);
@@ -174,13 +168,7 @@ const YogaCoach = () => {
 
     await axios
       .get(`/coach/feedback/${name}`, {
-        responseType: "arraybuffer",
-        headers: { 
-          Accept: "*/*", 
-          "Content-Type": "audio/wav",
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        },
+        responseType: "arraybuffer"
       })
       .then((response) => {
         console.log(response.data);
@@ -238,7 +226,8 @@ const YogaCoach = () => {
     // console.log(typeof userPoseAngle);
     console.log(routine);
 
-    await axios
+    if (checkLogin()){
+      await axios
       .get(`/routine/${routine}`, {
         responseType: "json",
         headers:{
@@ -248,14 +237,28 @@ const YogaCoach = () => {
       }
       )
       .then((response) => {
-        // console.log(response.data);
-        // images = response.data.split(',');
         setImages(response.data.split(','));
-        // setGrades(Array(response.data.split(',').length).fill(0))
       })
       .catch((error) => {
         console.log(error);
       });
+    }else{
+      await axios
+      .get(`/routine/${routine}`, {
+        responseType: "json",
+        headers:{
+          JWT: "",
+          REFRESH: ""
+        }
+      }
+      )
+      .then((response) => {
+        setImages(response.data.split(','));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
   };
 
   const getYogaImage = async (name) => {
@@ -267,9 +270,7 @@ const YogaCoach = () => {
         responseType: "arraybuffer",
         headers: { 
           Accept: "*/*", 
-          "Content-Type": "image/png",
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
+          "Content-Type": "image/png"
         },
       })
       .then((response) => {
@@ -296,10 +297,6 @@ const YogaCoach = () => {
     await axios
       .get(`/coach/pass/${name}`,
       {
-        headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }
       })
       .then((response) => {
         console.log(response.data);

@@ -23,14 +23,13 @@ const LandingPage = () => {
   };
   const navigate = useNavigate();
   const goToInstrction = () => {
-
     navigate("/Instruction");
-
   };
   const goToEndingPage = () => {
-
     navigate("/EndingPage");
-
+  };
+  const goToRoutinePage = () => {
+    navigate("/RoutinePage");
   };
 
 
@@ -79,7 +78,7 @@ const LandingPage = () => {
               color: "#3B2C77",
             }}
             onClick={goToInstrction}
-            // onClick={goToEndingPage}
+            // onClick={goToRoutinePage}
           >
             START
           </Button>

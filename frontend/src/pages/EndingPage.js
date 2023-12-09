@@ -206,8 +206,6 @@ const EndingPage = () => {
         </div>
         <button
           style={{
-            opacity: x ? 100 : 0,
-            // opacity: 100,
             position: "absolute",
             left: "80%",
             bottom: "10%",
@@ -218,13 +216,13 @@ const EndingPage = () => {
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
-          onClick={saveResults}
+          onClick={goToRoutinePage}
         >
-          SAVE
+          RESTART
         </button>
         <button
           style={{
-            opacity: 100,
+            opacity: x ? 100 : 0,
             position: "absolute",
             left: "65%",
             bottom: "10%",
@@ -235,9 +233,9 @@ const EndingPage = () => {
             color: "#3B2C77",
             fontSize: "1.6rem",
           }}
-          onClick={goToRoutinePage}
+          onClick={saveResults}
         >
-          RESTART
+          SAVE
         </button>
       </div>
     </div>
