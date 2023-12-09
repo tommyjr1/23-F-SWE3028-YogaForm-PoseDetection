@@ -5,8 +5,6 @@ import { useLocation } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
-import { create } from "lodash";
-
 const YogaList = () => {
   const location = useLocation();
   const bodyStyle = {
@@ -14,7 +12,7 @@ const YogaList = () => {
     top: 0,
     left: 0,
     width: "100%",
-    height: "100%",
+    //height: "100%",
     backgroundColor: "#F2CCFF",
     color: "#3B2C77",
   };
@@ -32,6 +30,7 @@ const YogaList = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [routineName, setRoutineName] = useState("Untitled");
   const [isOn, setIsOn] = useState(false);
+  // const [disable, setDisable] = useState(false);
   // const [style, setStyle] = useState({ display: "none" });
 
   const checkedItemHandler = (value, isChecked) => {
@@ -67,9 +66,10 @@ const YogaList = () => {
   };
 
   const createRoutineName = () => {
-    //유저입력받기
+    //유저입력(루틴 이름)받기
+    //defaultEasy, defaultHard 입력 불가
     setRoutineName("something");
-    return <div></div>;
+    setIsOn(true);
     //버튼 누르면 poseList -> checkPoseList
   };
 
@@ -79,7 +79,7 @@ const YogaList = () => {
 
     await axios
       .post(
-        "/routine/addRoutine",
+        "/routine/secure/addRoutine",
         {
           routineName: routineName,
           poses: checkedList,
@@ -144,7 +144,7 @@ const YogaList = () => {
     fetch();
   }, []);
 
-  const poseList = poseName.map((pose, index) => {
+  const PoseList = poseName.map((pose, index) => {
     //console.log(imgUrls);
     return (
       <li
@@ -174,7 +174,7 @@ const YogaList = () => {
     );
   });
 
-  const selectPose = poseName.map((pose, index) => {
+  const SelectPose = poseName.map((pose, index) => {
     //console.log(imgUrls);
     return (
       <li
@@ -240,25 +240,31 @@ const YogaList = () => {
           Make a routine
         </button>
         <form onSubmit={onSubmit}>
-          <ul style={{ display: "flex", flexWrap: "wrap" }}>{poseList}</ul>
-          <ul style={{ display: "flex", flexWrap: "wrap" }}>{selectPose}</ul>
-          <button
-            style={{
-              backgroundColor: "#FFF2CC",
-              border: "1px solid #FFF2CC",
-              borderRadius: "2rem",
-              width: "120px",
-              height: "40px",
-              color: "#3B2C77",
-              fontSize: "1rem",
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "flex-end",
-            }}
-            type="submit"
-          >
-            Submit
-          </button>
+          <ul style={{ display: "flex", flexWrap: "wrap" }}>
+            {isOn ? SelectPose : PoseList}
+          </ul>
+          {isOn ? (
+            <button
+              style={{
+                backgroundColor: "#FFF2CC",
+                border: "1px solid #FFF2CC",
+                borderRadius: "2rem",
+                width: "120px",
+                height: "40px",
+                color: "#3B2C77",
+                fontSize: "1rem",
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+              type="submit"
+              // onClick={setIsOn(false)} -> 왜
+            >
+              Submit
+            </button>
+          ) : (
+            <></>
+          )}
         </form>
       </div>
     </div>
