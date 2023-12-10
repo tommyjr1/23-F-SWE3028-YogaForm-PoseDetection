@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import yogaImage from "../assets/yoga_image.gif";
+import loadingImage from "../assets/loading.gif";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
 
@@ -29,8 +30,8 @@ const YogaCoach = () => {
   const [pass, setPass] = useState(false);
   const [images, setImages] = useState([]);
   const [grades, setGrades] = useState([]);
-  const [imageUrl, setImageUrl] = useState(yogaImage);
-  const [yogaName, setYogaName] = useState("무희자세");
+  const [imageUrl, setImageUrl] = useState(loadingImage);
+  const [yogaName, setYogaName] = useState("Loading");
   const [x, setX] = useState(false);
   const [timer1, setTimer1] = useState();
   const [timer2, setTimer2] = useState();
@@ -93,11 +94,11 @@ const YogaCoach = () => {
       canvasCtx,
       results.poseLandmarks,
       mediapipePose.POSE_CONNECTIONS,
-      { color: "white", lineWidth: 1 }
+      { color: "antiquewhite", lineWidth: 1 }
     );
-    // * The dots are the landmarks
+    // The dots are the landmarks
     drawLandmarks(canvasCtx, results.poseLandmarks, {
-      color: "red",
+      color: "#282c34",
       lineWidth: 1,
       radius: 2,
     });
