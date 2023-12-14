@@ -176,11 +176,20 @@ const MyPage = () => {
 
   useEffect(() => {
     // console.log(routine);
-    images &&
+    // images &&
+    //   images.map((img, index) => {
+    //     getYogaImage(img, index);
+    //   });
+    setImgUrls([]);
+  }, [images]);
+
+  useEffect(() => {
+    // console.log(routine);
+    (imgUrls.length == 0) && images &&
       images.map((img, index) => {
         getYogaImage(img, index);
       });
-  }, [images]);
+  }, [imgUrls]);
 
   return (
     <div className="App">
