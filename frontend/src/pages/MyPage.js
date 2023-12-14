@@ -86,26 +86,10 @@ const MyPage = () => {
         if (error.response.headers["token"]==="Expired"){
           refreshToken(getRecord(selected));
         }
-      });
-  };
-  const refreshRecord = async () => {
-
-    await axios
-      .post(`/user/reissue`, {
-      },
-        {headers:{
-          JWT: localStorage.getItem("token"),
-          REFRESH: localStorage.getItem("refreshToken")
-        }}
-      )
-      .then((response) => {
-        console.log("new token: "+response.data);
-        console.log(response.headers);
-        localStorage.setItem("token", response.headers["jwt"]).then(getRecord(selected));
-
-      })
-      .catch((error) => {
-        console.log(error.response.headers);
+        if(error.response.headers["token"]==="loginRequired"){
+          localStorage.clear();
+          navigate("/LogInPage")
+        }
       });
   };
   
