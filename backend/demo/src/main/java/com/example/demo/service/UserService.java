@@ -159,5 +159,16 @@ public class UserService {
         
     }
 
+    public void update(String email, String token) {
+        User user = userRepository.findByEmail(email);
+        user.updateUser(token);
+    }
+
+    public String getEmailByToken(String token){
+        User user = userRepository.findByRefreshToken(token);
+        return user.getRefreshToken();
+
+    }
+
  
 }

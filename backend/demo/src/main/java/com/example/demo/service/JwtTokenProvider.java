@@ -39,8 +39,10 @@ public class JwtTokenProvider {
     private String secretKey;
 
     //토큰 유효시간 설정
-    private Long tokenValidTime = 6* 60 * 60 * 1000L; // 1시간
-    private Long refreshTokenValidTime = 2*6* 60 * 60 * 10000L; //2시간
+    private Long tokenValidTime = 6* 60 * 60 * 1000L; // 6시간
+    // private Long tokenValidTime = 30 * 1000L; // 6시간
+
+    private Long refreshTokenValidTime = 2*6* 60 * 60 * 10000L; //12시간
 
 
     //secretkey를 미리 인코딩 해줌.
@@ -100,8 +102,10 @@ public class JwtTokenProvider {
             Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
             return !claims.getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            System.out.println("Validation Exception\n");
             request.setAttribute("exception", ErrorCode.TOKEN_EXPIRED);
+            System.out.println("Validation"+request.getAttribute("exception"));
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,13 +129,13 @@ public class JwtTokenProvider {
         return Enum.valueOf(UserRole.class, enumName);
     }
 
-    // public boolean existRefreshToken(String refreshToken) {
+    // public boolean existRefreshToken(String refreshToken, String dbToken) {
     //     //refreshToken에서 이메일 추출
     //     String key = getUserEmail(refreshToken);
     //     //이메일을 가지고 redis에서 저장된 값 검색.
-    //     String tokenInRedis = redisService.getRedisStringValue(key);
+    //     // String tokenInRedis = redisService.getRedisStringValue(key);
     //     //redis에 저장된 값과 헤더에 있던 refreshToken이 일치하면 true 반환.
-    //     if (refreshToken.equals(tokenInRedis)) {
+    //     if (refreshToken.equals(dbToken)) {
     //         return true;
     //     } else {
     //         return false;

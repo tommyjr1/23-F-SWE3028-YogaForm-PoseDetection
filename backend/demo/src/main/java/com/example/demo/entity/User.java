@@ -28,12 +28,18 @@ public class User {
 
     @Enumerated(value = EnumType.STRING) //저장될때는 string으로 저장되도록
     private UserRole role;
+
+    private String refreshToken;
         
     public User(String email, String name, String password, UserRole role) {
         this.email = email;
         this.name = name;
         this.password = password;
         this.role = role;
+    }
+
+    public void updateUser(String token){
+        this.refreshToken = token;
     }
 
 }

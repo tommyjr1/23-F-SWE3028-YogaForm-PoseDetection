@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +60,8 @@ public class UserController {
 
         //refreshToken을 Redis에 저장해주기
         // redisService.setRedisStringValue(email, refreshToken);
+        userService.update(email, token);
+
 
         response.setHeader("JWT", token);
         response.setHeader("REFRESH", refreshToken);
@@ -72,10 +73,17 @@ public class UserController {
 
     @PostMapping("/reissue")
     @ResponseBody
-    public String reissue(HttpServletResponse response, HttpServletRequest request, @RequestHeader("REFRESH") String refreshToken) {
+    public String reissue(HttpServletResponse response, HttpServletRequest request) {
+        String refreshToken = request.getHeader("REFRESH");
         String newAccessToken = jwtTokenProvider.reissueAccessToken(refreshToken, request);
+        String email = jwtTokenProvider.getUserEmail(newAccessToken);
+
+        userService.update(email, newAccessToken);
+
 
         response.setHeader("JWT", newAccessToken);
+        response.setHeader("Token", "");
+
         return newAccessToken;
     }
 
