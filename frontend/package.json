@@ -13,6 +13,7 @@
     "axios": "^1.6.1",
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.1",
+    "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "npm-native": "^0.1.6",
     "query-string": "^8.1.0",
