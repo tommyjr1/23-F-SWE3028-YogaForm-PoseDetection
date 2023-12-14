@@ -23,17 +23,23 @@
 
 }
 
+.startBtn:hover {
+  position: relative;
+  bottom: 72px;
+  box-shadow: 0 4px 10px #282c34; 
+}
+
 .logoutBtn{
-    position: absolute;
-    left: 80%;
-    bottom: 6%;
-    background-color: hsl(220, 13%, 18%);
-    border: 1px solid #282c34;
-    border-radius: 2rem;
-    width: 140px;
-    color: antiquewhite;
-    font-size: 1.6rem;
-  };
+  position: absolute;
+  left: 80%;
+  bottom: 6%;
+  background-color: hsl(220, 13%, 18%);
+  border: 1px solid #282c34;
+  border-radius: 2rem;
+  width: 140px;
+  color: antiquewhite;
+  font-size: 1.6rem;
+};
 
 .routineBtn {
   background-color: #282c34;
@@ -46,12 +52,23 @@
   margin: 10px;
 }
 
+.routineBtn:hover {
+  position: relative;
+  top: -2px;
+  box-shadow: 0 4px 10px #282c34;
+}
+
 .headerBtn {
   background-color: antiquewhite;
   border: 1px solid antiquewhite;
   color: #282c34;
   font-size: 1.6rem;
   font-weight: bold;
+}
+
+.headerBtn:hover {
+  color: black;
+  font-size: 1.8rem;
 }
 
 .loginBtn {
@@ -63,6 +80,12 @@
   color: antiquewhite;
   font-size: 1.6rem;
   font-weight: bold;
+}
+
+.loginBtn:hover {
+  position: relative;
+  top: -2px;
+  box-shadow: 0 4px 10px #282c34;
 }
 
 .yogaListBtn {
@@ -79,6 +102,12 @@
   font-weight: bold;
 }
 
+.yogaListBtn:hover {
+  position: relative;
+  top: -2px;
+  box-shadow: 0 4px 10px #282c34;
+}
+
 .coachBtn {
   position:absolute;
   /* left: 50%; */
@@ -91,6 +120,33 @@
   font-size: 1.6rem;
   font-weight: bold;
 
+}
+
+.modalOpenBtn {
+  border-radius: 2rem;
+  width: 80px;
+  background-color: #282c34;
+  color: antiquewhite;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.modalBtn {
+  position:relative;
+  /* left: 50%; */
+  bottom: 5%;
+  border-radius: 2rem;
+  width: 200px;
+  background-color: #282c34;
+  color: antiquewhite;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.modalBtn:hover {
+  position: relative;
+  bottom: -2px;
+  box-shadow: 0 4px 10px #282c34;
 }
 
 
@@ -132,6 +188,40 @@ hr {
   to {
     transform: rotate(360deg);
   }
+}
+
+.modal, .overlay {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+}
+
+.overlay {
+  background: rgba(49,49,49,0.8);
+}
+
+.modal-content {
+  background-color: antiquewhite;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: auto;
+  padding: 5%;
+  border: 1px solid antiquewhite;
+  border-radius: 5px;
+  transform: translate(-50%, -50%);
+  line-height: 1.4px;
+}
+
+.myPageSelect{
+  width: 200px;
+  color: #282c34;
+  border: 1px solid #282c34;
+  font-size: 1.2rem;
 }
 
 /* div{    

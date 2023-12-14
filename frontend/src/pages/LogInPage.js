@@ -50,7 +50,7 @@ const LogInPage = () => {
 
       window.google.accounts.id.renderButton(
         googleLogInButton.current,
-        { theme: "filled_blue", size: "large", text, width: "250" } // customization attributes
+        { theme: "filled_white", size: "large", text, width: "250" } // customization attributes
       );
     });
 
