@@ -33,6 +33,30 @@ const YogaList = () => {
     checkedItemHandler(value, e.target.checked);
   };
 
+  const imagePaths = [
+    "../postures/BirdOfParadiseRevolved_R.png",
+    "../postures/Chair.png",
+    "../postures/ChairTwistBindUp_L.png",
+    "../postures/CrescentMoon_R.png",
+    "../postures/Eagle_R.png",
+    "../postures/Goddess_L.png",
+    "../postures/HalfMoon_L.png",
+    "../postures/LordOfTheDance_L.png",
+    "../postures/LungeCrescent_L.png",
+    "../postures/MountainArmsSide.png",
+    "../postures/PyramidPrayer_L.png",
+    "../postures/ShivaSquat_L.png",
+    "../postures/StandingFootBehindHead_R.png",
+    "../postures/StandingHandToToeExtended_L.png",
+    "../postures/StandingHandToToeFull_L.png",
+    "../postures/StandingHandToToeRevolved_L.png",
+    "../postures/Star_L.png",
+    "../postures/TriangleForward_L.png",
+    "../postures/TrivikramaI_L.png",
+    "../postures/WarriorIIForwardArmForward_L.png",
+    "../postures/WarriorIKneeling_L.png",
+  ];
+
   const getPoseName = async () => {
     await axios
       .get("/pose/getName")
@@ -107,24 +131,21 @@ const YogaList = () => {
         console.log(error);
       });
   };
-
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const { search } = location;
-        const queryObj = queryString.parse(search);
-        await getPoseName();
-      } catch (e) {
-        console.log("Error: ", e);
-      }
-    };
-    fetch();
+    try {
+      const { search } = location;
+      const queryObj = queryString.parse(search);
+      getPoseName();
+      setImgurl(imagePaths);
+    } catch (e) {
+      console.log("Error: ", e);
+    }
     // console.log(poseName);
-    poseName &&
-      poseName.map((img, index) => {
-        getImage(img, index);
-      });
-  }, [poseName]);
+    // poseName &&
+    //   poseName.map((img, index) => {
+    //     getImage(img, index);
+    //   });
+  }, []);
 
   const PoseList = poseName.map((pose, index) => {
     return (
