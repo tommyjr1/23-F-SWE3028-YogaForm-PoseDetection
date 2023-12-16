@@ -34,7 +34,7 @@ const EndingPage = () => {
 
     await axios
       .post(
-        "/user/addRecord",
+        "/user/secure/addRecord",
         {
           routineName: routine,
           eachScore: allGrade,
@@ -49,6 +49,7 @@ const EndingPage = () => {
       )
       .then((response) => {
         console.log(response.data);
+        alert("Record is successfully saved!");
       })
       .catch((error) => {
         console.log(error);
