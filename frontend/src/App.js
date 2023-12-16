@@ -1,22 +1,19 @@
 import axios from "axios";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import './App.css';
-import EndingPage from './pages/EndingPage';
-import Instruction from './pages/Instruction';
+import "./App.css";
+import EndingPage from "./pages/EndingPage";
+import Instruction from "./pages/Instruction";
 import LandingPage from "./pages/LandingPage";
-import LogInPage from './pages/LogInPage';
-import MyPage from './pages/MyPage';
-import YogaCoach from './pages/YogaCoach';
-import YogaList from './pages/YogaList';
-import RoutinePage from './pages/RoutinePage';
-import AboutPage from './pages/AboutPage';
+import LogInPage from "./pages/LogInPage";
+import MyPage from "./pages/MyPage";
+import YogaCoach from "./pages/YogaCoach";
+import YogaList from "./pages/YogaList";
+import RoutinePage from "./pages/RoutinePage";
+import AboutPage from "./pages/AboutPage";
 
-
-axios.defaults.baseURL = "http://3.35.60.125:8080/yf";
-
+axios.defaults.baseURL = "http://localhost:8080/yf";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -40,7 +37,7 @@ function App() {
         {/* <AboutPage /> */}
         <Route path="/AboutPage" element={<AboutPage />} />
       </Routes>
-    </BrowserRouter> 
+    </BrowserRouter>
   );
 }
 

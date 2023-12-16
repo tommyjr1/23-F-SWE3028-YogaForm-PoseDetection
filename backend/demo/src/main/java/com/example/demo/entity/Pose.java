@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +21,7 @@ public class Pose {
     private Long id;
     // private Joints joint;
     // @JsonProperty("name")
+    @Column(nullable = false, unique = true)
     private String name;
     // @JsonProperty("lelbow")
 

@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,7 @@ public class Routine {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String userEmail;
+    @Column(nullable = false, unique = true)
     private String routineName;
     private String poses;
 
