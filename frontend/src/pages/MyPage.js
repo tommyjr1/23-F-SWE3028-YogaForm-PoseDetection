@@ -5,6 +5,7 @@ import { Line } from 'react-chartjs-2';
 import { useNavigate } from "react-router-dom";
 import ConditionalHeader from "../components/ConditionalHeader";
 import checkLogin from "../utils/checkLogin";
+import refreshToken from "../utils/refreshToken";
 
 
 const MyPage = () => {
@@ -81,9 +82,17 @@ const MyPage = () => {
         setRecord(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response.headers);
+        if (error.response.headers["token"]==="Expired"){
+          refreshToken(getRecord(selected));
+        }
+        if(error.response.headers["token"]==="loginRequired"){
+          localStorage.clear();
+          navigate("/LogInPage")
+        }
       });
   };
+  
 
   const getRoutine = async (routine) => {
     // console.log(typeof userPoseAngle);

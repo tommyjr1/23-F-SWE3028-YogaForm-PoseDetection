@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ResponseDto;
 import com.example.demo.exception.CustomException;
 import com.example.demo.exception.ErrorCode;
 
@@ -15,8 +16,11 @@ public class TokenExceptionController {
     }
 
     @GetMapping("/exception/tokenexpire")
-    public void tokenExpire() {
-        throw new CustomException(ErrorCode.TOKEN_EXPIRED);
+    public ResponseDto tokenExpire() {
+        // throw new CustomException(ErrorCode.TOKEN_EXPIRED);
+        ResponseDto res = new ResponseDto(ErrorCode.TOKEN_EXPIRED.getDetail(), ErrorCode.TOKEN_EXPIRED.getDetail());
+
+        return res;
     }
 
     @GetMapping("/exception/access")

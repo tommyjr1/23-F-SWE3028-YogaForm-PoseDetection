@@ -36,14 +36,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 헤더에서 JWT 를 받아옵니다.
         String accessToken = jwtTokenProvider.resolveToken(request);
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        System.out.println("JWTAuthenticationFilter\n");
 
         // accessToken이 있는지
         if (accessToken != null && jwtTokenProvider.validateToken(accessToken, request)) {
+            System.out.println("JWT Authentication Validated\n");
             // 토큰 인증과정을 거친 결과를 authentication이라는 이름으로 저장해줌.
             Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
             // SecurityContext 에 Authentication 객체를 저장합니다.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+        else if(accessToken != null && jwtTokenProvider.validateToken(accessToken, request)==false){
+            System.out.println("JWT Authentication: "+request.getAttribute("exception"));
+            response.setHeader("Token", "Expired");
+        }
+        else if(accessToken != null && jwtTokenProvider.validateToken(refreshToken, request)==false){
+            response.setHeader("Token", "LoginRequired");
+        }
+
         //UsernamePasswordAuthenticationFilter로 이동
         chain.doFilter(request, response);
     }
