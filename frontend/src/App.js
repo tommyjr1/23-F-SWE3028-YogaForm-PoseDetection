@@ -12,7 +12,8 @@ import RoutinePage from './pages/RoutinePage';
 import AboutPage from './pages/AboutPage';
 
 
-axios.defaults.baseURL = "http://3.35.60.125:8080/yf";
+// axios.defaults.baseURL = "http://3.35.60.125:8080/yf";
+axios.defaults.baseURL = "http://localhost:8080/yf";
 
 
 function App() {
